@@ -25,17 +25,7 @@ class Medicine {
 
   factory Medicine.fromJson(Map<String, dynamic> json, int idx) {
     String removeTag(String x) {
-      return x
-          .replaceAll('<p>', '')
-          .replaceAll('</p>', '')
-          .replaceAll('\n\n', '\n')
-          .replaceAll('<br />', '')
-          .replaceAll('<sup>', '')
-          .replaceAll('<sub>', '')
-          .replaceAll('</sup>', '')
-          .replaceAll('</sub>', '')
-          .replaceAll('/<sup>', '')
-          .replaceAll('/<sub>', '');
+      return x.replaceAll(RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "");
     }
 
     try {
