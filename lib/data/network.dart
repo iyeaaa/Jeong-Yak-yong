@@ -4,8 +4,8 @@ import 'package:medicine_app/data/medicine.dart';
 
 
 class Network {
-  final apiKey = 'E%2FXF3cMAXfctK4LjQbchY8TliuRrN2sJ1M8dKJ6g'
-      'Fm88rPt1lpVI935w7bnPp%2B4ufAZdGPubLq0U%2F7dMqdIv9g%3D%3D';
+  final apiKey = 'E%2FXF3cMAXfctK4LjQbchY8TliuRrN2sJ1M8dKJ6gFm'
+      '88rPt1lpVI935w7bnPp%2B4ufAZdGPubLq0U%2F7dMqdIv9g%3D%3D';
   final String itemName;
   final int idx;
 
