@@ -27,11 +27,7 @@ class _MainScreenState extends State<MainScreen> {
                 width: 100,
               ),
             ),
-
-
             const SizedBox(height: 20),
-
-
             FutureBuilder(
               future: Network(itemName: "타이레놀", idx: 0).fetchMedicine(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
