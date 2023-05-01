@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
-import 'package:medicine_app/screen/main_screen.dart';
 
 void main() async {
   runApp(const MyApp());

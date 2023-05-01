@@ -35,7 +35,7 @@ class _LoginPageState extends State<LoginPage> {
                   color: const Color(0xff000000),
                 ),
               ),
-            ),
+            ), // Login Text
             inputBox(context, "user", "USERNAME"),
             inputBox(context, "lock", "PASSWORD"),
             Container(
@@ -70,7 +70,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-            ),
+            ), // Login Button
             forgotOrSignUpText("Forgot password?", context, 220),
             forgotOrSignUpText("Sign up", context, 285),
           ],
