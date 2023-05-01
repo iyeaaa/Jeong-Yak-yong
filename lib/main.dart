@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/screen/main_screen.dart';
 
 void main() async {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const MainScreen(),
+      home: const LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }

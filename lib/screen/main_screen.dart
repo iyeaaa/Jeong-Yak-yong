@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
-import 'package:medicine_app/data/medicine.dart';
-import '../data/network.dart';
+import 'package:medicine_app/medicine_data/medicine.dart';
+import '../medicine_data/network.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);

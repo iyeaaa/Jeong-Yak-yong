@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:medicine_app/data/medicine.dart';
+import 'package:medicine_app/medicine_data/medicine.dart';
 
 
 class Network {
