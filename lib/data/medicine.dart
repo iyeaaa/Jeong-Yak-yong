@@ -27,19 +27,18 @@ class Medicine {
     String removeTag(String x) {
       return x.replaceAll(RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "");
     }
-
     try {
       return Medicine(
-        itemName: json['body']['items'][idx]['itemName'] ?? 'null',
-        entpName: json['body']['items'][idx]['entpName'] ?? 'null',
-        effect: removeTag(json['body']['items'][idx]['efcyQesitm'] ?? 'null'),
-        itemCode: removeTag(json['body']['items'][idx]['itemSeq'] ?? 'null'),
-        useMethod: removeTag(json['body']['items'][idx]['useMethodQesitm'] ?? 'null'),
-        warmbeforeHave: removeTag(json['body']['items'][idx]['atpnWarnQesitm'] ?? 'null'),
-        warmHave: removeTag(json['body']['items'][idx]['atpnQesitm'] ?? 'null'),
-        interaction: removeTag(json['body']['items'][idx]['intrcQesitm'] ?? 'null'),
-        sideEffect: removeTag(json['body']['items'][idx]['seQesitm'] ?? 'null'),
-        depositMethod: removeTag(json['body']['items'][idx]['depositMethodQesitm'] ?? 'null'),
+        itemName: json['items'][idx]['itemName'] ?? 'null',
+        entpName: json['items'][idx]['entpName'] ?? 'null',
+        effect: removeTag(json['items'][idx]['efcyQesitm'] ?? 'null'),
+        itemCode: removeTag(json['items'][idx]['itemSeq'] ?? 'null'),
+        useMethod: removeTag(json['items'][idx]['useMethodQesitm'] ?? 'null'),
+        warmbeforeHave: removeTag(json['items'][idx]['atpnWarnQesitm'] ?? 'null'),
+        warmHave: removeTag(json['items'][idx]['atpnQesitm'] ?? 'null'),
+        interaction: removeTag(json['items'][idx]['intrcQesitm'] ?? 'null'),
+        sideEffect: removeTag(json['items'][idx]['seQesitm'] ?? 'null'),
+        depositMethod: removeTag(json['items'][idx]['depositMethodQesitm'] ?? 'null'),
       );
     } catch (e) {
       return Medicine(

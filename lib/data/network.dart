@@ -12,8 +12,9 @@ class Network {
   Network({required this.itemName, required this.idx});
 
   Future<Medicine> fetchMedicine() async {
-    final response = await http.get(Uri.parse("http://apis.data.go.kr/1471000/DrbEasyD"
-    "rugInfoService/getDrbEasyDrugList?ServiceKey=$apiKey&itemName=$itemName&type=json"));
+    final response = await http.get(Uri.parse("https://3rvfen0l3c.execute-api.u"
+        "s-east-1.amazonaws.com/medicine_gateway_api/medicine/?itemName=활명수&p"
+        "ageNo=1"));
 
     if (response.statusCode == 200) {
       // 만약 서버가 OK 응답을 반환하면, JSON을 파싱합니다.

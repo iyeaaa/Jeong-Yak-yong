@@ -29,7 +29,7 @@ class _MainScreenState extends State<MainScreen> {
             ),
             const SizedBox(height: 20),
             FutureBuilder(
-              future: Network(itemName: "타이레놀", idx: 0).fetchMedicine(),
+              future: Network(itemName: "활명수", idx: 1).fetchMedicine(),
               builder: (BuildContext context, AsyncSnapshot snapshot) {
                 //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
                 if (snapshot.hasData == false) {
