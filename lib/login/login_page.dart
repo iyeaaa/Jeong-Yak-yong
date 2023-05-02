@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_app/mainpage.dart';
+import 'package:medicine_app/tapbar_page.dart';
 import '../util/utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const MainPage(),
+                    builder: (context) => const TapBarPage(),
                   ),
                 );
               },
