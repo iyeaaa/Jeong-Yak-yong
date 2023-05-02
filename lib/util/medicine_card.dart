@@ -2,20 +2,22 @@ import 'package:flutter/material.dart';
 
 import 'utils.dart';
 
-class MedicineCard {
+class MedicineCard extends StatelessWidget {
   final double fem;
   final String name;
   final String time;
   final int count;
 
-  MedicineCard({
+  const MedicineCard({
+    super.key,
     required this.fem,
     required this.name,
     required this.time,
     required this.count,
   });
 
-  Widget make() {
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
       height: 89 * fem,

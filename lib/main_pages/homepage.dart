@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
 import 'package:medicine_app/util/search_widget.dart';
@@ -6,13 +7,34 @@ import '../util/medicine_card.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  const HomePage({Key? key, }) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  final _authentication = FirebaseAuth.instance;
+  User? loggedUser; // Nullable
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrentUser();
+  }
+
+  void getCurrentUser() {
+    try {
+      final user = _authentication.currentUser;
+      print("dd");
+      if (user != null) {
+        loggedUser = user;
+      }
+    } catch (e) {
+      debugPrint(e as String?);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -30,11 +52,11 @@ class _HomePageState extends State<HomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  introduceText(fem), // 인사 텍스트
+                  introduceText(fem, loggedUser!.email!), // 인사 텍스트
                   notificationButton(fem), // 알림 버튼
                 ],
               ), // 인사말과 알림버튼 위젯
-              SearchWidget(fem).make(), // 검색 입력, 버튼 위젯
+              SearchWidget(fem), // 검색 입력, 버튼 위젯
               Container(
                 margin: EdgeInsets.only(top: 22 * fem),
                 width: double.infinity,
@@ -185,14 +207,14 @@ class _HomePageState extends State<HomePage> {
                     name: "타이레놀",
                     time: "PM 1:00",
                     count: 2,
-                  ).make(), // 약1
+                  ), // 약1
                   SizedBox(height: 15 * fem),
                   MedicineCard(
                     fem: fem,
                     name: "활명수",
                     time: "PM 3:00",
                     count: 3,
-                  ).make(), // 약2
+                  ), // 약2
                 ],
               ), // 약 목록 위젯
             ],
@@ -223,9 +245,9 @@ Widget notificationButton(double fem) {
   );
 }
 
-Widget introduceText(double fem) {
+Widget introduceText(double fem, String username) {
   return Text(
-    'Hello Jody,\nGood Morning',
+    'Hello $username,\nGood Morning',
     style: SafeGoogleFont(
       'Poppins',
       fontSize: 22 * fem,

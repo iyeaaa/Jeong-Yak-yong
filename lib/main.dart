@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_app/sub_pages/info_page.dart';
+import 'package:medicine_app/login/login_page.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -16,11 +19,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const InfoPage(
-        title: '복용 전 참고사항',
-        content: '12세 이상의 소아와 성인은 1회 2정을 매 8시간마다 복용합니다. 24시간 동안 6정을 초과하지 마십시오. '
-            '이 약은 서방형 제제이므로 정제를 으깨거나 씹거나 녹이지 말고 그대로 삼켜서 복용하십시오.',
-      ),
+      home: const LoginPage(),
       debugShowCheckedModeBanner: false,
     );
   }

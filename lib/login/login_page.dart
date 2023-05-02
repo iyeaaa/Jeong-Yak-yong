@@ -1,5 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:medicine_app/tapbar_page.dart';
+import 'package:medicine_app/login/signup_page.dart';
+import '../tapbar_page.dart';
 import '../util/utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -10,6 +12,19 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final _authentication = FirebaseAuth.instance;
+  final _formKey = GlobalKey<FormState>();
+  String userName = '';
+  String userEmail = '';
+  String userPassword = '';
+
+  void _tryValidation() {
+    final isValid = _formKey.currentState!.validate(); // validator 호출
+    if (isValid) {
+      _formKey.currentState!.save(); // Form 전체의 state값을 저장하고 onSaved 호출
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 390;
@@ -37,9 +52,68 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ), // Login Text
-            inputBox(context, "USERNAME", Icons.account_circle_outlined),
-            inputBox(context, "PASSWORD", Icons.lock_outline),
-            SizedBox(height: 10*fem),
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 10 * fem),
+                    child: TextFormField(
+                      keyboardType: TextInputType.emailAddress,
+                      validator: (v) {
+                        String emailRegix =
+                            '^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+\$';
+                        if (v!.isEmpty || !RegExp(emailRegix).hasMatch(v)) {
+                          return '유효한 이메일 주소를 입력하세요';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) => userEmail = value!,
+                      onChanged: (value) => userEmail = value,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.mail_outline,
+                          size: 30 * fem,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                        ),
+                        border: const OutlineInputBorder(),
+                        hintText: "EMAIL",
+                      ),
+                    ),
+                  ), // EMAIL BOX
+                  Container(
+                    margin: EdgeInsets.only(top: 10 * fem),
+                    child: TextFormField(
+                      obscureText: true,
+                      validator: (v) {
+                        if (v!.isEmpty || v.length < 6) {
+                          return '6자 이상의 비밀번호를 입력하세요';
+                        }
+                        return null;
+                      },
+                      onSaved: (value) => userPassword = value!,
+                      onChanged: (value) => userPassword = value,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(
+                          Icons.lock_outline,
+                          size: 30 * fem,
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                        ),
+                        border: const OutlineInputBorder(),
+                        hintText: "PASSWORD",
+                      ),
+                    ),
+                  ), // PASSWORD BOX
+                ],
+              ),
+            ), // LogIn Box Form
+            SizedBox(height: 10 * fem),
             ElevatedButton(
               style: ButtonStyle(
                   backgroundColor:
@@ -51,13 +125,28 @@ class _LoginPageState extends State<LoginPage> {
                       borderRadius: BorderRadius.circular(30),
                     ),
                   )),
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const TapBarPage(),
-                  ),
-                );
+              onPressed: () async {
+                _tryValidation();
+                try {
+                  final newUser =
+                      await _authentication.signInWithEmailAndPassword(
+                    email: userEmail,
+                    password: userPassword,
+                  );
+
+                  if (newUser.user != null && context.mounted) {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        pageBuilder: (_, __, ___) => const TapBarPage(),
+                        transitionDuration: Duration.zero,
+                        reverseTransitionDuration: Duration.zero,
+                      ),
+                    );
+                  }
+                } catch (e) {
+                  showSnackBar(context, "사용자의 정보를 확인할 수 없습니다", fem);
+                }
               },
               child: Text(
                 'LogIn',
@@ -71,8 +160,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ), // Login Button
-            forgotOrSignUpText("Forgot password?", context, 220),
-            forgotOrSignUpText("Sign up", context, 285),
+            SizedBox(height: 10 * fem),
+            forgotOrSignUpText("Sign Up", context),
           ],
         ),
       ),
@@ -80,49 +169,56 @@ class _LoginPageState extends State<LoginPage> {
   }
 }
 
-Widget forgotOrSignUpText(var text, var context, var leftMargin) {
+Widget forgotOrSignUpText(var text, var context) {
   double baseWidth = 390;
   double fem = MediaQuery.of(context).size.width / baseWidth;
   double ffem = fem * 0.97;
 
-  return Container(
-    // forgotpasswordEYv (5:531)
-    margin: EdgeInsets.fromLTRB(leftMargin * fem, 0 * fem, 0 * fem, 0 * fem),
-    child: TextButton(
-      onPressed: () {},
-      style: TextButton.styleFrom(
-        padding: EdgeInsets.zero,
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      TextButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const SignUpPage(),
+            ),
+          );
+        },
+        style: TextButton.styleFrom(
+          padding: EdgeInsets.zero,
+        ),
+        child: Text(
+          text,
+          style: SafeGoogleFont(
+            'Inter',
+            fontSize: 14 * ffem,
+            fontWeight: FontWeight.w700,
+            height: 1.25 * ffem / fem,
+            color: const Color(0xff8a60ff),
+          ),
+        ),
       ),
-      child: Text(
+    ],
+  );
+}
+
+void showSnackBar(var context, String text, double fem) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
         text,
+        textAlign: TextAlign.center,
         style: SafeGoogleFont(
-          'Inter',
-          fontSize: 14 * ffem,
-          fontWeight: FontWeight.w700,
-          height: 1.25 * ffem / fem,
-          color: const Color(0xff8a60ff),
+          'Nunito',
+          fontSize: 15 * fem,
+          fontWeight: FontWeight.w400,
+          height: 1.3625 * fem / fem,
+          color: const Color(0xffffffff),
         ),
       ),
+      backgroundColor: const Color(0xff8a60ff),
     ),
   );
 }
-
-Widget inputBox(var context, var text, var icon) {
-  double baseWidth = 390;
-  double fem = MediaQuery.of(context).size.width / baseWidth;
-
-  return Container(
-    margin: EdgeInsets.only(top: 10*fem),
-    child: TextField(
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, size: 30*fem,),
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xff8a60ff), width: 1.0),
-        ),
-        border: const OutlineInputBorder(),
-        hintText: text,
-      ),
-    ),
-  );
-}
-

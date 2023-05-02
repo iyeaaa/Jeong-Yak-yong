@@ -34,7 +34,7 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            SearchWidget(fem).make(), // 검색 위젯
+            SearchWidget(fem), // 검색 위젯
             SizedBox(height: 10 * fem),
             Expanded(
               child: ListView.builder(
@@ -46,7 +46,7 @@ class _SearchPageState extends State<SearchPage> {
                     name: "타이레놀",
                     time: "PM 1:00",
                     count: 2,
-                  ).make(),
+                  ),
                 ),
               ),
             ), // 약 목록 리스트 위젯

@@ -11,7 +11,7 @@ class TapBarPage extends StatefulWidget {
   State<TapBarPage> createState() => _TapBarPageState();
 }
 
-class _TapBarPageState extends State<TapBarPage> {
+class _TapBarPageState extends State<TapBarPage> with SingleTickerProviderStateMixin {
   int _selectedIndex = 0;
 
   static const List<Widget> _widgetOptions = <Widget>[
