@@ -16,7 +16,9 @@ class _LoginPageState extends State<LoginPage> {
     double fem = MediaQuery.of(context).size.width / baseWidth;
 
     return Scaffold(
-      body: SafeArea(
+      backgroundColor: const Color(0xFFFCFCFC),
+      body: Container(
+        margin: EdgeInsets.all(20 * fem),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -35,46 +37,37 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ), // Login Text
-            inputBox(context, "user", "USERNAME"),
-            inputBox(context, "lock", "PASSWORD"),
-            InkWell(
-              onTap: () {
+            inputBox(context, "USERNAME", Icons.account_circle_outlined),
+            inputBox(context, "PASSWORD", Icons.lock_outline),
+            SizedBox(height: 10*fem),
+            ElevatedButton(
+              style: ButtonStyle(
+                  backgroundColor:
+                      const MaterialStatePropertyAll(Color(0xff8a60ff)),
+                  minimumSize:
+                      MaterialStatePropertyAll(Size(double.infinity, 40 * fem)),
+                  shape: MaterialStatePropertyAll(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  )),
+              onPressed: () {
                 Navigator.pushReplacement(
                   context,
-                  MaterialPageRoute(builder: (context) => const MainPage()),
+                  MaterialPageRoute(
+                    builder: (context) => const MainPage(),
+                  ),
                 );
               },
-              child: Container(
-                margin:
-                    EdgeInsets.fromLTRB(27 * fem, 0 * fem, 27 * fem, 22 * fem),
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                  ),
-                  child: Container(
-                    width: double.infinity,
-                    height: 40 * fem,
-                    decoration: BoxDecoration(
-                      color: const Color(0xffa98aff),
-                      borderRadius: BorderRadius.circular(20 * fem),
-                    ),
-                    child: Center(
-                      child: Center(
-                        child: Text(
-                          'LogIn',
-                          textAlign: TextAlign.center,
-                          style: SafeGoogleFont(
-                            'Nunito',
-                            fontSize: 22 * fem,
-                            fontWeight: FontWeight.w400,
-                            height: 1.3625 * fem / fem,
-                            color: const Color(0xffffffff),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
+              child: Text(
+                'LogIn',
+                textAlign: TextAlign.center,
+                style: SafeGoogleFont(
+                  'Nunito',
+                  fontSize: 22 * fem,
+                  fontWeight: FontWeight.w400,
+                  height: 1.3625 * fem / fem,
+                  color: const Color(0xffffffff),
                 ),
               ),
             ), // Login Button
@@ -114,49 +107,22 @@ Widget forgotOrSignUpText(var text, var context, var leftMargin) {
   );
 }
 
-Widget inputBox(var context, var image, var text) {
+Widget inputBox(var context, var text, var icon) {
   double baseWidth = 390;
   double fem = MediaQuery.of(context).size.width / baseWidth;
-  double ffem = fem * 0.97;
 
   return Container(
-    // usernamezDL (5:70)
-    margin: EdgeInsets.fromLTRB(27 * fem, 0 * fem, 27 * fem, 19.15 * fem),
-    padding:
-        EdgeInsets.fromLTRB(15.33 * fem, 12 * fem, 15.33 * fem, 11.08 * fem),
-    width: double.infinity,
-    decoration: BoxDecoration(
-      border: Border.all(color: const Color(0xff8a60ff)),
-      borderRadius: BorderRadius.circular(4 * fem),
-    ),
-    child: Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(
-          // userVA6 (5:73)
-          margin:
-              EdgeInsets.fromLTRB(0 * fem, 0.04 * fem, 22.33 * fem, 0 * fem),
-          width: 13.33 * fem,
-          height: 14.36 * fem,
-          child: Image.asset(
-            'image/$image.png',
-            width: 13.33 * fem,
-            height: 14.36 * fem,
-          ),
+    margin: EdgeInsets.only(top: 10*fem),
+    child: TextField(
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, size: 30*fem,),
+        enabledBorder: const OutlineInputBorder(
+          borderSide: BorderSide(color: Color(0xff8a60ff), width: 1.0),
         ),
-        Text(
-          // usernamezsY (5:72)
-          text,
-          textAlign: TextAlign.center,
-          style: SafeGoogleFont(
-            'Montserrat',
-            fontSize: 14 * ffem,
-            fontWeight: FontWeight.w300,
-            height: 1.4285714286 * ffem / fem,
-            color: const Color(0xff000000),
-          ),
-        ),
-      ],
+        border: const OutlineInputBorder(),
+        hintText: text,
+      ),
     ),
   );
 }
+

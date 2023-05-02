@@ -12,6 +12,7 @@ class _ListPageState extends State<ListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFCFCFC),
       appBar: AppBar(
         title: const Text("List Page"),
       ),

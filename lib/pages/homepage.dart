@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
+import 'package:medicine_app/util/SearchWidget.dart';
 import '../medicine_data/network.dart';
 import '../util/utils.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,9 +19,10 @@ class _HomePageState extends State<HomePage> {
     double fem = MediaQuery.of(context).size.width / baseWidth;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFFCFCFC),
       body: SafeArea(
         child: Container(
-          padding: EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
+          padding: EdgeInsets.fromLTRB(30 * fem, 20 * fem, 30 * fem, 20 * fem),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -31,7 +34,7 @@ class _HomePageState extends State<HomePage> {
                   notificationButton(fem), // 알림 버튼
                 ],
               ), // 인사말과 알림버튼 위젯
-              searchWidget(fem), // 검색 입력, 버튼 위젯
+              SearchWidget(fem).make(), // 검색 입력, 버튼 위젯
               Container(
                 margin: EdgeInsets.only(top: 22 * fem),
                 width: double.infinity,
@@ -149,7 +152,7 @@ class _HomePageState extends State<HomePage> {
               Column(
                 children: [
                   Container(
-                    margin: EdgeInsets.only(top: 7 * fem),
+                    margin: EdgeInsets.only(top: 0 * fem),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -177,8 +180,8 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ),
                   ), // My medicine, view all 텍스트 위젯
-                  medicineCard(fem, "타이레놀정", "PM 1:00", 2), // 약1
-                  const SizedBox(height: 15),
+                  medicineCard(fem, "타이레놀", "PM 1:00", 2), // 약1
+                  SizedBox(height: 15 * fem),
                   medicineCard(fem, "활명수", "PM 3:00", 3), // 약2
                 ],
               ), // 약 목록 위젯
@@ -190,7 +193,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget medicineCard(double fem, var name, var time, var count) {
+Widget medicineCard(double fem, String name, var time, var count) {
   return Container(
     width: double.infinity,
     height: 89 * fem,
@@ -229,23 +232,20 @@ Widget medicineCard(double fem, var name, var time, var count) {
           ),
         ), // 약 사진
         Container(
-          margin: EdgeInsets.fromLTRB(10 * fem, 22 * fem, 70 * fem, 10.5 * fem),
-          width: 70*fem,
+          margin: EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
+          width: 150 * fem,
           height: double.infinity,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 4 * fem),
-                child: Text(
-                  name,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 16 * fem,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
-                    color: const Color(0xff011e46),
-                  ),
+              Text(
+                name,
+                style: SafeGoogleFont(
+                  'Poppins',
+                  fontSize: 16 * fem,
+                  fontWeight: FontWeight.w600,
+                  height: 1.5,
+                  color: const Color(0xff011e46),
                 ),
               ),
               Text(
@@ -318,68 +318,6 @@ Widget introduceText(double fem) {
       fontWeight: FontWeight.w500,
       height: 1.5 * fem / fem,
       color: const Color(0xff0a0146),
-    ),
-  );
-}
-
-Widget searchWidget(double fem) {
-  Widget searchButton() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(27 * fem, 20 * fem, 27 * fem, 20 * fem),
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xff8a60ff),
-        borderRadius: BorderRadius.circular(20 * fem),
-      ),
-      child: Image.asset(
-        'image/fe-search-kxN.png',
-        width: 20 * fem,
-        height: 20 * fem,
-      ),
-    );
-  }
-
-  Widget searchBar() {
-    return Container(
-      padding: EdgeInsets.fromLTRB(30 * fem, 27 * fem, 30 * fem, 27 * fem),
-      width: 220 * fem,
-      height: double.infinity,
-      decoration: BoxDecoration(
-        color: const Color(0xffffffff),
-        borderRadius: BorderRadius.circular(20 * fem),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x11096c99),
-            offset: Offset(0 * fem, 14 * fem),
-            blurRadius: 33 * fem,
-          ),
-        ],
-      ),
-      child: Text(
-        'Search..',
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 14 * fem,
-          fontWeight: FontWeight.w500,
-          height: 1.5 * fem / fem,
-          color: const Color(0xff011e46),
-        ),
-      ),
-    );
-  }
-
-  return Container(
-    padding: EdgeInsets.fromLTRB(0, 20 * fem, 0, 0),
-    child: SizedBox(
-      width: double.infinity,
-      height: 72 * fem,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          searchBar(),
-          searchButton(),
-        ],
-      ),
     ),
   );
 }

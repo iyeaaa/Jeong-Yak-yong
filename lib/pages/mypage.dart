@@ -12,6 +12,7 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFFCFCFC),
       appBar: AppBar(
         title: const Text("My Page"),
       ),
