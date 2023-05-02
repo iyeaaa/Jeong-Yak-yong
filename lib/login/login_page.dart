@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
               // loginseW (5:12)
               margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 51 * fem),
               child: Text(
-                'LogIn',
+                'Login',
                 style: SafeGoogleFont(
                   'Inter',
                   fontSize: 40 * fem,
@@ -149,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                 }
               },
               child: Text(
-                'LogIn',
+                'Login',
                 textAlign: TextAlign.center,
                 style: SafeGoogleFont(
                   'Nunito',

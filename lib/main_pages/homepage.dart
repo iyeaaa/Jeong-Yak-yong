@@ -246,6 +246,7 @@ Widget notificationButton(double fem) {
 }
 
 Widget introduceText(double fem, String username) {
+  username = username.substring(0, username.indexOf('@'));
   return Text(
     'Hello $username,\nGood Morning',
     style: SafeGoogleFont(

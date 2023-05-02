@@ -167,7 +167,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 }
               },
               child: Text(
-                'Sign Up',
+                'Sign up',
                 textAlign: TextAlign.center,
                 style: SafeGoogleFont(
                   'Nunito',
@@ -178,7 +178,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
               ),
             ), // Login Button
-            signUpText("Log In", context)
+            signUpText("Login", context)
           ],
         ),
       ),
