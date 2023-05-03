@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'utils.dart';
 
-class MedicineCard extends StatelessWidget {
+class MedicineCardForList extends StatelessWidget {
   final double fem;
   final String name;
   final String time;
   final int count;
 
-  const MedicineCard({
+  const MedicineCardForList({
     super.key,
     required this.fem,
     required this.name,
@@ -108,6 +108,116 @@ class MedicineCard extends StatelessWidget {
               ),
             ),
           ), // 남은 횟수
+        ],
+      ),
+    );
+  }
+}
+
+
+class MedicineCardForSearch extends StatelessWidget {
+  final double fem;
+  final String name;
+  final String company;
+
+  const MedicineCardForSearch({
+    super.key,
+    required this.fem,
+    required this.name,
+    required this.company,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 89 * fem,
+      decoration: BoxDecoration(
+        color: const Color(0xffffffff),
+        borderRadius: BorderRadius.circular(25 * fem),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0x0f08587c),
+            offset: Offset(0 * fem, 15 * fem),
+            blurRadius: 34.5 * fem,
+          ),
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            margin: EdgeInsets.fromLTRB(10 * fem, 10 * fem, 10 * fem, 10 * fem),
+            padding: EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
+            height: double.infinity,
+            decoration: BoxDecoration(
+              color: const Color(0xffa07eff),
+              borderRadius: BorderRadius.circular(20 * fem),
+            ),
+            child: Center(
+              child: SizedBox(
+                width: 32 * fem,
+                height: 32 * fem,
+                child: Image.asset(
+                  'image/vector-Yd4.png',
+                  width: 32 * fem,
+                  height: 32 * fem,
+                ),
+              ),
+            ),
+          ), // 약 사진
+          Container(
+            margin: EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
+            width: 150 * fem,
+            height: double.infinity,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  name,
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 16 * fem,
+                    fontWeight: FontWeight.w600,
+                    height: 1.5,
+                    color: const Color(0xff011e46),
+                  ),
+                ),
+                Text(
+                  company,
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 12 * fem,
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                    color: const Color(0xff011e46),
+                  ),
+                ),
+              ],
+            ),
+          ), // 약 이름, 회사
+          Container(
+            margin: EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
+            width: 64 * fem,
+            height: 30 * fem,
+            decoration: BoxDecoration(
+              color: const Color(0xffa98aff),
+              borderRadius: BorderRadius.circular(99 * fem),
+            ),
+            child: Center(
+              child: Text(
+                '보기',
+                textAlign: TextAlign.center,
+                style: SafeGoogleFont(
+                  'Poppins',
+                  fontSize: 14 * fem,
+                  fontWeight: FontWeight.w800,
+                  height: 1.5 * fem,
+                  color: const Color(0xffffffff),
+                ),
+              ),
+            ),
+          ), // 보기 버튼
         ],
       ),
     );
