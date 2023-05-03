@@ -121,12 +121,14 @@ class MedicineCardForSearch extends StatelessWidget {
   final double fem;
   final String name;
   final String company;
+  final GestureTapCallback ontap;
 
   const MedicineCardForSearch({
     super.key,
     required this.fem,
     required this.name,
     required this.company,
+    required this.ontap,
   });
 
   @override
@@ -202,25 +204,28 @@ class MedicineCardForSearch extends StatelessWidget {
               ],
             ),
           ), // 약 이름, 회사
-          Container(
-            margin:
-                EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
-            width: 64 * fem,
-            height: 30 * fem,
-            decoration: BoxDecoration(
-              color: const Color(0xffa98aff),
-              borderRadius: BorderRadius.circular(99 * fem),
-            ),
-            child: Center(
-              child: Text(
-                '보기',
-                textAlign: TextAlign.center,
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 14 * fem,
-                  fontWeight: FontWeight.w800,
-                  height: 1.5 * fem,
-                  color: const Color(0xffffffff),
+          InkWell(
+            onTap: ontap,
+            child: Container(
+              margin:
+                  EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
+              width: 64 * fem,
+              height: 30 * fem,
+              decoration: BoxDecoration(
+                color: const Color(0xffa98aff),
+                borderRadius: BorderRadius.circular(99 * fem),
+              ),
+              child: Center(
+                child: Text(
+                  '추가',
+                  textAlign: TextAlign.center,
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 14 * fem,
+                    fontWeight: FontWeight.w800,
+                    height: 1.5 * fem,
+                    color: const Color(0xffffffff),
+                  ),
                 ),
               ),
             ),

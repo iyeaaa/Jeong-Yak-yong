@@ -18,23 +18,18 @@ class Network {
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      // 만약 서버가 OK 응답을 반환하면, JSON을 파싱합니다.
-      return json.decode(response.body)['items'];
+      try {
+        return json.decode(response.body)['items'];
+      } catch (e) {
+        return [];
+      }
     } else {
       // 만약 응답이 OK가 아니면, 에러를 던집니다.
       throw Exception('Failed to load post');
     }
   }
 
-  Future<Medicine> fetchMedicine(Map<String, dynamic> jsMedi) async {
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      // 만약 서버가 OK 응답을 반환하면, JSON을 파싱합니다.
+  Medicine fetchMedicine(Map<String, dynamic> jsMedi) {
       return Medicine.fromJson(jsMedi);
-    } else {
-      // 만약 응답이 OK가 아니면, 에러를 던집니다.
-      throw Exception('Failed to load post');
-    }
   }
 }

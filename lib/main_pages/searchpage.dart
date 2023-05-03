@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/network.dart';
+import 'package:medicine_app/sub_pages/medi_setting.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
@@ -57,8 +58,32 @@ class _SearchPageState extends State<SearchPage> {
       Network network = Network(itemName: itemName);
       List<dynamic> listjson = await network.fetchMediList();
 
+      if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "검색결과가 없습니다.",
+              textAlign: TextAlign.center,
+              style: SafeGoogleFont(
+                'Nunito',
+                fontSize: 15 * fem,
+                fontWeight: FontWeight.w400,
+                height: 1.3625 * fem / fem,
+                color: const Color(0xffffffff),
+              ),
+            ),
+            backgroundColor: const Color(0xff8a60ff),
+          ),
+        );
+        setState(() {
+          mediList.clear();
+        });
+        Navigator.pop(context);
+        return;
+      }
+
       for (Map<String, dynamic> jsMedi in listjson) {
-        tempMediList.add(await network.fetchMedicine(jsMedi));
+        tempMediList.add(network.fetchMedicine(jsMedi));
       }
 
       if (context.mounted) {
@@ -165,6 +190,13 @@ class _SearchPageState extends State<SearchPage> {
                     fem: fem,
                     name: mediList[idx].itemName,
                     company: mediList[idx].entpName,
+                    ontap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            MedicineSettingPage(medicine: mediList[idx]),
+                      ),
+                    ),
                   ),
                 ),
               ),

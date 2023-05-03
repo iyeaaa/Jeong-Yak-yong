@@ -1,7 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:medicine_app/medicine_data/medicine.dart';
-import '../medicine_data/network.dart';
 import '../util/medicine_card.dart';
 import '../util/utils.dart';
 

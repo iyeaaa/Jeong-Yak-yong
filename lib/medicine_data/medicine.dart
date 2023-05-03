@@ -4,7 +4,7 @@ class Medicine {
   final String effect; // 효능
   final String itemCode; // 품목기준코드
   final String useMethod; // 사용법
-  final String warmbeforeHave; // 약 먹기전 알아야할 사항
+  final String warmBeforeHave; // 약 먹기전 알아야할 사항
   final String warmHave; // 약 사용상 주의사항
   final String interaction; // 상호작용
   final String sideEffect; // 부작용
@@ -16,7 +16,7 @@ class Medicine {
     required this.effect,
     required this.itemCode,
     required this.useMethod,
-    required this.warmbeforeHave,
+    required this.warmBeforeHave,
     required this.warmHave,
     required this.interaction,
     required this.sideEffect,
@@ -34,7 +34,7 @@ class Medicine {
         effect: removeTag(json['efcyQesitm'] ?? 'null'),
         itemCode: removeTag(json['itemSeq'] ?? 'null'),
         useMethod: removeTag(json['useMethodQesitm'] ?? 'null'),
-        warmbeforeHave: removeTag(json['atpnWarnQesitm'] ?? 'null'),
+        warmBeforeHave: removeTag(json['atpnWarnQesitm'] ?? 'null'),
         warmHave: removeTag(json['atpnQesitm'] ?? 'null'),
         interaction: removeTag(json['intrcQesitm'] ?? 'null'),
         sideEffect: removeTag(json['seQesitm'] ?? 'null'),
@@ -47,7 +47,7 @@ class Medicine {
         effect: "no found",
         itemCode: "no found",
         useMethod: "no found",
-        warmbeforeHave: "no found",
+        warmBeforeHave: "no found",
         warmHave: "no found",
         interaction: "no found",
         sideEffect: "no found",

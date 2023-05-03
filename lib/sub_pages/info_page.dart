@@ -34,19 +34,23 @@ class _InfoPageState extends State<InfoPage> {
 
     return Scaffold(
       appBar: AppBar(
-        titleTextStyle: SafeGoogleFont(
-          'Poppins',
-          fontSize: 25 * fem,
-          fontWeight: FontWeight.w600,
-          height: 1.5,
-          color: const Color(0xFFFFFFFF),
-        ),
         backgroundColor: const Color(0xFFA07EFF),
-        elevation: 0,
-        title: Text(title),
-        toolbarHeight: 80 * fem,
-        leading: const Icon(Icons.arrow_back_ios_new_sharp),
         centerTitle: false,
+        title: Text(
+          title,
+          style: SafeGoogleFont(
+            'Poppins',
+            fontSize: 23 * fem,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xffffffff),
+          ),
+        ),
+        elevation: 0,
+        toolbarHeight: 80 * fem,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios_new_sharp),
+        ),
       ),
       body: Center(
         child: Container(
@@ -71,6 +75,8 @@ class _InfoPageState extends State<InfoPage> {
                     ),
                     child: Text(
                       content,
+                      maxLines: 18,
+                      overflow: TextOverflow.ellipsis,
                       style: SafeGoogleFont(
                         'Poppins',
                         fontSize: 16 * fem,
