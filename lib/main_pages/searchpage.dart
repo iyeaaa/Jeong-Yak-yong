@@ -22,12 +22,47 @@ class _SearchPageState extends State<SearchPage> {
     double fem = MediaQuery.of(context).size.width / baseWidth;
 
     void readMedicineFromApi() async {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+            content: Row(
+              children: [
+                const CircularProgressIndicator(color: Color(0xffa07eff)),
+                SizedBox(width: 15 * fem),
+                Container(
+                  margin: const EdgeInsets.only(left: 7),
+                  child: Text(
+                    "Loading...",
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 17 * fem,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
       List<Medicine> tempMediList = [];
       Network network = Network(itemName: itemName);
       List<dynamic> listjson = await network.fetchMediList();
 
       for (Map<String, dynamic> jsMedi in listjson) {
         tempMediList.add(await network.fetchMedicine(jsMedi));
+      }
+
+      if (context.mounted) {
+        Navigator.pop(context);
       }
 
       setState(() {
@@ -152,4 +187,3 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
-
