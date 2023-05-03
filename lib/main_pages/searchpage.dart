@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_app/util/medicine_card.dart';
-import 'package:medicine_app/util/search_widget.dart';
 import '../util/utils.dart';
 
 class SearchPage extends StatefulWidget {
@@ -25,7 +24,7 @@ class _SearchPageState extends State<SearchPage> {
           'Search',
           style: SafeGoogleFont(
             'Poppins',
-            fontSize: 22 * fem,
+            fontSize: 2 * fem,
             fontWeight: FontWeight.w600,
             color: const Color(0xffffffff),
           ),
@@ -44,18 +43,67 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            SearchWidget(fem), // 검색 위젯
+            Container(
+              padding: EdgeInsets.fromLTRB(0, 20 * fem, 0, 0),
+              child: SizedBox(
+                width: double.infinity,
+                height: 72 * fem,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.only(left: 20 * fem),
+                      width: 220 * fem,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(
+                          color: Colors.white,
+                        ),
+                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                      ),
+                      child: const Center(
+                        child: TextField(
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                          decoration: InputDecoration(
+                            border: InputBorder.none,
+                            hintText: 'Search..',
+                            hintStyle: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ), // Search Bar
+                    Container(
+                      padding: EdgeInsets.fromLTRB(27 * fem, 20 * fem, 27 * fem, 20 * fem),
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color(0xff8a60ff),
+                        borderRadius: BorderRadius.circular(20 * fem),
+                      ),
+                      child: Image.asset(
+                        'image/fe-search-kxN.png',
+                        width: 20 * fem,
+                        height: 20 * fem,
+                      ),
+                    ), // Search Button
+                  ],
+                ),
+              ),
+            ), // 검색 위젯
             SizedBox(height: 10 * fem),
             Expanded(
               child: ListView.builder(
                 itemCount: 8,
                 itemBuilder: (context, idx) => Container(
-                  margin: EdgeInsets.only(top: 10*fem),
-                  child: MedicineCard(
+                  margin: EdgeInsets.only(top: 10 * fem),
+                  child: MedicineCardForSearch(
                     fem: fem,
                     name: "타이레놀",
-                    time: "PM 1:00",
-                    count: 2,
+                    company: "동국제약",
                   ),
                 ),
               ),
