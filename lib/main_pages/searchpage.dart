@@ -20,6 +20,16 @@ class _SearchPageState extends State<SearchPage> {
       backgroundColor: const Color(0xFFFCFCFC),
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
+        centerTitle: false,
+        title: Text(
+          'Search',
+          style: SafeGoogleFont(
+            'Poppins',
+            fontSize: 22 * fem,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xffffffff),
+          ),
+        ),
         elevation: 0,
         toolbarHeight: 80 * fem,
         leading: const Icon(Icons.arrow_back_ios_new_sharp),
