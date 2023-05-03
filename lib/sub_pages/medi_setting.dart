@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 
@@ -18,6 +19,7 @@ class MedicineSettingPage extends StatefulWidget {
 
 class _MedicineSettingPageState extends State<MedicineSettingPage> {
   late Medicine medicine;
+  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
   @override
   void initState() {
@@ -35,15 +37,27 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: false,
-        title: Text(
-          medicine.itemName,
-          style: SafeGoogleFont(
-            'Poppins',
-            fontSize: 23 * fem,
-            fontWeight: FontWeight.w600,
-            color: const Color(0xffffffff),
+        title: FittedBox(
+          child: Text(
+            medicine.itemName,
+            style: SafeGoogleFont(
+              'Poppins',
+              fontSize: 23 * fem,
+              fontWeight: FontWeight.w600,
+              color: const Color(0xffffffff),
+            ),
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: Icon(
+              Icons.add,
+              size: 35 * fem,
+            ),
+          ),
+          SizedBox(width: 10*fem,),
+        ],
         elevation: 0,
         toolbarHeight: 80 * fem,
         leading: IconButton(
@@ -197,7 +211,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.only(top: 10*fem),
+                margin: EdgeInsets.only(top: 10 * fem),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

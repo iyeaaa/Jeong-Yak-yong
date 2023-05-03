@@ -217,7 +217,7 @@ class MedicineCardForSearch extends StatelessWidget {
               ),
               child: Center(
                 child: Text(
-                  '추가',
+                  '보기',
                   textAlign: TextAlign.center,
                   style: SafeGoogleFont(
                     'Poppins',
