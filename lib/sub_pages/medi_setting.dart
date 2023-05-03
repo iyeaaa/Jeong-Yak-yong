@@ -196,18 +196,21 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   ],
                 ),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  dayWidget("월", fem),
-                  dayWidget("화", fem),
-                  dayWidget("수", fem),
-                  dayWidget("목", fem),
-                  dayWidget("금", fem),
-                  dayWidget("토", fem),
-                  dayWidget("일", fem),
-                ],
-              ),
+              Container(
+                margin: EdgeInsets.only(top: 10*fem),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    DayWidget(day: "월", fem: fem),
+                    DayWidget(day: "화", fem: fem),
+                    DayWidget(day: "수", fem: fem),
+                    DayWidget(day: "목", fem: fem),
+                    DayWidget(day: "금", fem: fem),
+                    DayWidget(day: "토", fem: fem),
+                    DayWidget(day: "일", fem: fem),
+                  ],
+                ),
+              ), // 요일 선택 위젯
             ],
           ),
         ),
@@ -216,25 +219,56 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 }
 
-Widget dayWidget(var day, double fem) {
-  return Container(
-    width: 40 * fem,
-    height: 50 * fem,
-    decoration: const BoxDecoration(
-      color: Color(0xffa07eff),
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-    ),
-    child: Center(
-      child: Text(
-        day,
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 16 * fem,
-          fontWeight: FontWeight.w500,
-          height: 1.5 * fem,
-          color: const Color(0xffffffff),
+class DayWidget extends StatefulWidget {
+  final String day;
+  final double fem;
+
+  const DayWidget({super.key, required this.fem, required this.day});
+
+  @override
+  State<DayWidget> createState() => _DayWidgetState();
+}
+
+class _DayWidgetState extends State<DayWidget> {
+  bool isSelected = false;
+  late String day;
+  late double fem;
+
+  @override
+  void initState() {
+    super.initState();
+    day = widget.day;
+    fem = widget.fem;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          isSelected = !isSelected;
+        });
+      },
+      child: Container(
+        width: 40 * widget.fem,
+        height: 50 * widget.fem,
+        decoration: BoxDecoration(
+          color: isSelected ? const Color(0xffa07eff) : const Color(0xffDFD3FF),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Center(
+          child: Text(
+            widget.day,
+            style: SafeGoogleFont(
+              'Poppins',
+              fontSize: 16 * widget.fem,
+              fontWeight: FontWeight.w500,
+              height: 1.5 * widget.fem,
+              color: const Color(0xffffffff),
+            ),
+          ),
         ),
       ),
-    ),
-  );
+    );
+  }
 }
