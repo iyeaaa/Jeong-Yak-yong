@@ -29,16 +29,16 @@ class Medicine {
     }
     try {
       return Medicine(
-        itemName: json['itemName'] ?? 'null',
-        entpName: json['entpName'] ?? 'null',
-        effect: removeTag(json['efcyQesitm'] ?? 'null'),
-        itemCode: removeTag(json['itemSeq'] ?? 'null'),
-        useMethod: removeTag(json['useMethodQesitm'] ?? 'null'),
-        warmBeforeHave: removeTag(json['atpnWarnQesitm'] ?? 'null'),
-        warmHave: removeTag(json['atpnQesitm'] ?? 'null'),
-        interaction: removeTag(json['intrcQesitm'] ?? 'null'),
-        sideEffect: removeTag(json['seQesitm'] ?? 'null'),
-        depositMethod: removeTag(json['depositMethodQesitm'] ?? 'null'),
+        itemName: json['itemName'] ?? '알아야 할 내용이 없어요.',
+        entpName: json['entpName'] ?? '알아야 할 내용이 없어요.',
+        effect: removeTag(json['efcyQesitm'] ?? '알아야 할 내용이 없어요.'),
+        itemCode: removeTag(json['itemSeq'] ?? '알아야 할 내용이 없어요.'),
+        useMethod: removeTag(json['useMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
+        warmBeforeHave: removeTag(json['atpnWarnQesitm'] ?? '알아야 할 내용이 없어요.'),
+        warmHave: removeTag(json['atpnQesitm'] ?? '알아야 할 내용이 없어요.'),
+        interaction: removeTag(json['intrcQesitm'] ?? '알아야 할 내용이 없어요.'),
+        sideEffect: removeTag(json['seQesitm'] ?? '알아야 할 내용이 없어요.'),
+        depositMethod: removeTag(json['depositMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
       );
     } catch (e) {
       return Medicine(

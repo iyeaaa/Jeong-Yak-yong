@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medicine_app/medicine_data/caution_page.dart';
+import 'package:medicine_app/sub_pages/caution_page.dart';
 
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
@@ -62,7 +62,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 22 * fem),
+                margin: EdgeInsets.only(top: 10 * fem),
                 width: double.infinity,
                 height: 195 * fem,
                 child: Stack(
@@ -111,7 +111,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                                   ), // UI BOX 위젯
                                   SizedBox(width: 20 * fem),
                                   SizedBox(
-                                    width: 110*fem,
+                                    width: 110 * fem,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -195,11 +195,46 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                     ), // 배경 위 위젯
                   ],
                 ),
-              )
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  dayWidget("월", fem),
+                  dayWidget("화", fem),
+                  dayWidget("수", fem),
+                  dayWidget("목", fem),
+                  dayWidget("금", fem),
+                  dayWidget("토", fem),
+                  dayWidget("일", fem),
+                ],
+              ),
             ],
           ),
         ),
       ),
     );
   }
+}
+
+Widget dayWidget(var day, double fem) {
+  return Container(
+    width: 40 * fem,
+    height: 50 * fem,
+    decoration: const BoxDecoration(
+      color: Color(0xffa07eff),
+      borderRadius: BorderRadius.all(Radius.circular(20)),
+    ),
+    child: Center(
+      child: Text(
+        day,
+        style: SafeGoogleFont(
+          'Poppins',
+          fontSize: 16 * fem,
+          fontWeight: FontWeight.w500,
+          height: 1.5 * fem,
+          color: const Color(0xffffffff),
+        ),
+      ),
+    ),
+  );
 }

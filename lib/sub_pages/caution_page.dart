@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/info_page.dart';
 
 import '../util/utils.dart';
-import 'medicine.dart';
+import '../medicine_data/medicine.dart';
 
 class CautionPage extends StatefulWidget {
   final Medicine medicine;
