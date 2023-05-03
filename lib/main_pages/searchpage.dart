@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:medicine_app/medicine_data/network.dart';
 import 'package:medicine_app/util/medicine_card.dart';
+import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 
 class SearchPage extends StatefulWidget {
@@ -10,10 +12,28 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final _formKey = GlobalKey<FormState>();
+  String itemName = "";
+  List<Medicine> mediList = [];
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
+
+    void readMedicineFromApi() async {
+      List<Medicine> tempMediList = [];
+      Network network = Network(itemName: itemName);
+      List<dynamic> listjson = await network.fetchMediList();
+
+      for (Map<String, dynamic> jsMedi in listjson) {
+        tempMediList.add(await network.fetchMedicine(jsMedi));
+      }
+
+      setState(() {
+        mediList = tempMediList;
+      });
+    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
@@ -24,7 +44,7 @@ class _SearchPageState extends State<SearchPage> {
           'Search',
           style: SafeGoogleFont(
             'Poppins',
-            fontSize: 2 * fem,
+            fontSize: 26 * fem,
             fontWeight: FontWeight.w600,
             color: const Color(0xffffffff),
           ),
@@ -43,8 +63,8 @@ class _SearchPageState extends State<SearchPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 20 * fem, 0, 0),
+            Form(
+              key: _formKey,
               child: SizedBox(
                 width: double.infinity,
                 height: 72 * fem,
@@ -52,22 +72,21 @@ class _SearchPageState extends State<SearchPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      padding: EdgeInsets.only(left: 20 * fem),
-                      width: 220 * fem,
-                      height: double.infinity,
                       decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
                         color: Colors.white,
-                        border: Border.all(
-                          color: Colors.white,
-                        ),
-                        borderRadius: const BorderRadius.all(Radius.circular(20)),
+                        border: Border.all(color: const Color(0xff8a60ff)),
                       ),
-                      child: const Center(
-                        child: TextField(
-                          style: TextStyle(
+                      width: 230 * fem,
+                      height: double.infinity,
+                      padding: EdgeInsets.only(left: 20 * fem),
+                      child: Center(
+                        child: TextFormField(
+                          onChanged: (value) => itemName = value,
+                          style: const TextStyle(
                             fontSize: 20,
                           ),
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                             border: InputBorder.none,
                             hintText: 'Search..',
                             hintStyle: TextStyle(
@@ -77,17 +96,24 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                     ), // Search Bar
-                    Container(
-                      padding: EdgeInsets.fromLTRB(27 * fem, 20 * fem, 27 * fem, 20 * fem),
-                      height: double.infinity,
-                      decoration: BoxDecoration(
-                        color: const Color(0xff8a60ff),
-                        borderRadius: BorderRadius.circular(20 * fem),
-                      ),
-                      child: Image.asset(
-                        'image/fe-search-kxN.png',
-                        width: 20 * fem,
-                        height: 20 * fem,
+                    InkWell(
+                      onTap: () {
+                        mediList.clear();
+                        readMedicineFromApi();
+                      },
+                      child: Container(
+                        padding: EdgeInsets.fromLTRB(
+                            27 * fem, 20 * fem, 27 * fem, 20 * fem),
+                        height: double.infinity,
+                        decoration: BoxDecoration(
+                          color: const Color(0xff8a60ff),
+                          borderRadius: BorderRadius.circular(20 * fem),
+                        ),
+                        child: Image.asset(
+                          'image/fe-search-kxN.png',
+                          width: 20 * fem,
+                          height: 20 * fem,
+                        ),
                       ),
                     ), // Search Button
                   ],
@@ -97,13 +123,13 @@ class _SearchPageState extends State<SearchPage> {
             SizedBox(height: 10 * fem),
             Expanded(
               child: ListView.builder(
-                itemCount: 8,
+                itemCount: mediList.length,
                 itemBuilder: (context, idx) => Container(
                   margin: EdgeInsets.only(top: 10 * fem),
                   child: MedicineCardForSearch(
                     fem: fem,
-                    name: "타이레놀",
-                    company: "동국제약",
+                    name: mediList[idx].itemName,
+                    company: mediList[idx].entpName,
                   ),
                 ),
               ),
@@ -126,3 +152,4 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 }
+

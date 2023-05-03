@@ -23,22 +23,22 @@ class Medicine {
     required this.depositMethod,
   });
 
-  factory Medicine.fromJson(Map<String, dynamic> json, int idx) {
+  factory Medicine.fromJson(Map<String, dynamic> json) {
     String removeTag(String x) {
       return x.replaceAll(RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "");
     }
     try {
       return Medicine(
-        itemName: json['items'][idx]['itemName'] ?? 'null',
-        entpName: json['items'][idx]['entpName'] ?? 'null',
-        effect: removeTag(json['items'][idx]['efcyQesitm'] ?? 'null'),
-        itemCode: removeTag(json['items'][idx]['itemSeq'] ?? 'null'),
-        useMethod: removeTag(json['items'][idx]['useMethodQesitm'] ?? 'null'),
-        warmbeforeHave: removeTag(json['items'][idx]['atpnWarnQesitm'] ?? 'null'),
-        warmHave: removeTag(json['items'][idx]['atpnQesitm'] ?? 'null'),
-        interaction: removeTag(json['items'][idx]['intrcQesitm'] ?? 'null'),
-        sideEffect: removeTag(json['items'][idx]['seQesitm'] ?? 'null'),
-        depositMethod: removeTag(json['items'][idx]['depositMethodQesitm'] ?? 'null'),
+        itemName: json['itemName'] ?? 'null',
+        entpName: json['entpName'] ?? 'null',
+        effect: removeTag(json['efcyQesitm'] ?? 'null'),
+        itemCode: removeTag(json['itemSeq'] ?? 'null'),
+        useMethod: removeTag(json['useMethodQesitm'] ?? 'null'),
+        warmbeforeHave: removeTag(json['atpnWarnQesitm'] ?? 'null'),
+        warmHave: removeTag(json['atpnQesitm'] ?? 'null'),
+        interaction: removeTag(json['intrcQesitm'] ?? 'null'),
+        sideEffect: removeTag(json['seQesitm'] ?? 'null'),
+        depositMethod: removeTag(json['depositMethodQesitm'] ?? 'null'),
       );
     } catch (e) {
       return Medicine(

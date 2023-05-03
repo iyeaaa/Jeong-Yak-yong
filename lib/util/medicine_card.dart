@@ -37,7 +37,8 @@ class MedicineCardForList extends StatelessWidget {
         children: [
           Container(
             margin: EdgeInsets.fromLTRB(10 * fem, 10 * fem, 10 * fem, 10 * fem),
-            padding: EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
+            padding:
+                EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
             height: double.infinity,
             decoration: BoxDecoration(
               color: const Color(0xffa07eff),
@@ -56,7 +57,8 @@ class MedicineCardForList extends StatelessWidget {
             ),
           ), // 약 사진
           Container(
-            margin: EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
+            margin:
+                EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
             width: 150 * fem,
             height: double.infinity,
             child: Column(
@@ -87,7 +89,8 @@ class MedicineCardForList extends StatelessWidget {
             ),
           ), // 약 이름, 시간
           Container(
-            margin: EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
+            margin:
+                EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
             width: 64 * fem,
             height: 30 * fem,
             decoration: BoxDecoration(
@@ -113,7 +116,6 @@ class MedicineCardForList extends StatelessWidget {
     );
   }
 }
-
 
 class MedicineCardForSearch extends StatelessWidget {
   final double fem;
@@ -148,7 +150,8 @@ class MedicineCardForSearch extends StatelessWidget {
         children: [
           Container(
             margin: EdgeInsets.fromLTRB(10 * fem, 10 * fem, 10 * fem, 10 * fem),
-            padding: EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
+            padding:
+                EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
             height: double.infinity,
             decoration: BoxDecoration(
               color: const Color(0xffa07eff),
@@ -167,7 +170,8 @@ class MedicineCardForSearch extends StatelessWidget {
             ),
           ), // 약 사진
           Container(
-            margin: EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
+            margin:
+                EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
             width: 150 * fem,
             height: double.infinity,
             child: Column(
@@ -182,6 +186,7 @@ class MedicineCardForSearch extends StatelessWidget {
                     height: 1.5,
                     color: const Color(0xff011e46),
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   company,
@@ -192,12 +197,14 @@ class MedicineCardForSearch extends StatelessWidget {
                     height: 1.5,
                     color: const Color(0xff011e46),
                   ),
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
           ), // 약 이름, 회사
           Container(
-            margin: EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
+            margin:
+                EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
             width: 64 * fem,
             height: 30 * fem,
             decoration: BoxDecoration(
