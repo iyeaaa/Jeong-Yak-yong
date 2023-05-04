@@ -35,7 +35,7 @@ class _InfoPageState extends State<InfoPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
-        centerTitle: false,
+        centerTitle: true,
         title: Text(
           title,
           style: SafeGoogleFont(
@@ -47,10 +47,6 @@ class _InfoPageState extends State<InfoPage> {
         ),
         elevation: 0,
         toolbarHeight: 80 * fem,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_sharp),
-        ),
       ),
       body: Center(
         child: Container(

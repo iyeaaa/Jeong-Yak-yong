@@ -13,7 +13,6 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final _formKey = GlobalKey<FormState>();
   String itemName = "";
   List<Medicine> mediList = [];
 
@@ -91,6 +90,7 @@ class _SearchPageState extends State<SearchPage> {
       }
 
       setState(() {
+        tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
         mediList = tempMediList;
       });
     }
@@ -99,7 +99,7 @@ class _SearchPageState extends State<SearchPage> {
       backgroundColor: const Color(0xFFFCFCFC),
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
-        centerTitle: false,
+        centerTitle: true,
         title: Text(
           'Search',
           style: SafeGoogleFont(
@@ -111,7 +111,6 @@ class _SearchPageState extends State<SearchPage> {
         ),
         elevation: 0,
         toolbarHeight: 80 * fem,
-        leading: const Icon(Icons.arrow_back_ios_new_sharp),
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(
@@ -124,7 +123,6 @@ class _SearchPageState extends State<SearchPage> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Form(
-              key: _formKey,
               child: SizedBox(
                 width: double.infinity,
                 height: 72 * fem,
@@ -182,25 +180,36 @@ class _SearchPageState extends State<SearchPage> {
             ), // 검색 위젯
             SizedBox(height: 10 * fem),
             Expanded(
-              child: ListView.builder(
-                itemCount: mediList.length,
-                itemBuilder: (context, idx) => Container(
-                  margin: EdgeInsets.only(top: 10 * fem),
-                  child: MedicineCardForSearch(
-                    fem: fem,
-                    name: mediList[idx].itemName,
-                    company: mediList[idx].entpName,
-                    ontap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) =>
-                            MedicineSettingPage(medicine: mediList[idx]),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ), // 약 목록 리스트 위젯
+                child: mediList.isNotEmpty
+                    ? ListView.builder(
+                        itemCount: mediList.length,
+                        itemBuilder: (context, idx) => Container(
+                          margin: EdgeInsets.only(top: 10 * fem),
+                          child: MedicineCardForSearch(
+                            fem: fem,
+                            name: mediList[idx].itemName,
+                            company: mediList[idx].entpName,
+                            ontap: () => Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => MedicineSettingPage(
+                                    medicine: mediList[idx]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    : Center(
+                        child: Text(
+                          "결과 없음",
+                          style: SafeGoogleFont(
+                            'Poppins',
+                            fontSize: 17 * fem,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xffa07eff),
+                          ),
+                        ),
+                      )), // 약 목록 리스트 위젯
             TextButton(
               onPressed: () {},
               child: Text(

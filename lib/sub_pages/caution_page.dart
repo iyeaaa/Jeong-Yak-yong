@@ -51,7 +51,7 @@ class _CautionPageState extends State<CautionPage> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
-        centerTitle: false,
+        centerTitle: true,
         title: Text(
           "주의사항",
           style: SafeGoogleFont(
@@ -63,10 +63,6 @@ class _CautionPageState extends State<CautionPage> {
         ),
         elevation: 0,
         toolbarHeight: 80 * fem,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_ios_new_sharp),
-        ),
       ),
       body: SafeArea(
         child: ListView.builder(

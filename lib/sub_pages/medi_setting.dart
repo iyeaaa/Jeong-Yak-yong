@@ -36,7 +36,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       backgroundColor: const Color(0xFFFCFCFC),
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
-        centerTitle: false,
+        centerTitle: true,
         title: FittedBox(
           child: Text(
             medicine.itemName,

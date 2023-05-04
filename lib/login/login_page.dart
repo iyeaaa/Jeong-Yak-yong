@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                   );
 
                   if (newUser.user != null && context.mounted) {
-                    Navigator.push(
+                    Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
                         pageBuilder: (_, __, ___) => const TapBarPage(),

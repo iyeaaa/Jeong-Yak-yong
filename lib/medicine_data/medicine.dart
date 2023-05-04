@@ -25,7 +25,10 @@ class Medicine {
 
   factory Medicine.fromJson(Map<String, dynamic> json) {
     String removeTag(String x) {
-      return x.replaceAll(RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "");
+      return x
+          .replaceAll(RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "")
+          .replaceAll("오.", "오.\n")
+          .replaceAll(" .", ".\n");
     }
     try {
       return Medicine(

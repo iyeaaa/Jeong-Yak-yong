@@ -32,10 +32,11 @@ dependencies:
   http: ^0.13.5
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.5
   firebase_core: ^2.10.0
   cloud_firestore: ^4.5.3
   firebase_auth: ^4.4.2
+  alarm: ^1.0.5
 
 dev_dependencies:
   flutter_test:
