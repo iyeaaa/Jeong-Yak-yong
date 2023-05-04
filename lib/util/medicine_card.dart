@@ -22,8 +22,9 @@ class MedicineCardForList extends StatelessWidget {
       width: double.infinity,
       height: 89 * fem,
       decoration: BoxDecoration(
-        color: const Color(0xffffffff),
+        color: Colors.white,
         borderRadius: BorderRadius.circular(25 * fem),
+        border: Border.all(color: const Color(0xffa07eff)),
         boxShadow: [
           BoxShadow(
             color: const Color(0x0f08587c),

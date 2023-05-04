@@ -1,8 +1,14 @@
+import 'dart:async';
+
+import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 
+import '../alarm_screens/edit_alarm.dart';
+import '../alarm_screens/ring.dart';
 import '../medicine_data/medicine.dart';
+import '../util/alarm_tile.dart';
 import '../util/utils.dart';
 
 class MedicineSettingPage extends StatefulWidget {
@@ -21,10 +27,59 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   late Medicine medicine;
   FirebaseAuth firebaseAuth = FirebaseAuth.instance;
 
+  late List<AlarmSettings> alarms; // null 이면 생성되지 않은거,
+  static StreamSubscription? subscription;
+
   @override
   void initState() {
     super.initState();
     medicine = widget.medicine;
+    loadAlarms();
+    subscription ??= Alarm.ringStream.stream.listen(
+      (alarmSettings) => navigateToRingScreen(alarmSettings),
+    );
+  }
+
+  void loadAlarms() {
+    setState(() {
+      alarms = Alarm.getAlarms();
+      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    });
+  }
+
+  // 알람 울리는 페이지로 이동
+  Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
+    await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              ExampleAlarmRingScreen(alarmSettings: alarmSettings),
+        ));
+    loadAlarms();
+  }
+
+  // 알람 설정 페이지로 이동
+  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
+    final res = await showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.6,
+          child: ExampleAlarmEditScreen(alarmSettings: settings),
+        );
+      },
+    );
+    if (res != null && res == true) loadAlarms();
+  }
+
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -56,7 +111,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
               size: 35 * fem,
             ),
           ),
-          SizedBox(width: 10*fem,),
+          SizedBox(
+            width: 10 * fem,
+          ),
         ],
         elevation: 0,
         toolbarHeight: 80 * fem,
@@ -210,25 +267,83 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   ],
                 ),
               ),
-              Container(
-                margin: EdgeInsets.only(top: 10 * fem),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    DayWidget(day: "월", fem: fem),
-                    DayWidget(day: "화", fem: fem),
-                    DayWidget(day: "수", fem: fem),
-                    DayWidget(day: "목", fem: fem),
-                    DayWidget(day: "금", fem: fem),
-                    DayWidget(day: "토", fem: fem),
-                    DayWidget(day: "일", fem: fem),
-                  ],
+              // Container(
+              //   margin: EdgeInsets.only(top: 10 * fem),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //     children: [
+              //       DayWidget(day: "월", fem: fem),
+              //       DayWidget(day: "화", fem: fem),
+              //       DayWidget(day: "수", fem: fem),
+              //       DayWidget(day: "목", fem: fem),
+              //       DayWidget(day: "금", fem: fem),
+              //       DayWidget(day: "토", fem: fem),
+              //       DayWidget(day: "일", fem: fem),
+              //     ],
+              //   ),
+              // ), // 요일 선택 위젯
+              Expanded(
+                child: Center(
+                  child: alarms.isNotEmpty
+                      ? ListView.separated(
+                          itemCount: alarms.length,
+                          padding: EdgeInsets.only(top: 5*fem),
+                          separatorBuilder: (context, index) => const Divider(),
+                          itemBuilder: (context, index) {
+                            return AlarmTile(
+                              key: Key(alarms[index].id.toString()),
+                              title: TimeOfDay(
+                                hour: alarms[index].dateTime.hour,
+                                minute: alarms[index].dateTime.minute,
+                              ).format(context),
+                              onPressed: () =>
+                                  navigateToAlarmScreen(alarms[index]),
+                              // edit 페이지로 이동하는 함수 호출
+                              onDismissed: () {
+                                Alarm.stop(alarms[index].id)
+                                    .then((_) => loadAlarms());
+                              },
+                            ); // 알람 타일,
+                          },
+                        )
+                      : Text(
+                        "No alarms set",
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
                 ),
-              ), // 요일 선택 위젯
+              ), // 알람 리스트
             ],
           ),
         ),
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                final alarmSettings = AlarmSettings(
+                  id: 42,
+                  dateTime: DateTime.now(),
+                  assetAudioPath: 'assets/mozart.mp3',
+                );
+                Alarm.set(alarmSettings: alarmSettings);
+              },
+              backgroundColor: Colors.red,
+              heroTag: null,
+              child: const Text("RING NOW", textAlign: TextAlign.center),
+            ), // Ring Now 버튼
+            FloatingActionButton(
+              onPressed: () => navigateToAlarmScreen(null),
+              child: const Icon(Icons.alarm_add_rounded, size: 30),
+            ), // 알람 추가 버튼
+          ],
+        ),
+      ),
+      // 하단부 버튼
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked, // 버튼 위치 설정
     );
   }
 }
