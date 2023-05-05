@@ -37,6 +37,7 @@ dependencies:
   cloud_firestore: ^4.5.3
   firebase_auth: ^4.4.2
   alarm: ^1.0.5
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:

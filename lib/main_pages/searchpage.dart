@@ -185,7 +185,7 @@ class _SearchPageState extends State<SearchPage> {
                     ? ListView.builder(
                         itemCount: mediList.length,
                         itemBuilder: (context, idx) => Container(
-                          margin: EdgeInsets.only(top: 10 * fem),
+                          padding: EdgeInsets.only(top: 10 * fem),
                           child: MedicineCardForSearch(
                             fem: fem,
                             name: mediList[idx].itemName,
@@ -197,6 +197,7 @@ class _SearchPageState extends State<SearchPage> {
                                     medicine: mediList[idx]),
                               ),
                             ),
+                            buttonName: "보기",
                           ),
                         ),
                       )

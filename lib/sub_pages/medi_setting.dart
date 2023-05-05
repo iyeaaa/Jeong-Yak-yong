@@ -4,7 +4,7 @@ import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../alarm_screens/ring.dart';
 import '../medicine_data/medicine.dart';
@@ -92,17 +92,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
-        title: FittedBox(
-          child: Text(
-            medicine.itemName,
-            style: SafeGoogleFont(
-              'Poppins',
-              fontSize: 23 * fem,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xffffffff),
-            ),
-          ),
-        ),
         actions: [
           IconButton(
             onPressed: () {},
@@ -120,6 +109,17 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back_ios_new_sharp),
+        ),
+        title: AutoSizeText(
+          medicine.itemName,
+          textAlign: TextAlign.start,
+          maxLines: 2,
+          style: SafeGoogleFont(
+            'Poppins',
+            fontSize: 20 * fem,
+            fontWeight: FontWeight.w600,
+            color: const Color(0xffffffff),
+          ),
         ),
       ),
       body: SafeArea(
@@ -180,9 +180,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                                       ),
                                     ),
                                   ), // UI BOX 위젯
-                                  SizedBox(width: 20 * fem),
+                                  SizedBox(width: 10 * fem),
                                   SizedBox(
-                                    width: 110 * fem,
+                                    width: 120 * fem,
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -248,10 +248,10 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                               ),
                             ],
                           ), // UI BOX and 주의사항
-                          SizedBox(height: 20 * fem),
-                          Text(
+                          SizedBox(height: 5 * fem),
+                          AutoSizeText(
                             medicine.effect,
-                            maxLines: 3,
+                            maxLines: 4,
                             overflow: TextOverflow.ellipsis,
                             style: SafeGoogleFont(
                               'Poppins',
@@ -267,6 +267,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   ],
                 ),
               ),
+              // 약 프로필
               // Container(
               //   margin: EdgeInsets.only(top: 10 * fem),
               //   child: Row(
@@ -287,12 +288,12 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   child: alarms.isNotEmpty
                       ? ListView.separated(
                           itemCount: alarms.length,
-                          padding: EdgeInsets.only(top: 5*fem),
+                          padding: EdgeInsets.only(top: 5 * fem),
                           separatorBuilder: (context, index) => const Divider(),
                           itemBuilder: (context, index) {
                             return AlarmTile(
                               key: Key(alarms[index].id.toString()),
-                              title: TimeOfDay(
+                              time: TimeOfDay(
                                 hour: alarms[index].dateTime.hour,
                                 minute: alarms[index].dateTime.minute,
                               ).format(context),
@@ -303,13 +304,15 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                                 Alarm.stop(alarms[index].id)
                                     .then((_) => loadAlarms());
                               },
+                              name: medicine.itemName,
+                              company: medicine.entpName,
                             ); // 알람 타일,
                           },
                         )
                       : Text(
-                        "No alarms set",
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
+                          "No alarms set",
+                          style: Theme.of(context).textTheme.titleMedium,
+                        ),
                 ),
               ), // 알람 리스트
             ],

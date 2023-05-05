@@ -249,18 +249,20 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ), // My medicine, view all 텍스트 위젯
-                    MedicineCardForList(
-                      fem: fem,
-                      name: "타이레놀",
-                      time: "PM 1:00",
-                      count: 2,
-                    ), // 약1
-                    SizedBox(height: 15 * fem),
-                    MedicineCardForList(
+                    MedicineCardForSearch(
                       fem: fem,
                       name: "활명수",
-                      time: "PM 3:00",
-                      count: 3,
+                      company: "PM 3:00",
+                      ontap: (){},
+                      buttonName: "1회",
+                    ), // 약2
+                    SizedBox(height: 15 * fem),
+                    MedicineCardForSearch(
+                      fem: fem,
+                      name: "활명수",
+                      company: "PM 3:00",
+                      ontap: (){},
+                      buttonName: "1회",
                     ), // 약2
                   ],
                 ), // 약 목록 위젯

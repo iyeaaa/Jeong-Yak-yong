@@ -1,3 +1,4 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 
 import '../util/utils.dart';
@@ -69,7 +70,7 @@ class _InfoPageState extends State<InfoPage> {
                       16 * fem,
                       20 * fem,
                     ),
-                    child: Text(
+                    child: AutoSizeText(
                       content,
                       maxLines: 18,
                       overflow: TextOverflow.ellipsis,

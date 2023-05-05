@@ -2,126 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'utils.dart';
 
-class MedicineCardForList extends StatelessWidget {
-  final double fem;
-  final String name;
-  final String time;
-  final int count;
-
-  const MedicineCardForList({
-    super.key,
-    required this.fem,
-    required this.name,
-    required this.time,
-    required this.count,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 89 * fem,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(25 * fem),
-        border: Border.all(color: const Color(0xffa07eff)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x0f08587c),
-            offset: Offset(0 * fem, 15 * fem),
-            blurRadius: 34.5 * fem,
-          ),
-        ],
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(10 * fem, 10 * fem, 10 * fem, 10 * fem),
-            padding:
-                EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: const Color(0xffa07eff),
-              borderRadius: BorderRadius.circular(20 * fem),
-            ),
-            child: Center(
-              child: SizedBox(
-                width: 32 * fem,
-                height: 32 * fem,
-                child: Image.asset(
-                  'image/vector-Yd4.png',
-                  width: 32 * fem,
-                  height: 32 * fem,
-                ),
-              ),
-            ),
-          ), // 약 사진
-          Container(
-            margin:
-                EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
-            width: 150 * fem,
-            height: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 16 * fem,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
-                    color: const Color(0xff011e46),
-                  ),
-                ),
-                Text(
-                  // pm100MW6 (97:148)
-                  time,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 12 * fem,
-                    fontWeight: FontWeight.w500,
-                    height: 1.5,
-                    color: const Color(0xff011e46),
-                  ),
-                ),
-              ],
-            ),
-          ), // 약 이름, 시간
-          Container(
-            margin:
-                EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
-            width: 64 * fem,
-            height: 30 * fem,
-            decoration: BoxDecoration(
-              color: const Color(0xffa98aff),
-              borderRadius: BorderRadius.circular(99 * fem),
-            ),
-            child: Center(
-              child: Text(
-                '$count회',
-                textAlign: TextAlign.center,
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 14 * fem,
-                  fontWeight: FontWeight.w800,
-                  height: 1.5 * fem,
-                  color: const Color(0xffffffff),
-                ),
-              ),
-            ),
-          ), // 남은 횟수
-        ],
-      ),
-    );
-  }
-}
-
 class MedicineCardForSearch extends StatelessWidget {
   final double fem;
   final String name;
   final String company;
+  final String buttonName;
   final GestureTapCallback ontap;
 
   const MedicineCardForSearch({
@@ -130,6 +15,7 @@ class MedicineCardForSearch extends StatelessWidget {
     required this.name,
     required this.company,
     required this.ontap,
+    required this.buttonName,
   });
 
   @override
@@ -139,7 +25,8 @@ class MedicineCardForSearch extends StatelessWidget {
       height: 89 * fem,
       decoration: BoxDecoration(
         color: const Color(0xffffffff),
-        borderRadius: BorderRadius.circular(25 * fem),
+        borderRadius: BorderRadius.circular(23 * fem),
+        border: Border.all(color: const Color(0xffa07eff)),
         boxShadow: [
           BoxShadow(
             color: const Color(0x0f08587c),
@@ -148,90 +35,94 @@ class MedicineCardForSearch extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            margin: EdgeInsets.fromLTRB(10 * fem, 10 * fem, 10 * fem, 10 * fem),
-            padding:
-                EdgeInsets.fromLTRB(18 * fem, 18 * fem, 18 * fem, 18 * fem),
-            height: double.infinity,
-            decoration: BoxDecoration(
-              color: const Color(0xffa07eff),
-              borderRadius: BorderRadius.circular(20 * fem),
-            ),
-            child: Center(
-              child: SizedBox(
-                width: 32 * fem,
-                height: 32 * fem,
-                child: Image.asset(
-                  'image/vector-Yd4.png',
-                  width: 32 * fem,
-                  height: 32 * fem,
-                ),
-              ),
-            ),
-          ), // 약 사진
-          Container(
-            margin:
-                EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
-            width: 150 * fem,
-            height: double.infinity,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      child: Container(
+        padding: EdgeInsets.fromLTRB(8*fem, 0, 8*fem, 0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Row(
               children: [
-                Text(
-                  name,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 16 * fem,
-                    fontWeight: FontWeight.w600,
-                    height: 1.5,
-                    color: const Color(0xff011e46),
+                Container(
+                  width: 70*fem,
+                  height: 70*fem,
+                  decoration: BoxDecoration(
+                    color: const Color(0xffa07eff),
+                    borderRadius: BorderRadius.circular(20 * fem),
                   ),
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  company,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 12 * fem,
-                    fontWeight: FontWeight.w500,
-                    height: 1.5,
-                    color: const Color(0xff011e46),
+                  child: Center(
+                    child: SizedBox(
+                      width: 32 * fem,
+                      height: 32 * fem,
+                      child: Image.asset(
+                        'image/vector-Yd4.png',
+                        width: 32 * fem,
+                        height: 32 * fem,
+                      ),
+                    ),
                   ),
-                  overflow: TextOverflow.ellipsis,
+                ), // 약 사진
+                Container(
+                  margin:
+                      EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
+                  width: 150 * fem,
+                  height: double.infinity,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        name,
+                        style: SafeGoogleFont(
+                          'Poppins',
+                          fontSize: 16 * fem,
+                          fontWeight: FontWeight.w600,
+                          height: 1.5,
+                          color: const Color(0xff011e46),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        company,
+                        style: SafeGoogleFont(
+                          'Poppins',
+                          fontSize: 12 * fem,
+                          fontWeight: FontWeight.w500,
+                          height: 1.5,
+                          color: const Color(0xff011e46),
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
                 ),
               ],
-            ),
-          ), // 약 이름, 회사
-          InkWell(
-            onTap: ontap,
-            child: Container(
-              margin:
-                  EdgeInsets.fromLTRB(0 * fem, 20.5 * fem, 0 * fem, 20.5 * fem),
-              width: 64 * fem,
-              height: 30 * fem,
-              decoration: BoxDecoration(
-                color: const Color(0xffa98aff),
-                borderRadius: BorderRadius.circular(99 * fem),
-              ),
-              child: Center(
-                child: Text(
-                  '보기',
-                  textAlign: TextAlign.center,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 14 * fem,
-                    fontWeight: FontWeight.w800,
-                    height: 1.5 * fem,
-                    color: const Color(0xffffffff),
+            ), // 약 이름, 회사
+            InkWell(
+              onTap: ontap,
+              child: Container(
+                width: 70 * fem,
+                height: 30 * fem,
+                decoration: BoxDecoration(
+                  color: const Color(0xffa98aff),
+                  borderRadius: BorderRadius.circular(99 * fem),
+                ),
+                child: Center(
+                  child: Text(
+                    buttonName,
+                    textAlign: TextAlign.center,
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 14 * fem,
+                      fontWeight: FontWeight.w800,
+                      height: 1.5 * fem,
+                      color: const Color(0xffffffff),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ), // 보기 버튼
-        ],
+            ), // 보기 버튼
+          ],
+        ),
       ),
     );
   }

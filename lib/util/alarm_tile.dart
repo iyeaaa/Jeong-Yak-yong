@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 
 class AlarmTile extends StatelessWidget {
-  final String title;
+  final String name;
+  final String company;
+  final String time;
   final void Function() onPressed;
   final void Function()? onDismissed;
 
   const AlarmTile({
     Key? key,
-    required this.title,
+    required this.time,
     required this.onPressed,
     this.onDismissed,
+    required this.name,
+    required this.company,
   }) : super(key: key);
 
   @override
@@ -26,7 +30,7 @@ class AlarmTile extends StatelessWidget {
           : DismissDirection.none,
       background: Container(
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(20*fem),
+          borderRadius: BorderRadius.circular(20 * fem),
           color: const Color(0xffa07eff),
         ),
         alignment: Alignment.centerRight,
@@ -40,11 +44,12 @@ class AlarmTile extends StatelessWidget {
       onDismissed: (_) => onDismissed?.call(),
       child: RawMaterialButton(
         onPressed: onPressed,
-        child: MedicineCardForList(
+        child: MedicineCardForSearch(
           fem: fem,
-          name: title,
-          time: "이름",
-          count: 1,
+          name: name,
+          company: company,
+          ontap: () {},
+          buttonName: time,
         ),
       ),
     );
