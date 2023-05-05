@@ -116,6 +116,7 @@ class _ListPageState extends State<ListPage> {
                                         builder: (context) =>
                                             MedicineSettingPage(
                                               medicine: snapshot.data[idx],
+                                              creating: false,
                                             ),
                                       ),
                                     ),

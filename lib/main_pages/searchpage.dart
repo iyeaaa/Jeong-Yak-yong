@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/network.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
@@ -194,7 +193,9 @@ class _SearchPageState extends State<SearchPage> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MedicineSettingPage(
-                                    medicine: mediList[idx]),
+                                  medicine: mediList[idx],
+                                  creating: true,
+                                ),
                               ),
                             ),
                             buttonName: "보기",

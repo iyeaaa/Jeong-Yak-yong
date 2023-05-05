@@ -14,10 +14,12 @@ import '../util/utils.dart';
 
 class MedicineSettingPage extends StatefulWidget {
   final Medicine medicine;
+  final bool creating;
 
   const MedicineSettingPage({
     Key? key,
     required this.medicine,
+    required this.creating,
   }) : super(key: key);
 
   @override
@@ -313,8 +315,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                     ), // 배경 위 위젯
                   ],
                 ),
-              ), // 약 프로필
-              // 약 프로필
+              ),
               // Container(
               //   margin: EdgeInsets.only(top: 10 * fem),
               //   child: Row(
@@ -366,11 +367,14 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
           ),
         ),
       ),
-      floatingActionButton: Padding(
+
+      floatingActionButton:
+      Padding(
         padding: const EdgeInsets.all(10),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            if (!widget.creating)
             FloatingActionButton(
               onPressed: () {
                 final alarmSettings = AlarmSettings(
@@ -384,6 +388,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
               heroTag: null,
               child: const Text("RING NOW", textAlign: TextAlign.center),
             ), // Ring Now 버튼
+            if (!widget.creating)
             FloatingActionButton(
               onPressed: () => navigateToAlarmScreen(null),
               child: const Icon(Icons.alarm_add_rounded, size: 30),
