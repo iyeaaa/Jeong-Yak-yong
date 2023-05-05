@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
@@ -24,16 +25,19 @@ class MedicineSettingPage extends StatefulWidget {
 }
 
 class _MedicineSettingPageState extends State<MedicineSettingPage> {
-  late Medicine medicine;
-  FirebaseAuth firebaseAuth = FirebaseAuth.instance;
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   late List<AlarmSettings> alarms; // null 이면 생성되지 않은거,
   static StreamSubscription? subscription;
+  late Medicine medicine;
+  late String userEmail;
 
   @override
   void initState() {
     super.initState();
     medicine = widget.medicine;
+    userEmail = _firebaseAuth.currentUser!.email!;
     loadAlarms();
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
@@ -82,6 +86,44 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     super.dispose();
   }
 
+  // 데이터베이스에 약 추가
+  Future<void> appendToArray(double fem) async {
+    setState(() {
+      _firestore.collection(userEmail).doc('mediInfo').update({
+        'medicine': FieldValue.arrayUnion([
+          {
+            'itemName': medicine.itemName,
+            'entpName': medicine.entpName,
+            'effect': medicine.effect,
+            'itemCode': medicine.itemCode,
+            'useMethod': medicine.useMethod,
+            'warmBeforeHave': medicine.warmBeforeHave,
+            'warmHave': medicine.warmHave,
+            'interaction': medicine.interaction,
+            'sideEffect': medicine.sideEffect,
+            'depositMethod': medicine.depositMethod,
+          }
+        ])
+      });
+    });
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${medicine.itemName}을 추가했습니다.",
+          textAlign: TextAlign.center,
+          style: SafeGoogleFont(
+            'Nunito',
+            fontSize: 15 * fem,
+            fontWeight: FontWeight.w400,
+            height: 1.3625 * fem / fem,
+            color: const Color(0xffffffff),
+          ),
+        ),
+        backgroundColor: const Color(0xff8a60ff),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -94,7 +136,12 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         centerTitle: true,
         actions: [
           IconButton(
-            onPressed: () {},
+            onPressed: () async {
+              await appendToArray(fem);
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
             icon: Icon(
               Icons.add,
               size: 35 * fem,
@@ -266,7 +313,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                     ), // 배경 위 위젯
                   ],
                 ),
-              ),
+              ), // 약 프로필
               // 약 프로필
               // Container(
               //   margin: EdgeInsets.only(top: 10 * fem),

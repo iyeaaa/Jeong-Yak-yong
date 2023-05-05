@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ), // My medicine, view all 텍스트 위젯
-                    MedicineCardForSearch(
+                    MedicineCard(
                       fem: fem,
                       name: "활명수",
                       company: "PM 3:00",
@@ -257,7 +257,7 @@ class _HomePageState extends State<HomePage> {
                       buttonName: "1회",
                     ), // 약2
                     SizedBox(height: 15 * fem),
-                    MedicineCardForSearch(
+                    MedicineCard(
                       fem: fem,
                       name: "활명수",
                       company: "PM 3:00",

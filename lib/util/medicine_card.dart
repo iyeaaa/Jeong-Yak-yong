@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 
 import 'utils.dart';
 
-class MedicineCardForSearch extends StatelessWidget {
+class MedicineCard extends StatelessWidget {
   final double fem;
   final String name;
   final String company;
   final String buttonName;
   final GestureTapCallback ontap;
 
-  const MedicineCardForSearch({
+  const MedicineCard({
     super.key,
     required this.fem,
     required this.name,

@@ -44,7 +44,7 @@ class AlarmTile extends StatelessWidget {
       onDismissed: (_) => onDismissed?.call(),
       child: RawMaterialButton(
         onPressed: onPressed,
-        child: MedicineCardForSearch(
+        child: MedicineCard(
           fem: fem,
           name: name,
           company: company,

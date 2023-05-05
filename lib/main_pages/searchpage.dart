@@ -186,7 +186,7 @@ class _SearchPageState extends State<SearchPage> {
                         itemCount: mediList.length,
                         itemBuilder: (context, idx) => Container(
                           padding: EdgeInsets.only(top: 10 * fem),
-                          child: MedicineCardForSearch(
+                          child: MedicineCard(
                             fem: fem,
                             name: mediList[idx].itemName,
                             company: mediList[idx].entpName,
