@@ -46,6 +46,11 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     setState(() {
       alarms = Alarm.getAlarms();
       alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+      alarms = alarms
+          .where(
+            (element) => element.notificationBody == medicine.itemName,
+          )
+          .toList();
     });
   }
 
@@ -123,7 +128,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
 
   Future<void> rmvAllAlarm() async {
     for (var a in alarms) {
-      await Alarm.stop(a.id);
+      if (a.notificationBody == medicine.itemName) {
+        await Alarm.stop(a.id);
+      }
     }
     loadAlarms();
   }

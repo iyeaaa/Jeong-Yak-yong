@@ -102,9 +102,7 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       loopAudio: loopAudio,
       vibrate: vibrate,
       notificationTitle: showNotification ? 'Alarm example' : null,
-      notificationBody: showNotification
-          ? 'dd'
-          : null,
+      notificationBody: showNotification ? widget.itemName : null,
       assetAudioPath: assetAudio,
       stopOnNotificationOpen: false,
     );

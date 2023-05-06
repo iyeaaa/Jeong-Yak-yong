@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'alarm_screens/ring.dart';
