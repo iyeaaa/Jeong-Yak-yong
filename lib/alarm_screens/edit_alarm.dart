@@ -1,17 +1,21 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 
-class ExampleAlarmEditScreen extends StatefulWidget {
+class AlarmEditScreen extends StatefulWidget {
   final AlarmSettings? alarmSettings;
+  final String itemName;
 
-  const ExampleAlarmEditScreen({Key? key, this.alarmSettings})
-      : super(key: key);
+  const AlarmEditScreen({
+    Key? key,
+    this.alarmSettings,
+    required this.itemName,
+  }) : super(key: key);
 
   @override
-  State<ExampleAlarmEditScreen> createState() => _ExampleAlarmEditScreenState();
+  State<AlarmEditScreen> createState() => _AlarmEditScreenState();
 }
 
-class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
+class _AlarmEditScreenState extends State<AlarmEditScreen> {
   late bool creating;
   late TimeOfDay selectedTime;
   late bool loopAudio;
@@ -98,7 +102,9 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
       loopAudio: loopAudio,
       vibrate: vibrate,
       notificationTitle: showNotification ? 'Alarm example' : null,
-      notificationBody: showNotification ? 'Your alarm ($id) is ringing' : null,
+      notificationBody: showNotification
+          ? 'dd'
+          : null,
       assetAudioPath: assetAudio,
       stopOnNotificationOpen: false,
     );

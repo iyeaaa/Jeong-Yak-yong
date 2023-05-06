@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../alarm_screens/edit_alarm.dart';
-import '../alarm_screens/ring.dart';
 import '../medicine_data/medicine.dart';
 import '../util/alarm_tile.dart';
 import '../util/utils.dart';
@@ -41,9 +40,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     medicine = widget.medicine;
     userEmail = _firebaseAuth.currentUser!.email!;
     loadAlarms();
-    subscription ??= Alarm.ringStream.stream.listen(
-      (alarmSettings) => navigateToRingScreen(alarmSettings),
-    );
   }
 
   void loadAlarms() {
@@ -51,17 +47,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       alarms = Alarm.getAlarms();
       alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
     });
-  }
-
-  // 알람 울리는 페이지로 이동
-  Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
-    await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) =>
-              ExampleAlarmRingScreen(alarmSettings: alarmSettings),
-        ));
-    loadAlarms();
   }
 
   // 알람 설정 페이지로 이동
@@ -75,7 +60,10 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       builder: (context) {
         return FractionallySizedBox(
           heightFactor: 0.6,
-          child: ExampleAlarmEditScreen(alarmSettings: settings),
+          child: AlarmEditScreen(
+            alarmSettings: settings,
+            itemName: medicine.itemName,
+          ),
         );
       },
     );
