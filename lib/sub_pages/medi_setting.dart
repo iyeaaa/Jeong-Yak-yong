@@ -133,6 +133,13 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     );
   }
 
+  Future<void> rmvAllAlarm() async {
+    for (var a in alarms) {
+      await Alarm.stop(a.id);
+    }
+    loadAlarms();
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -160,6 +167,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                       'sideEffect': medicine.sideEffect,
                       'depositMethod': medicine.depositMethod,
                     });
+              if (!widget.creating) {
+                await rmvAllAlarm();
+              }
               showAddOrRmvMessage(fem);
               if (context.mounted) {
                 Navigator.pop(context);
@@ -397,6 +407,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
               ), // Ring Now 버튼
             if (!widget.creating)
               FloatingActionButton(
+                backgroundColor: const Color(0xffa07eff),
                 onPressed: () => navigateToAlarmScreen(null),
                 child: const Icon(Icons.alarm_add_rounded, size: 30),
               ), // 알람 추가 버튼

@@ -134,7 +134,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!
-                      .copyWith(color: Colors.blueAccent),
+                      .copyWith(color: const Color(0xffa07eff)),
                 ),
               ), // Cencel
               TextButton(
@@ -144,7 +144,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge!
-                      .copyWith(color: Colors.blueAccent),
+                      .copyWith(color: const Color(0xffa07eff)),
                 ),
               ), // Save
             ],
@@ -173,6 +173,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
               Switch(
                 value: loopAudio,
                 onChanged: (value) => setState(() => loopAudio = value),
+                activeColor: const Color(0xffa07eff),
               ),
             ],
           ), // Loop alarm audio
@@ -186,6 +187,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
               Switch(
                 value: vibrate,
                 onChanged: (value) => setState(() => vibrate = value),
+                activeColor: const Color(0xffa07eff),
               ),
             ],
           ), // Vibrate
@@ -199,6 +201,7 @@ class _ExampleAlarmEditScreenState extends State<ExampleAlarmEditScreen> {
               Switch(
                 value: showNotification,
                 onChanged: (value) => setState(() => showNotification = value),
+                activeColor: const Color(0xffa07eff),
               ),
             ],
           ), // Show notification
