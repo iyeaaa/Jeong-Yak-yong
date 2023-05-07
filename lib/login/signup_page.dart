@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../util/utils.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,7 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final _authentication = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
 
   final _formKey = GlobalKey<FormState>();
   String userName = '';
@@ -50,7 +52,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   color: const Color(0xff000000),
                 ),
               ),
-            ), // Login Text
+            ), // SignUp Text
             Form(
               key: _formKey,
               child: Column(
@@ -161,6 +163,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   if (newUser.user != null && context.mounted) {
                     Navigator.pop(context);
                     showSnackBar(context, "회원가입에 성공했습니다", fem);
+                    _firestore.collection(userEmail).doc('mediInfo').set({
+                      "medicine": [],
+                    });
                   }
                 } catch (e) {
                   showSnackBar(context, "회원가입에 실패했습니다", fem);
@@ -177,7 +182,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   color: const Color(0xffffffff),
                 ),
               ),
-            ), // Login Button
+            ), // SignUp Button
             signUpText("Login", context)
           ],
         ),
