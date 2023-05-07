@@ -110,36 +110,36 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         actions: [
-          // IconButton(
-          //   onPressed: () async {
-          //     widget.creating
-          //         ? await appendToArray(fem)
-          //         : await removeToArray({
-          //             'itemName': medicine.itemName,
-          //             'entpName': medicine.entpName,
-          //             'effect': medicine.effect,
-          //             'itemCode': medicine.itemCode,
-          //             'useMethod': medicine.useMethod,
-          //             'warmBeforeHave': medicine.warmBeforeHave,
-          //             'warmHave': medicine.warmHave,
-          //             'interaction': medicine.interaction,
-          //             'sideEffect': medicine.sideEffect,
-          //             'depositMethod': medicine.depositMethod,
-          //           });
-          //     if (!widget.creating) {
-          //       await rmvAllAlarm();
-          //     }
-          //     showAddOrRmvMessage(fem);
-          //     if (context.mounted) {
-          //       Navigator.pop(context);
-          //     }
-          //     setState(() {});
-          //   },
-          //   icon: Icon(
-          //     widget.creating ? Icons.add : Icons.playlist_remove,
-          //     size: 35 * fem,
-          //   ),
-          // ),
+          IconButton(
+            onPressed: () async {
+              widget.creating
+                  ? await appendToArray(fem)
+                  : await removeToArray({
+                      'itemName': medicine.itemName,
+                      'entpName': medicine.entpName,
+                      'effect': medicine.effect,
+                      'itemCode': medicine.itemCode,
+                      'useMethod': medicine.useMethod,
+                      'warmBeforeHave': medicine.warmBeforeHave,
+                      'warmHave': medicine.warmHave,
+                      'interaction': medicine.interaction,
+                      'sideEffect': medicine.sideEffect,
+                      'depositMethod': medicine.depositMethod,
+                    });
+              // if (!widget.creating) {
+              //   await rmvAllAlarm();
+              // }
+              showAddOrRmvMessage(fem);
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+              setState(() {});
+            },
+            icon: Icon(
+              widget.creating ? Icons.add : Icons.playlist_remove,
+              size: 35 * fem,
+            ),
+          ),
           SizedBox(
             width: 10 * fem,
           ),
