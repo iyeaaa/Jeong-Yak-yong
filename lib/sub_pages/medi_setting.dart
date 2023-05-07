@@ -7,6 +7,7 @@ import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
+import 'info_page.dart';
 
 class MedicineSettingPage extends StatefulWidget {
   final Medicine medicine;
@@ -27,6 +28,24 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Medicine medicine;
   late String userEmail;
+  late List<String> titleList = [
+    "다음과 같은 효능이 있어요",
+    "다음과 같이 사용해야 해요",
+    "의약품 복용 전 참고하세요",
+    "주의해야하는 사항이에요",
+    "주의가 필요한 음식이에요",
+    "이러한 부작용이 있어요",
+    "다음과같이 보관해야 해요",
+  ];
+  late List<String> contentList = [
+    medicine.effect,
+    medicine.useMethod,
+    medicine.warmBeforeHave,
+    medicine.warmHave,
+    medicine.interaction,
+    medicine.sideEffect,
+    medicine.depositMethod,
+  ];
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -154,7 +173,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
           child: Column(
             children: [
               Container(
-                margin: EdgeInsets.only(top: 10 * fem),
+                margin: EdgeInsets.fromLTRB(0, 10*fem, 0, 10*fem),
                 width: double.infinity,
                 height: 195 * fem,
                 child: Stack(
@@ -288,6 +307,97 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   ],
                 ),
               ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: 7,
+                  itemBuilder: (BuildContext context, int index) {
+                    return Container(
+                      padding: EdgeInsets.only(bottom: 20 * fem),
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                            width: double.infinity,
+                            child: Image.asset(
+                              'image/causionbox.png',
+                            ),
+                          ), // 배경
+                          Container(
+                            margin: EdgeInsets.fromLTRB(
+                                20 * fem, 20 * fem, 20 * fem, 0 * fem),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      titleList[index],
+                                      style: SafeGoogleFont(
+                                        'Poppins',
+                                        fontSize: 16 * fem,
+                                        fontWeight: FontWeight.w700,
+                                        height: 1.5 * fem,
+                                        color: const Color(0xffffffff),
+                                      ),
+                                    ),
+                                    InkWell(
+                                      onTap: () => Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => InfoPage(
+                                            title: titleList[index],
+                                            content: contentList[index],
+                                          ),
+                                        ),
+                                      ),
+                                      child: Container(
+                                        width: 90 * fem,
+                                        height: 30 * fem,
+                                        decoration: BoxDecoration(
+                                          color: const Color(0xffffffff),
+                                          borderRadius:
+                                              BorderRadius.circular(99 * fem),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            "자세히보기",
+                                            textAlign: TextAlign.center,
+                                            style: SafeGoogleFont(
+                                              'Poppins',
+                                              fontSize: 14 * fem,
+                                              fontWeight: FontWeight.w800,
+                                              height: 1.5 * fem,
+                                              color: const Color(0xffa98aff),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ), // UI BOX and 주의사항
+                                SizedBox(height: 10 * fem),
+                                Text(
+                                  contentList[index],
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: SafeGoogleFont(
+                                    'Poppins',
+                                    fontSize: 16 * fem,
+                                    fontWeight: FontWeight.w500,
+                                    height: 1.5,
+                                    color: const Color(0xffffffff),
+                                  ),
+                                ), // 약 설명
+                              ],
+                            ),
+                          ), // 배경 위 위젯
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              )
               // if (!widget.creating)
               //   Expanded(
               //     child: Center(
