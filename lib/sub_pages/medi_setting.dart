@@ -1,14 +1,11 @@
 import 'dart:async';
 
-import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
-import '../util/alarm_tile.dart';
 import '../util/utils.dart';
 
 class MedicineSettingPage extends StatefulWidget {
@@ -28,58 +25,8 @@ class MedicineSettingPage extends StatefulWidget {
 class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  late List<AlarmSettings> alarms; // null 이면 생성되지 않은거,
-  static StreamSubscription? subscription;
   late Medicine medicine;
   late String userEmail;
-
-  @override
-  void initState() {
-    super.initState();
-    medicine = widget.medicine;
-    userEmail = _firebaseAuth.currentUser!.email!;
-    loadAlarms();
-  }
-
-  void loadAlarms() {
-    setState(() {
-      alarms = Alarm.getAlarms();
-      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
-      alarms = alarms
-          .where(
-            (element) => element.notificationBody == medicine.itemName,
-          )
-          .toList();
-    });
-  }
-
-  // 알람 설정 페이지로 이동
-  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
-    final res = await showModalBottomSheet<bool?>(
-      context: context,
-      isScrollControlled: true,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
-      ),
-      builder: (context) {
-        return FractionallySizedBox(
-          heightFactor: 0.6,
-          child: AlarmEditScreen(
-            alarmSettings: settings,
-            itemName: medicine.itemName,
-          ),
-        );
-      },
-    );
-    if (res != null && res == true) loadAlarms();
-  }
-
-  @override
-  void dispose() {
-    subscription?.cancel();
-    super.dispose();
-  }
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -126,13 +73,11 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     );
   }
 
-  Future<void> rmvAllAlarm() async {
-    for (var a in alarms) {
-      if (a.notificationBody == medicine.itemName) {
-        await Alarm.stop(a.id);
-      }
-    }
-    loadAlarms();
+  @override
+  void initState() {
+    super.initState();
+    medicine = widget.medicine;
+    userEmail = _firebaseAuth.currentUser!.email!;
   }
 
   @override
@@ -146,36 +91,36 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () async {
-              widget.creating
-                  ? await appendToArray(fem)
-                  : await removeToArray({
-                      'itemName': medicine.itemName,
-                      'entpName': medicine.entpName,
-                      'effect': medicine.effect,
-                      'itemCode': medicine.itemCode,
-                      'useMethod': medicine.useMethod,
-                      'warmBeforeHave': medicine.warmBeforeHave,
-                      'warmHave': medicine.warmHave,
-                      'interaction': medicine.interaction,
-                      'sideEffect': medicine.sideEffect,
-                      'depositMethod': medicine.depositMethod,
-                    });
-              if (!widget.creating) {
-                await rmvAllAlarm();
-              }
-              showAddOrRmvMessage(fem);
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
-              setState(() {});
-            },
-            icon: Icon(
-              widget.creating ? Icons.add : Icons.playlist_remove,
-              size: 35 * fem,
-            ),
-          ),
+          // IconButton(
+          //   onPressed: () async {
+          //     widget.creating
+          //         ? await appendToArray(fem)
+          //         : await removeToArray({
+          //             'itemName': medicine.itemName,
+          //             'entpName': medicine.entpName,
+          //             'effect': medicine.effect,
+          //             'itemCode': medicine.itemCode,
+          //             'useMethod': medicine.useMethod,
+          //             'warmBeforeHave': medicine.warmBeforeHave,
+          //             'warmHave': medicine.warmHave,
+          //             'interaction': medicine.interaction,
+          //             'sideEffect': medicine.sideEffect,
+          //             'depositMethod': medicine.depositMethod,
+          //           });
+          //     if (!widget.creating) {
+          //       await rmvAllAlarm();
+          //     }
+          //     showAddOrRmvMessage(fem);
+          //     if (context.mounted) {
+          //       Navigator.pop(context);
+          //     }
+          //     setState(() {});
+          //   },
+          //   icon: Icon(
+          //     widget.creating ? Icons.add : Icons.playlist_remove,
+          //     size: 35 * fem,
+          //   ),
+          // ),
           SizedBox(
             width: 10 * fem,
           ),
@@ -343,75 +288,44 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   ],
                 ),
               ),
-              if (!widget.creating)
-                Expanded(
-                  child: Center(
-                    child: alarms.isNotEmpty
-                        ? ListView.separated(
-                            itemCount: alarms.length,
-                            padding: EdgeInsets.only(top: 5 * fem),
-                            separatorBuilder: (context, index) =>
-                                const Divider(),
-                            itemBuilder: (context, index) {
-                              return AlarmTile(
-                                key: Key(alarms[index].id.toString()),
-                                time: TimeOfDay(
-                                  hour: alarms[index].dateTime.hour,
-                                  minute: alarms[index].dateTime.minute,
-                                ).format(context),
-                                onPressed: () =>
-                                    navigateToAlarmScreen(alarms[index]),
-                                // edit 페이지로 이동하는 함수 호출
-                                onDismissed: () {
-                                  Alarm.stop(alarms[index].id)
-                                      .then((_) => loadAlarms());
-                                },
-                                name: medicine.itemName,
-                                company: medicine.entpName,
-                              ); // 알람 타일,
-                            },
-                          )
-                        : Text(
-                            "No alarms set",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                  ),
-                ), // 알람 리스트
+              // if (!widget.creating)
+              //   Expanded(
+              //     child: Center(
+              //       child: alarms.isNotEmpty
+              //           ? ListView.separated(
+              //               itemCount: alarms.length,
+              //               padding: EdgeInsets.only(top: 5 * fem),
+              //               separatorBuilder: (context, index) =>
+              //                   const Divider(),
+              //               itemBuilder: (context, index) {
+              //                 return AlarmTile(
+              //                   key: Key(alarms[index].id.toString()),
+              //                   time: TimeOfDay(
+              //                     hour: alarms[index].dateTime.hour,
+              //                     minute: alarms[index].dateTime.minute,
+              //                   ).format(context),
+              //                   onPressed: () =>
+              //                       navigateToAlarmScreen(alarms[index]),
+              //                   // edit 페이지로 이동하는 함수 호출
+              //                   onDismissed: () {
+              //                     Alarm.stop(alarms[index].id)
+              //                         .then((_) => loadAlarms());
+              //                   },
+              //                   name: medicine.itemName,
+              //                   company: medicine.entpName,
+              //                 ); // 알람 타일,
+              //               },
+              //             )
+              //           : Text(
+              //               "No alarms set",
+              //               style: Theme.of(context).textTheme.titleMedium,
+              //             ),
+              //     ),
+              //   ), // 알람 리스트
             ],
           ),
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            if (!widget.creating)
-              FloatingActionButton(
-                onPressed: () {
-                  final alarmSettings = AlarmSettings(
-                    id: 42,
-                    dateTime: DateTime.now(),
-                    assetAudioPath: 'assets/mozart.mp3',
-                  );
-                  Alarm.set(alarmSettings: alarmSettings);
-                },
-                backgroundColor: Colors.red,
-                heroTag: null,
-                child: const Text("RING NOW", textAlign: TextAlign.center),
-              ), // Ring Now 버튼
-            if (!widget.creating)
-              FloatingActionButton(
-                backgroundColor: const Color(0xffa07eff),
-                onPressed: () => navigateToAlarmScreen(null),
-                child: const Icon(Icons.alarm_add_rounded, size: 30),
-              ), // 알람 추가 버튼
-          ],
-        ),
-      ),
-      // 하단부 버튼
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerDocked, // 버튼 위치 설정
     );
   }
 }

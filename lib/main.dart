@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: _firebaseAuth.currentUser != null
-          ? const TapBarPage()
+          ? const TapBarPage(selectedIndex: 0,)
           : const LoginPage(),
       debugShowCheckedModeBanner: false,
     );

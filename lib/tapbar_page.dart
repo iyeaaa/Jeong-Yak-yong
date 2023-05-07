@@ -8,14 +8,15 @@ import 'main_pages/mypage.dart';
 import 'main_pages/searchpage.dart';
 
 class TapBarPage extends StatefulWidget {
-  const TapBarPage({super.key});
+  final int selectedIndex;
+  const TapBarPage({super.key, required this.selectedIndex});
 
   @override
   State<TapBarPage> createState() => _TapBarPageState();
 }
 
 class _TapBarPageState extends State<TapBarPage> with SingleTickerProviderStateMixin {
-  int _selectedIndex = 0;
+  late int _selectedIndex = 0;
   late List<AlarmSettings> alarms;
   static StreamSubscription? subscription;
 
@@ -25,6 +26,7 @@ class _TapBarPageState extends State<TapBarPage> with SingleTickerProviderStateM
     subscription ??= Alarm.ringStream.stream.listen(
           (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
+    _selectedIndex = widget.selectedIndex;
   }
 
   void loadAlarms() {
@@ -39,7 +41,7 @@ class _TapBarPageState extends State<TapBarPage> with SingleTickerProviderStateM
         context,
         MaterialPageRoute(
           builder: (context) =>
-              ExampleAlarmRingScreen(alarmSettings: alarmSettings),
+              AlarmRingScreen(alarmSettings: alarmSettings),
         ));
     loadAlarms();
   }

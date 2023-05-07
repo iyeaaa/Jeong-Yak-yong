@@ -1,9 +1,13 @@
+import 'dart:async';
+
+import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
 
+import '../alarm_screens/edit_alarm.dart';
 import '../util/medicine_card.dart';
 import '../util/utils.dart';
 
@@ -17,15 +21,20 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late List<AlarmSettings> alarms; // null 이면 생성되지 않은거,
+  static StreamSubscription? subscription;
   var name = "??";
   var userEmail = "";
+  bool pressedAlarm = false;
+  List<bool> isChecked = List.filled(30, false);
+  List<Medicine> mediList = [];
 
   Future<List<Medicine>> getMediData() async {
     var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> mediList = [];
+    List<Medicine> tempMediList = [];
     for (var v in list.data()!['medicine']) {
       try {
-        mediList.add(
+        tempMediList.add(
           Medicine(
             itemName: v['itemName'],
             entpName: v['entpName'],
@@ -45,14 +54,56 @@ class _ListPageState extends State<ListPage> {
         }
       }
     }
-    return mediList;
+    return mediList = tempMediList;
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     userEmail = _firebaseAuth.currentUser!.email!;
+    userEmail = _firebaseAuth.currentUser!.email!;
+    loadAlarms();
+  }
+
+  void loadAlarms() {
+    setState(() {
+      alarms = Alarm.getAlarms();
+      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    });
+  }
+
+  // 알람 설정 페이지로 이동
+  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
+    String itemNames = "";
+    for (int i=0; i<mediList.length; i++) {
+      if (isChecked[i]) {
+        itemNames += "${mediList[i].itemName}&";
+      }
+    }
+
+    final res = await showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.6,
+          child: AlarmEditScreen(
+            alarmSettings: settings,
+            itemName: itemNames,
+          ),
+        );
+      },
+    );
+    if (res != null && res == true) loadAlarms();
+  }
+
+  @override
+  void dispose() {
+    subscription?.cancel();
+    super.dispose();
   }
 
   @override
@@ -76,6 +127,20 @@ class _ListPageState extends State<ListPage> {
         ),
         elevation: 0,
         toolbarHeight: 80 * fem,
+        actions: [
+          IconButton(
+            onPressed: () {
+              setState(() {
+                pressedAlarm = !pressedAlarm;
+              });
+            },
+            icon: Icon(
+              pressedAlarm ? Icons.cancel_outlined : Icons.alarm_add,
+              size: 33 * fem,
+            ),
+          ),
+          SizedBox(width: 20 * fem),
+        ],
       ),
       body: Container(
         padding: EdgeInsets.fromLTRB(20 * fem, 20 * fem, 20 * fem, 20 * fem),
@@ -111,22 +176,40 @@ class _ListPageState extends State<ListPage> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, idx) => Container(
                           margin: EdgeInsets.only(top: 10 * fem),
-                          child: MedicineCard(
-                            fem: fem,
-                            name: snapshot.data[idx].itemName,
-                            company: snapshot.data[idx].entpName,
-                            buttonName: '보기',
-                            ontap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MedicineSettingPage(
-                                    medicine: snapshot.data[idx],
-                                    creating: false,
-                                  ),
+                          width: double.infinity,
+                          height: 89 * fem,
+                          child: Row(
+                            children: [
+                              if (pressedAlarm)
+                                Checkbox(
+                                  checkColor: Colors.white,
+                                  value: isChecked[idx],
+                                  onChanged: (value) => setState(() {
+                                    isChecked[idx] = value!;
+                                  }),
                                 ),
-                              );
-                            },
+                              Expanded(
+                                child: MedicineCard(
+                                  pressedAlarm: pressedAlarm,
+                                  fem: fem,
+                                  name: snapshot.data[idx].itemName,
+                                  company: snapshot.data[idx].entpName,
+                                  buttonName: '보기',
+                                  ontap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            MedicineSettingPage(
+                                          medicine: snapshot.data[idx],
+                                          creating: false,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -138,6 +221,39 @@ class _ListPageState extends State<ListPage> {
           ],
         ),
       ),
+      floatingActionButton: AnimatedOpacity(
+        opacity: pressedAlarm ? 1 : 0,
+        duration: const Duration(milliseconds: 300),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              FloatingActionButton(
+                onPressed: () {
+                  final alarmSettings = AlarmSettings(
+                    id: 42,
+                    dateTime: DateTime.now(),
+                    assetAudioPath: 'assets/mozart.mp3',
+                  );
+                  Alarm.set(alarmSettings: alarmSettings);
+                },
+                backgroundColor: Colors.red,
+                heroTag: null,
+                child: const Text("RING NOW", textAlign: TextAlign.center),
+              ), // Ring Now 버튼
+              FloatingActionButton(
+                backgroundColor: const Color(0xffa07eff),
+                onPressed: () => navigateToAlarmScreen(null),
+                child: const Icon(Icons.alarm_add_rounded, size: 30),
+              ), // 알람 추가 버튼
+            ],
+          ),
+        ),
+      ),
+      // 하단부 버튼
+      floatingActionButtonLocation:
+          FloatingActionButtonLocation.centerDocked, // 버튼 위치 설정
     );
   }
 }

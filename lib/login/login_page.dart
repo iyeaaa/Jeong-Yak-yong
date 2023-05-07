@@ -138,7 +138,9 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const TapBarPage(),
+                        pageBuilder: (_, __, ___) => const TapBarPage(
+                          selectedIndex: 0,
+                        ),
                         transitionDuration: Duration.zero,
                         reverseTransitionDuration: Duration.zero,
                       ),

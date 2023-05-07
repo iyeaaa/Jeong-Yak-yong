@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'utils.dart';
 
-class MedicineCard extends StatelessWidget {
+class MedicineCard extends StatefulWidget {
   final double fem;
   final String name;
   final String company;
   final String buttonName;
   final GestureTapCallback ontap;
+  final bool pressedAlarm;
 
   const MedicineCard({
     super.key,
@@ -16,65 +17,63 @@ class MedicineCard extends StatelessWidget {
     required this.company,
     required this.ontap,
     required this.buttonName,
+    required this.pressedAlarm,
   });
+
+  @override
+  State<MedicineCard> createState() => _MedicineCardState();
+}
+
+class _MedicineCardState extends State<MedicineCard> {
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: double.infinity,
-      height: 89 * fem,
+      padding: EdgeInsets.fromLTRB(8 * widget.fem, 0, 8 * widget.fem, 0),
+      // duration: const Duration(seconds: 1),
       decoration: BoxDecoration(
         color: const Color(0xffffffff),
-        borderRadius: BorderRadius.circular(23 * fem),
+        borderRadius: BorderRadius.circular(23 * widget.fem),
         border: Border.all(color: const Color(0xffa07eff)),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0x0f08587c),
-            offset: Offset(0 * fem, 15 * fem),
-            blurRadius: 34.5 * fem,
-          ),
-        ],
       ),
-      child: Container(
-        padding: EdgeInsets.fromLTRB(8*fem, 0, 8*fem, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Row(
+      // curve: Curves.fastLinearToSlowEaseIn,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: Row(
               children: [
                 Container(
-                  width: 70*fem,
-                  height: 70*fem,
+                  width: 70 * widget.fem,
+                  height: 70 * widget.fem,
                   decoration: BoxDecoration(
                     color: const Color(0xffa07eff),
-                    borderRadius: BorderRadius.circular(20 * fem),
+                    borderRadius: BorderRadius.circular(20 * widget.fem),
                   ),
                   child: Center(
                     child: SizedBox(
-                      width: 32 * fem,
-                      height: 32 * fem,
+                      width: 32 * widget.fem,
+                      height: 32 * widget.fem,
                       child: Image.asset(
                         'image/vector-Yd4.png',
-                        width: 32 * fem,
-                        height: 32 * fem,
+                        width: 32 * widget.fem,
+                        height: 32 * widget.fem,
                       ),
                     ),
                   ),
                 ), // 약 사진
-                Container(
-                  margin:
-                      EdgeInsets.fromLTRB(10 * fem, 22 * fem, 0 * fem, 10.5 * fem),
-                  width: 150 * fem,
-                  height: double.infinity,
+                SizedBox(width: 9 * widget.fem),
+                Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        name,
+                        widget.name,
                         style: SafeGoogleFont(
                           'Poppins',
-                          fontSize: 16 * fem,
+                          fontSize: 16 * widget.fem,
                           fontWeight: FontWeight.w600,
                           height: 1.5,
                           color: const Color(0xff011e46),
@@ -82,10 +81,10 @@ class MedicineCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
-                        company,
+                        widget.company,
                         style: SafeGoogleFont(
                           'Poppins',
-                          fontSize: 12 * fem,
+                          fontSize: 12 * widget.fem,
                           fontWeight: FontWeight.w500,
                           height: 1.5,
                           color: const Color(0xff011e46),
@@ -94,35 +93,35 @@ class MedicineCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                ),
+                ), // 약 이름, 회사
               ],
-            ), // 약 이름, 회사
-            InkWell(
-              onTap: ontap,
-              child: Container(
-                width: 70 * fem,
-                height: 30 * fem,
-                decoration: BoxDecoration(
-                  color: const Color(0xffa98aff),
-                  borderRadius: BorderRadius.circular(99 * fem),
-                ),
-                child: Center(
-                  child: Text(
-                    buttonName,
-                    textAlign: TextAlign.center,
-                    style: SafeGoogleFont(
-                      'Poppins',
-                      fontSize: 14 * fem,
-                      fontWeight: FontWeight.w800,
-                      height: 1.5 * fem,
-                      color: const Color(0xffffffff),
-                    ),
+            ),
+          ), // 프로필
+          InkWell(
+            onTap: widget.ontap,
+            child: Container(
+              width: 70 * widget.fem,
+              height: 30 * widget.fem,
+              decoration: BoxDecoration(
+                color: const Color(0xffa98aff),
+                borderRadius: BorderRadius.circular(99 * widget.fem),
+              ),
+              child: Center(
+                child: Text(
+                  widget.buttonName,
+                  textAlign: TextAlign.center,
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 14 * widget.fem,
+                    fontWeight: FontWeight.w800,
+                    height: 1.5 * widget.fem,
+                    color: const Color(0xffffffff),
                   ),
                 ),
               ),
-            ), // 보기 버튼
-          ],
-        ),
+            ),
+          ), // 보기 버튼
+        ],
       ),
     );
   }
