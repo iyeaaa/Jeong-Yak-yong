@@ -1,6 +1,8 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 
+import '../util/utils.dart';
+
 class AlarmEditScreen extends StatefulWidget {
   final AlarmSettings? alarmSettings;
   final String itemName;
@@ -113,6 +115,23 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   void saveAlarm() {
     Alarm.set(alarmSettings: buildAlarmSettings())
         .then((_) => Navigator.pop(context, true));
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          '알람이 추가되었습니다.',
+          textAlign: TextAlign.center,
+          style: SafeGoogleFont(
+            'Nunito',
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+            height: 1.3625,
+            color: const Color(0xffffffff),
+          ),
+        ),
+        backgroundColor: const Color(0xff8a60ff),
+      ),
+    );
   }
 
   // 삭제버튼의 삭제기능
@@ -123,6 +142,7 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
       child: Column(

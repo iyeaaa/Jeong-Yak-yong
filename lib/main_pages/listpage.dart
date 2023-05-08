@@ -21,8 +21,6 @@ class ListPage extends StatefulWidget {
 class _ListPageState extends State<ListPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  late List<AlarmSettings> alarms; // null 이면 생성되지 않은거,
-  static StreamSubscription? subscription;
   var name = "??";
   var userEmail = "";
   bool pressedAlarm = false;
@@ -61,15 +59,6 @@ class _ListPageState extends State<ListPage> {
   void initState() {
     super.initState();
     userEmail = _firebaseAuth.currentUser!.email!;
-    userEmail = _firebaseAuth.currentUser!.email!;
-    loadAlarms();
-  }
-
-  void loadAlarms() {
-    setState(() {
-      alarms = Alarm.getAlarms();
-      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
-    });
   }
 
   // 알람 설정 페이지로 이동
@@ -97,13 +86,7 @@ class _ListPageState extends State<ListPage> {
         );
       },
     );
-    if (res != null && res == true) loadAlarms();
-  }
-
-  @override
-  void dispose() {
-    subscription?.cancel();
-    super.dispose();
+    // if (res != null && res == true) loadAlarms();
   }
 
   @override

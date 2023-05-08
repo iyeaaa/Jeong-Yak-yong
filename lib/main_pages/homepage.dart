@@ -1,8 +1,10 @@
+import 'dart:async';
+
+import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../medicine_data/medicine.dart';
-import '../sub_pages/medi_setting.dart';
 import '../util/medicine_card.dart';
 import '../util/utils.dart';
 
@@ -20,6 +22,7 @@ class _HomePageState extends State<HomePage> {
   final _firestore = FirebaseFirestore.instance;
   var userEmail = "load fail";
   User? loggedUser; // Nullable
+  late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
 
   Future<List<Medicine>> getMediData() async {
     var list = await _firestore.collection(userEmail).doc('mediInfo').get();
@@ -54,6 +57,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     getCurrentUser();
     userEmail = _authentication.currentUser!.email!;
+    loadAlarms();
   }
 
   void getCurrentUser() {
@@ -67,6 +71,13 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  void loadAlarms() {
+    setState(() {
+      alarms = Alarm.getAlarms();
+      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -77,7 +88,8 @@ class _HomePageState extends State<HomePage> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Container(
-            padding: EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
+            padding:
+                EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -91,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                 ), // 인사말과 알림버튼 위젯
                 Form(
                   child: Container(
-                    margin: EdgeInsets.only(top: 20*fem),
+                    margin: EdgeInsets.only(top: 20 * fem),
                     width: double.infinity,
                     height: 72 * fem,
                     child: Row(
@@ -147,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ), // 검색 위젯
                 Container(
-                  margin: EdgeInsets.fromLTRB(0, 20*fem, 0, 17*fem),
+                  margin: EdgeInsets.fromLTRB(0, 20 * fem, 0, 17 * fem),
                   width: double.infinity,
                   height: 195 * fem,
                   child: Stack(
@@ -173,7 +185,8 @@ class _HomePageState extends State<HomePage> {
                                   width: 50 * fem,
                                   height: 50 * fem,
                                   decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(18 * fem),
+                                    borderRadius:
+                                        BorderRadius.circular(18 * fem),
                                     color: const Color(0xffffffff),
                                   ),
                                   child: Center(
@@ -235,7 +248,8 @@ class _HomePageState extends State<HomePage> {
                                   height: 10 * fem,
                                   decoration: BoxDecoration(
                                     color: const Color(0x7fffffff),
-                                    borderRadius: BorderRadius.circular(99 * fem),
+                                    borderRadius:
+                                        BorderRadius.circular(99 * fem),
                                   ),
                                   child: Align(
                                     alignment: Alignment.centerLeft,
@@ -272,74 +286,28 @@ class _HomePageState extends State<HomePage> {
                         color: const Color(0xff090045),
                       ),
                     ),
-                    // TextButton(
-                    //   onPressed: () => Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //       builder: (context) =>
-                    //           const TapBarPage(selectedIndex: 2),
-                    //     ),
-                    //   ),
-                    //   child: Text(
-                    //     'View All',
-                    //     style: SafeGoogleFont(
-                    //       'Poppins',
-                    //       fontSize: 14 * fem,
-                    //       fontWeight: FontWeight.w400,
-                    //       color: const Color(0xffa07eff),
-                    //     ),
-                    //   ),
-                    // ), // View All Text
                   ],
                 ), // My Medicine, View all 위젯
-                FutureBuilder(
-                  future: getMediData(),
-                  builder: (BuildContext context, AsyncSnapshot snapshot) {
-                    //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-                    if (snapshot.hasData == false) {
-                      return const Center(
-                        child: Text("Loading.."),
-                      );
-                    }
-                    //error가 발생하게 될 경우 반환하게 되는 부분
-                    else if (snapshot.hasError) {
-                      return const Center(
-                        child: Text("ERROR!"),
-                      );
-                    }
-                    // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
-                    else {
-                      return ListView.builder(
+                alarms.isEmpty
+                    ? const Center(child: Text("Nothing"))
+                    : ListView.builder(
                         padding: EdgeInsets.only(top: 0 * fem),
                         physics: const NeverScrollableScrollPhysics(),
                         shrinkWrap: true,
-                        itemCount: snapshot.data.length,
+                        itemCount: alarms.length,
                         itemBuilder: (context, idx) => Container(
                           padding: EdgeInsets.only(top: 10 * fem),
                           height: 98 * fem,
                           child: MedicineCard(
-                            fem: fem,
-                            name: snapshot.data[idx].itemName,
-                            company: snapshot.data[idx].entpName,
-                            buttonName: '편집',
-                            isChecked: false,
-                            ontap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MedicineSettingPage(
-                                    medicine: snapshot.data[idx],
-                                    creating: false,
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
+                              fem: fem,
+                              name:
+                                  "${alarms[idx].dateTime.hour} : ${alarms[idx].dateTime.minute}",
+                              company: "dd",
+                              buttonName: '편집',
+                              isChecked: false,
+                              ontap: () {}),
                         ),
-                      );
-                    }
-                  },
-                ), // 약 목록 위젯
+                      )
               ],
             ),
           ),
