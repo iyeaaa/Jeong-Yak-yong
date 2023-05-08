@@ -8,7 +8,7 @@ class MedicineCard extends StatefulWidget {
   final String company;
   final String buttonName;
   final GestureTapCallback ontap;
-  final bool pressedAlarm;
+  final bool isChecked;
 
   const MedicineCard({
     super.key,
@@ -17,7 +17,7 @@ class MedicineCard extends StatefulWidget {
     required this.company,
     required this.ontap,
     required this.buttonName,
-    required this.pressedAlarm,
+    required this.isChecked,
   });
 
   @override
@@ -25,18 +25,18 @@ class MedicineCard extends StatefulWidget {
 }
 
 class _MedicineCardState extends State<MedicineCard> {
-
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return AnimatedContainer(
       padding: EdgeInsets.fromLTRB(8 * widget.fem, 0, 8 * widget.fem, 0),
-      // duration: const Duration(seconds: 1),
+      duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
-        color: const Color(0xffffffff),
+        color: widget.isChecked
+            ? const Color(0xffEDC8FF)
+            : const Color(0xffffffff),
         borderRadius: BorderRadius.circular(23 * widget.fem),
         border: Border.all(color: const Color(0xffa07eff)),
       ),
-      // curve: Curves.fastLinearToSlowEaseIn,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.center,

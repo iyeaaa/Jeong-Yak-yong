@@ -321,8 +321,8 @@ class _HomePageState extends State<HomePage> {
                             fem: fem,
                             name: snapshot.data[idx].itemName,
                             company: snapshot.data[idx].entpName,
-                            buttonName: '보기',
-                            pressedAlarm: false,
+                            buttonName: '편집',
+                            isChecked: false,
                             ontap: () {
                               Navigator.push(
                                 context,

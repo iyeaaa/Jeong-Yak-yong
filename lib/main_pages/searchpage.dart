@@ -187,7 +187,7 @@ class _SearchPageState extends State<SearchPage> {
                           padding: EdgeInsets.only(top: 10 * fem),
                           height: 95*fem,
                           child: MedicineCard(
-                            pressedAlarm: false,
+                            isChecked: false,
                             fem: fem,
                             name: mediList[idx].itemName,
                             company: mediList[idx].entpName,

@@ -75,7 +75,7 @@ class _ListPageState extends State<ListPage> {
   // 알람 설정 페이지로 이동
   Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
     String itemNames = "";
-    for (int i=0; i<mediList.length; i++) {
+    for (int i = 0; i < mediList.length; i++) {
       if (isChecked[i]) {
         itemNames += "${mediList[i].itemName}&";
       }
@@ -132,6 +132,9 @@ class _ListPageState extends State<ListPage> {
             onPressed: () {
               setState(() {
                 pressedAlarm = !pressedAlarm;
+                if (!pressedAlarm) {
+                  isChecked = List.filled(30, false);
+                }
               });
             },
             icon: Icon(
@@ -167,49 +170,38 @@ class _ListPageState extends State<ListPage> {
                   return Expanded(
                     child: RefreshIndicator(
                       onRefresh: () async {
-                        // Replace this delay with the code to be executed during refresh
-                        // and return asynchronous code
                         setState(() {});
-                        return Future<void>.delayed(const Duration(seconds: 1));
+                        return Future.delayed(
+                            const Duration(milliseconds: 200));
                       },
                       child: ListView.builder(
                         itemCount: snapshot.data.length,
-                        itemBuilder: (context, idx) => Container(
-                          margin: EdgeInsets.only(top: 10 * fem),
-                          width: double.infinity,
-                          height: 89 * fem,
-                          child: Row(
-                            children: [
-                              if (pressedAlarm)
-                                Checkbox(
-                                  checkColor: Colors.white,
-                                  value: isChecked[idx],
-                                  onChanged: (value) => setState(() {
-                                    isChecked[idx] = value!;
-                                  }),
-                                ),
-                              Expanded(
-                                child: MedicineCard(
-                                  pressedAlarm: pressedAlarm,
-                                  fem: fem,
-                                  name: snapshot.data[idx].itemName,
-                                  company: snapshot.data[idx].entpName,
-                                  buttonName: '보기',
-                                  ontap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            MedicineSettingPage(
-                                          medicine: snapshot.data[idx],
-                                          creating: false,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ),
-                            ],
+                        itemBuilder: (context, idx) => InkWell(
+                          onTap: () => setState(() {
+                            isChecked[idx] = !isChecked[idx];
+                          }),
+                          child: Container(
+                            margin: EdgeInsets.only(top: 10 * fem),
+                            width: double.infinity,
+                            height: 89 * fem,
+                            child: MedicineCard(
+                              isChecked: isChecked[idx],
+                              fem: fem,
+                              name: snapshot.data[idx].itemName,
+                              company: snapshot.data[idx].entpName,
+                              buttonName: '보기',
+                              ontap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => MedicineSettingPage(
+                                      medicine: snapshot.data[idx],
+                                      creating: false,
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
                       ),
