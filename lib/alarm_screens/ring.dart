@@ -7,9 +7,13 @@ import '../util/utils.dart';
 // 알림 울릴 때 페이지
 class AlarmRingScreen extends StatefulWidget {
   final AlarmSettings alarmSettings;
+  final Function load;
 
-  const AlarmRingScreen({Key? key, required this.alarmSettings})
-      : super(key: key);
+  const AlarmRingScreen({
+    Key? key,
+    required this.alarmSettings,
+    required this.load,
+  }) : super(key: key);
 
   @override
   State<AlarmRingScreen> createState() => _AlarmRingScreenState();
@@ -118,9 +122,25 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
               child: Column(
                 children: [
                   InkWell(
-                    onTap: () {
-                      Alarm.stop(widget.alarmSettings.id)
-                          .then((_) => Navigator.pop(context));
+                    onTap: () async {
+                      await Alarm.stop(widget.alarmSettings.id);
+                      final now = DateTime.now();
+                      Alarm.set(
+                        alarmSettings: widget.alarmSettings.copyWith(
+                          dateTime: DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            now.hour,
+                            now.minute,
+                            0,
+                            0,
+                          ).add(const Duration(days: 1)),
+                        ),
+                      ).then((_) {
+                        widget.load();
+                        Navigator.pop(context);
+                      });
                     },
                     child: SizedBox(
                       width: 150 * fem,
@@ -141,14 +161,18 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                             now.minute,
                             0,
                             0,
-                          ).add(const Duration(minutes: 1)),
+                          ).add(const Duration(minutes: 30)),
                         ),
-                      ).then((_) => Navigator.pop(context));
+                      ).then((_) {
+                        widget.load();
+                        Navigator.pop(context);
+                      });
                     },
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(30*fem)),
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(30 * fem)),
                         ),
                       ),
                       backgroundColor:

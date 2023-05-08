@@ -1,18 +1,15 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
+import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
-import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({
-    Key? key,
-  }) : super(key: key);
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -20,38 +17,10 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final _authentication = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
   var userEmail = "load fail";
   User? loggedUser; // Nullable
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
-
-  Future<List<Medicine>> getMediData() async {
-    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> mediList = [];
-    for (var v in list.data()!['medicine']) {
-      try {
-        mediList.add(
-          Medicine(
-            itemName: v['itemName'],
-            entpName: v['entpName'],
-            effect: v['effect'],
-            itemCode: v['itemCode'],
-            useMethod: v['useMethod'],
-            warmBeforeHave: v['warmBeforeHave'],
-            warmHave: v['warmHave'],
-            interaction: v['interaction'],
-            sideEffect: v['sideEffect'],
-            depositMethod: v['depositMethod'],
-          ),
-        );
-      } catch (e) {
-        if (context.mounted) {
-          debugPrint("medi load ERROR");
-        }
-      }
-    }
-    return mediList;
-  }
+  int count = 289;
 
   @override
   void initState() {
@@ -59,6 +28,13 @@ class _HomePageState extends State<HomePage> {
     getCurrentUser();
     userEmail = _authentication.currentUser!.email!;
     loadAlarms();
+  }
+
+  void loadAlarms() {
+    setState(() {
+      alarms = Alarm.getAlarms();
+      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    });
   }
 
   void getCurrentUser() {
@@ -70,13 +46,6 @@ class _HomePageState extends State<HomePage> {
     } catch (e) {
       debugPrint(e as String?);
     }
-  }
-
-  void loadAlarms() {
-    setState(() {
-      alarms = Alarm.getAlarms();
-      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
-    });
   }
 
   String toTimeForm(int idx) {
@@ -107,6 +76,42 @@ class _HomePageState extends State<HomePage> {
     if (res != null && res == true) loadAlarms();
   }
 
+  String differTime() {
+    var duration = alarms.first.dateTime.difference(DateTime.now());
+    int h = duration.inHours;
+    int m = (duration.inMinutes % 60);
+    int s = (duration.inSeconds % 60);
+
+    count = ((h * 60 * 60 + m * 60 + s) * 289 / (24 * 60 * 60)).round();
+    print(count);
+
+    return "${h < 10 ? "0$h" : h} : "
+        "${m < 10 ? "0$m" : m} : ${s < 10 ? "0$s" : s}";
+  }
+
+  Widget notificationButton(double fem) {
+    return InkWell(
+      onTap: () => loadAlarms(),
+      child: Container(
+        width: 65,
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.deepPurple[50],
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Center(
+          child: SizedBox(
+            width: 30 * fem,
+            height: 30 * fem,
+            child: Image.asset(
+              'image/union.png',
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -127,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     introduceText(fem, loggedUser!.email!), // 인사 텍스트
-                    // notificationButton(fem), // 알림 버튼
+                    notificationButton(fem), // 알림 버튼
                   ],
                 ), // 인사말과 알림버튼 위젯
                 Form(
@@ -188,7 +193,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ), // 검색 위젯
                 Container(
-                  margin: EdgeInsets.fromLTRB(0, 20 * fem, 0, 17 * fem),
+                  margin: EdgeInsets.fromLTRB(0, 20 * fem, 0, 12 * fem),
                   width: double.infinity,
                   height: 195 * fem,
                   child: Stack(
@@ -245,7 +250,7 @@ class _HomePageState extends State<HomePage> {
                                 ), // 아직 안드신 약이 있어요!
                               ],
                             ), // UI BOX and 약 남은 상태
-                            SizedBox(height: 20 * fem),
+                            SizedBox(height: 15 * fem),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -259,18 +264,32 @@ class _HomePageState extends State<HomePage> {
                                     color: const Color(0xffffffff),
                                   ),
                                 ), // 다음 알림까지 남은시간
-                                SizedBox(height: 7 * fem),
-                                Text(
-                                  '00:31:24',
-                                  textAlign: TextAlign.right,
-                                  style: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 14 * fem,
-                                    fontWeight: FontWeight.w600,
-                                    height: 1.5,
-                                    color: const Color(0xffffffff),
-                                  ),
-                                ), // 숫자
+                                SizedBox(height: 13 * fem),
+                                alarms.isNotEmpty
+                                    ? TimerBuilder.periodic(
+                                        const Duration(seconds: 1),
+                                        builder: (context) {
+                                        return Text(
+                                          differTime(),
+                                          style: SafeGoogleFont(
+                                            'Poppins',
+                                            fontSize: 14 * fem,
+                                            fontWeight: FontWeight.w600,
+                                            height: 1.5,
+                                            color: const Color(0xffffffff),
+                                          ),
+                                        );
+                                      })
+                                    : Text(
+                                        "No Alarm",
+                                        style: SafeGoogleFont(
+                                          'Poppins',
+                                          fontSize: 14 * fem,
+                                          fontWeight: FontWeight.w600,
+                                          height: 1.5,
+                                          color: const Color(0xffffffff),
+                                        ),
+                                      ),
                                 Container(
                                   margin: EdgeInsets.only(top: 5 * fem),
                                   width: 289 * fem,
@@ -280,19 +299,22 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius:
                                         BorderRadius.circular(99 * fem),
                                   ),
-                                  child: Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: SizedBox(
-                                      width: 125 * fem,
-                                      height: 10 * fem,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          borderRadius:
-                                              BorderRadius.circular(99 * fem),
-                                          color: const Color(0xc6ffffff),
+                                  child: TimerBuilder.periodic(
+                                    const Duration(seconds: 1),
+                                    builder: (BuildContext context) {
+                                      return SizedBox(
+                                        width: (alarms.isEmpty ? 289 : count) *
+                                            fem,
+                                        height: 10 * fem,
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                BorderRadius.circular(99 * fem),
+                                            color: const Color(0xc6ffffff),
+                                          ),
                                         ),
-                                      ),
-                                    ),
+                                      );
+                                    },
                                   ),
                                 ), // 진행 바
                               ],
@@ -306,7 +328,6 @@ class _HomePageState extends State<HomePage> {
                 Column(
                   children: [
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
                           'My Alarm',
@@ -320,27 +341,27 @@ class _HomePageState extends State<HomePage> {
                       ],
                     ), // My Medicine
                     ListView.builder(
-                            padding: EdgeInsets.only(top: 0 * fem),
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: alarms.length,
-                            itemBuilder: (context, idx) => SizedBox(
-                              height: 87*fem,
-                              child: AlarmTile(
-                                key: Key(alarms[idx].id.toString()),
-                                onDismissed: () {
-                                  Alarm.stop(alarms[idx].id)
-                                      .then((_) => loadAlarms());
-                                },
-                                ontap: () => navigateToAlarmScreen(alarms[idx]),
-                                onPressed: () {},
-                                name: toTimeForm(idx),
-                                company: "dd",
-                              ),
-                            ),
-                          ),
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: alarms.length,
+                      itemBuilder: (context, idx) => Container(
+                        padding: EdgeInsets.only(top: 10 * fem),
+                        height: 97 * fem,
+                        child: AlarmTile(
+                          key: Key(alarms[idx].id.toString()),
+                          onDismissed: () {
+                            Alarm.stop(alarms[idx].id)
+                                .then((_) => loadAlarms());
+                          },
+                          ontap: () => navigateToAlarmScreen(alarms[idx]),
+                          onPressed: () {},
+                          name: toTimeForm(idx),
+                          company: "dd",
+                        ),
+                      ),
+                    ),
                   ],
-                ),
+                ), // 알람 리스트
               ],
             ),
           ),
@@ -350,25 +371,7 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-Widget notificationButton(double fem) {
-  return Container(
-    width: 65,
-    height: 65,
-    decoration: BoxDecoration(
-      color: Colors.deepPurple[50],
-      borderRadius: BorderRadius.circular(20),
-    ),
-    child: Center(
-      child: SizedBox(
-        width: 30 * fem,
-        height: 30 * fem,
-        child: Image.asset(
-          'image/union.png',
-        ),
-      ),
-    ),
-  );
-}
+
 
 Widget introduceText(double fem, String username) {
   username = username.substring(0, username.indexOf('@'));
