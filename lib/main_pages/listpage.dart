@@ -70,6 +70,22 @@ class _ListPageState extends State<ListPage> {
       }
     }
 
+    await showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.6,
+          child: AlarmEditScreen(
+            alarmSettings: settings,
+            itemName: itemNames,
+          ),
+        );
+      },
+    );
     // if (res != null && res == true) loadAlarms();
   }
 
