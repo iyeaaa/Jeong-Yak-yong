@@ -38,6 +38,7 @@ dependencies:
   firebase_auth: ^4.4.2
   auto_size_text: ^3.0.0
   alarm: ^1.0.5
+  tuple: ^2.0.1
 
 dev_dependencies:
   flutter_test:

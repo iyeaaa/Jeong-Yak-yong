@@ -4,8 +4,9 @@ import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/util/alarm_tile.dart';
+import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
-import '../util/medicine_card.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -78,6 +79,34 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  String toTimeForm(int idx) {
+    int h = alarms[idx].dateTime.hour;
+    int m = alarms[idx].dateTime.minute;
+    return "${h > 9 ? "$h" : "0$h"} : ${m > 9 ? "$m" : "0$m"}";
+  }
+
+  // 알람 설정 페이지로 이동
+  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
+    String itemNames = settings!.notificationBody ?? "No items";
+    final res = await showModalBottomSheet<bool?>(
+      context: context,
+      isScrollControlled: true,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10.0),
+      ),
+      builder: (context) {
+        return FractionallySizedBox(
+          heightFactor: 0.6,
+          child: AlarmEditScreen(
+            alarmSettings: settings,
+            itemName: itemNames,
+          ),
+        );
+      },
+    );
+    if (res != null && res == true) loadAlarms();
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -98,7 +127,7 @@ class _HomePageState extends State<HomePage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     introduceText(fem, loggedUser!.email!), // 인사 텍스트
-                    notificationButton(fem), // 알림 버튼
+                    // notificationButton(fem), // 알림 버튼
                   ],
                 ), // 인사말과 알림버튼 위젯
                 Form(
@@ -274,40 +303,44 @@ class _HomePageState extends State<HomePage> {
                     ],
                   ),
                 ), // 남은 약 체크 위젯
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Column(
                   children: [
-                    Text(
-                      'My Alarm',
-                      style: SafeGoogleFont(
-                        'Poppins',
-                        fontSize: 20 * fem,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xff090045),
-                      ),
-                    ),
-                  ],
-                ), // My Medicine, View all 위젯
-                alarms.isEmpty
-                    ? const Center(child: Text("Nothing"))
-                    : ListView.builder(
-                        padding: EdgeInsets.only(top: 0 * fem),
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: alarms.length,
-                        itemBuilder: (context, idx) => Container(
-                          padding: EdgeInsets.only(top: 10 * fem),
-                          height: 98 * fem,
-                          child: MedicineCard(
-                              fem: fem,
-                              name:
-                                  "${alarms[idx].dateTime.hour} : ${alarms[idx].dateTime.minute}",
-                              company: "dd",
-                              buttonName: '편집',
-                              isChecked: false,
-                              ontap: () {}),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'My Alarm',
+                          style: SafeGoogleFont(
+                            'Poppins',
+                            fontSize: 20 * fem,
+                            fontWeight: FontWeight.w500,
+                            color: const Color(0xff090045),
+                          ),
                         ),
-                      )
+                      ],
+                    ), // My Medicine
+                    ListView.builder(
+                            padding: EdgeInsets.only(top: 0 * fem),
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: alarms.length,
+                            itemBuilder: (context, idx) => SizedBox(
+                              height: 87*fem,
+                              child: AlarmTile(
+                                key: Key(alarms[idx].id.toString()),
+                                onDismissed: () {
+                                  Alarm.stop(alarms[idx].id)
+                                      .then((_) => loadAlarms());
+                                },
+                                ontap: () => navigateToAlarmScreen(alarms[idx]),
+                                onPressed: () {},
+                                name: toTimeForm(idx),
+                                company: "dd",
+                              ),
+                            ),
+                          ),
+                  ],
+                ),
               ],
             ),
           ),

@@ -4,17 +4,17 @@ import 'package:medicine_app/util/medicine_card.dart';
 class AlarmTile extends StatelessWidget {
   final String name;
   final String company;
-  final String time;
   final void Function() onPressed;
   final void Function()? onDismissed;
+  final GestureTapCallback ontap;
 
   const AlarmTile({
     Key? key,
-    required this.time,
     required this.onPressed,
     this.onDismissed,
     required this.name,
     required this.company,
+    required this.ontap,
   }) : super(key: key);
 
   @override
@@ -49,8 +49,8 @@ class AlarmTile extends StatelessWidget {
           fem: fem,
           name: name,
           company: company,
-          ontap: () {},
-          buttonName: time,
+          ontap: ontap,
+          buttonName: "Edit",
         ),
       ),
     );
