@@ -178,7 +178,9 @@ class _ListPageState extends State<ListPage> {
                         itemCount: snapshot.data.length,
                         itemBuilder: (context, idx) => InkWell(
                           onTap: () => setState(() {
-                            isChecked[idx] = !isChecked[idx];
+                            if (pressedAlarm) {
+                              isChecked[idx] = !isChecked[idx];
+                            }
                           }),
                           child: Container(
                             margin: EdgeInsets.only(top: 10 * fem),
