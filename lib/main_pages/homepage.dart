@@ -83,7 +83,6 @@ class _HomePageState extends State<HomePage> {
     int s = (duration.inSeconds % 60);
 
     count = ((h * 60 * 60 + m * 60 + s) * 289 / (24 * 60 * 60)).round();
-    print(count);
 
     return "${h < 10 ? "0$h" : h} : "
         "${m < 10 ? "0$m" : m} : ${s < 10 ? "0$s" : s}";
@@ -100,12 +99,10 @@ class _HomePageState extends State<HomePage> {
           borderRadius: BorderRadius.circular(20),
         ),
         child: Center(
-          child: SizedBox(
-            width: 30 * fem,
-            height: 30 * fem,
-            child: Image.asset(
-              'image/union.png',
-            ),
+          child: Icon(
+            Icons.refresh,
+            color: const Color(0xff8a60ff),
+            size: 35*fem,
           ),
         ),
       ),
@@ -299,22 +296,18 @@ class _HomePageState extends State<HomePage> {
                                     borderRadius:
                                         BorderRadius.circular(99 * fem),
                                   ),
-                                  child: TimerBuilder.periodic(
-                                    const Duration(seconds: 1),
-                                    builder: (BuildContext context) {
-                                      return SizedBox(
-                                        width: (alarms.isEmpty ? 289 : count) *
-                                            fem,
-                                        height: 10 * fem,
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(99 * fem),
-                                            color: const Color(0xc6ffffff),
-                                          ),
-                                        ),
-                                      );
-                                    },
+                                  child: Align(
+                                    alignment: Alignment.topLeft,
+                                    child: Container(
+                                      width:
+                                          (alarms.isEmpty ? 289 : count) * fem,
+                                      height: 10 * fem,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(99 * fem),
+                                        color: const Color(0xc6ffffff),
+                                      ),
+                                    ),
                                   ),
                                 ), // 진행 바
                               ],
@@ -370,8 +363,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
-
 
 Widget introduceText(double fem, String username) {
   username = username.substring(0, username.indexOf('@'));
