@@ -19,7 +19,6 @@ class TapBarPage extends StatefulWidget {
 class _TapBarPageState extends State<TapBarPage>
     with SingleTickerProviderStateMixin {
   late int _selectedIndex = 0;
-  late List<AlarmSettings> alarms;
   static StreamSubscription? subscription;
 
   @override
@@ -31,23 +30,14 @@ class _TapBarPageState extends State<TapBarPage>
     _selectedIndex = widget.selectedIndex;
   }
 
-  void loadAlarms() {
-    setState(() {
-      alarms = Alarm.getAlarms();
-      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
-    });
-  }
-
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
     await Navigator.push(
         context,
         MaterialPageRoute(
           builder: (context) => AlarmRingScreen(
             alarmSettings: alarmSettings,
-            load: loadAlarms,
           ),
         ));
-    loadAlarms();
   }
 
   static const List<Widget> _widgetOptions = <Widget>[

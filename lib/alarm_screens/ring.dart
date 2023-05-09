@@ -7,12 +7,10 @@ import '../util/utils.dart';
 // 알림 울릴 때 페이지
 class AlarmRingScreen extends StatefulWidget {
   final AlarmSettings alarmSettings;
-  final Function load;
 
   const AlarmRingScreen({
     Key? key,
     required this.alarmSettings,
-    required this.load,
   }) : super(key: key);
 
   @override
@@ -138,7 +136,6 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                           ).add(const Duration(days: 1)),
                         ),
                       ).then((_) {
-                        widget.load();
                         Navigator.pop(context);
                       });
                     },
@@ -164,7 +161,6 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                           ).add(const Duration(minutes: 30)),
                         ),
                       ).then((_) {
-                        widget.load();
                         Navigator.pop(context);
                       });
                     },

@@ -16,6 +16,8 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
+  GlobalKey<RefreshIndicatorState>();
   final _authentication = FirebaseAuth.instance;
   var userEmail = "load fail";
   User? loggedUser; // Nullable
@@ -90,7 +92,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget notificationButton(double fem) {
     return InkWell(
-      onTap: () => loadAlarms(),
+      onTap: () => _refreshIndicatorKey.currentState?.show(),
       child: Container(
         width: 65,
         height: 65,
@@ -102,7 +104,7 @@ class _HomePageState extends State<HomePage> {
           child: Icon(
             Icons.refresh,
             color: const Color(0xff8a60ff),
-            size: 35*fem,
+            size: 35 * fem,
           ),
         ),
       ),
@@ -116,158 +118,178 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
-      body: SingleChildScrollView(
-        child: SafeArea(
-          child: Container(
-            padding:
-                EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    introduceText(fem, loggedUser!.email!), // 인사 텍스트
-                    notificationButton(fem), // 알림 버튼
-                  ],
-                ), // 인사말과 알림버튼 위젯
-                Form(
-                  child: Container(
-                    margin: EdgeInsets.only(top: 20 * fem),
-                    width: double.infinity,
-                    height: 72 * fem,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            color: Colors.white,
-                            border: Border.all(color: const Color(0xff8a60ff)),
-                          ),
-                          width: 230 * fem,
-                          height: double.infinity,
-                          padding: EdgeInsets.only(left: 20 * fem),
-                          child: Center(
-                            child: TextFormField(
-                              // onChanged: (value) => itemName = value,
-                              style: const TextStyle(
-                                fontSize: 20,
-                              ),
-                              decoration: const InputDecoration(
-                                border: InputBorder.none,
-                                hintText: 'Search..',
-                                hintStyle: TextStyle(
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        color: Colors.white,
+        backgroundColor: Colors.blue,
+        strokeWidth: 4.0,
+        onRefresh: () async {
+          loadAlarms();
+          await Future.delayed(const Duration(milliseconds: 300));
+        },
+        child: SingleChildScrollView(
+          child: SafeArea(
+            child: Container(
+              padding:
+                  EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      introduceText(fem, loggedUser!.email!), // 인사 텍스트
+                      notificationButton(fem), // 알림 버튼
+                    ],
+                  ), // 인사말과 알림버튼 위젯
+                  Form(
+                    child: Container(
+                      margin: EdgeInsets.only(top: 20 * fem),
+                      width: double.infinity,
+                      height: 72 * fem,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              color: Colors.white,
+                              border: Border.all(color: const Color(0xff8a60ff)),
+                            ),
+                            width: 230 * fem,
+                            height: double.infinity,
+                            padding: EdgeInsets.only(left: 20 * fem),
+                            child: Center(
+                              child: TextFormField(
+                                // onChanged: (value) => itemName = value,
+                                style: const TextStyle(
                                   fontSize: 20,
+                                ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: 'Search..',
+                                  hintStyle: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        ), // Search Bar
-                        InkWell(
-                          onTap: () {
-                            // mediList.clear();
-                            // readMedicineFromApi();
-                          },
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(
-                                27 * fem, 20 * fem, 27 * fem, 20 * fem),
-                            height: double.infinity,
-                            decoration: BoxDecoration(
-                              color: const Color(0xff8a60ff),
-                              borderRadius: BorderRadius.circular(20 * fem),
+                          ), // Search Bar
+                          InkWell(
+                            onTap: () {
+                              // mediList.clear();
+                              // readMedicineFromApi();
+                            },
+                            child: Container(
+                              padding: EdgeInsets.fromLTRB(
+                                  27 * fem, 20 * fem, 27 * fem, 20 * fem),
+                              height: double.infinity,
+                              decoration: BoxDecoration(
+                                color: const Color(0xff8a60ff),
+                                borderRadius: BorderRadius.circular(20 * fem),
+                              ),
+                              child: Image.asset(
+                                'image/fe-search-kxN.png',
+                                width: 20 * fem,
+                                height: 20 * fem,
+                              ),
                             ),
-                            child: Image.asset(
-                              'image/fe-search-kxN.png',
-                              width: 20 * fem,
-                              height: 20 * fem,
-                            ),
-                          ),
-                        ), // Search Button
-                      ],
+                          ), // Search Button
+                        ],
+                      ),
                     ),
-                  ),
-                ), // 검색 위젯
-                Container(
-                  margin: EdgeInsets.fromLTRB(0, 20 * fem, 0, 12 * fem),
-                  width: double.infinity,
-                  height: 195 * fem,
-                  child: Stack(
-                    children: [
-                      SizedBox(
-                        width: 324 * fem,
-                        height: 195 * fem,
-                        child: Image.asset(
-                          'image/group-842-eqt.png',
+                  ), // 검색 위젯
+                  Container(
+                    margin: EdgeInsets.fromLTRB(0, 20 * fem, 0, 12 * fem),
+                    width: double.infinity,
+                    height: 195 * fem,
+                    child: Stack(
+                      children: [
+                        SizedBox(
                           width: 324 * fem,
                           height: 195 * fem,
-                        ),
-                      ), // 배경 위젯
-                      Container(
-                        margin: EdgeInsets.fromLTRB(
-                            20 * fem, 20 * fem, 20 * fem, 20 * fem),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              children: [
-                                Container(
-                                  width: 50 * fem,
-                                  height: 50 * fem,
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.circular(18 * fem),
-                                    color: const Color(0xffffffff),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      'UI',
-                                      textAlign: TextAlign.center,
-                                      style: SafeGoogleFont(
-                                        'Poppins',
-                                        fontSize: 16 * fem,
-                                        fontWeight: FontWeight.w700,
-                                        height: 1.5 * fem,
-                                        color: const Color(0xffa07eff),
+                          child: Image.asset(
+                            'image/group-842-eqt.png',
+                            width: 324 * fem,
+                            height: 195 * fem,
+                          ),
+                        ), // 배경 위젯
+                        Container(
+                          margin: EdgeInsets.fromLTRB(
+                              20 * fem, 20 * fem, 20 * fem, 20 * fem),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    width: 50 * fem,
+                                    height: 50 * fem,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(18 * fem),
+                                      color: const Color(0xffffffff),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'UI',
+                                        textAlign: TextAlign.center,
+                                        style: SafeGoogleFont(
+                                          'Poppins',
+                                          fontSize: 16 * fem,
+                                          fontWeight: FontWeight.w700,
+                                          height: 1.5 * fem,
+                                          color: const Color(0xffa07eff),
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ), // UI BOX 위젯
-                                SizedBox(width: 20 * fem),
-                                Text(
-                                  '아직 안 드신 약이 있어요!',
-                                  style: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 16 * fem,
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.5 * fem,
-                                    color: const Color(0xffffffff),
-                                  ),
-                                ), // 아직 안드신 약이 있어요!
-                              ],
-                            ), // UI BOX and 약 남은 상태
-                            SizedBox(height: 15 * fem),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  '다음 알림까지 남은 시간',
-                                  style: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 16 * fem,
-                                    fontWeight: FontWeight.w700,
-                                    height: 1.5,
-                                    color: const Color(0xffffffff),
-                                  ),
-                                ), // 다음 알림까지 남은시간
-                                SizedBox(height: 13 * fem),
-                                alarms.isNotEmpty
-                                    ? TimerBuilder.periodic(
-                                        const Duration(seconds: 1),
-                                        builder: (context) {
-                                        return Text(
-                                          differTime(),
+                                  ), // UI BOX 위젯
+                                  SizedBox(width: 20 * fem),
+                                  Text(
+                                    '아직 안 드신 약이 있어요!',
+                                    style: SafeGoogleFont(
+                                      'Poppins',
+                                      fontSize: 16 * fem,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.5 * fem,
+                                      color: const Color(0xffffffff),
+                                    ),
+                                  ), // 아직 안드신 약이 있어요!
+                                ],
+                              ), // UI BOX and 약 남은 상태
+                              SizedBox(height: 15 * fem),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '다음 알림까지 남은 시간',
+                                    style: SafeGoogleFont(
+                                      'Poppins',
+                                      fontSize: 16 * fem,
+                                      fontWeight: FontWeight.w700,
+                                      height: 1.5,
+                                      color: const Color(0xffffffff),
+                                    ),
+                                  ), // 다음 알림까지 남은시간
+                                  SizedBox(height: 13 * fem),
+                                  alarms.isNotEmpty
+                                      ? TimerBuilder.periodic(
+                                          const Duration(seconds: 1),
+                                          builder: (context) {
+                                          return Text(
+                                            differTime(),
+                                            style: SafeGoogleFont(
+                                              'Poppins',
+                                              fontSize: 14 * fem,
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.5,
+                                              color: const Color(0xffffffff),
+                                            ),
+                                          );
+                                        })
+                                      : Text(
+                                          "No Alarm",
                                           style: SafeGoogleFont(
                                             'Poppins',
                                             fontSize: 14 * fem,
@@ -275,87 +297,78 @@ class _HomePageState extends State<HomePage> {
                                             height: 1.5,
                                             color: const Color(0xffffffff),
                                           ),
-                                        );
-                                      })
-                                    : Text(
-                                        "No Alarm",
-                                        style: SafeGoogleFont(
-                                          'Poppins',
-                                          fontSize: 14 * fem,
-                                          fontWeight: FontWeight.w600,
-                                          height: 1.5,
-                                          color: const Color(0xffffffff),
+                                        ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 5 * fem),
+                                    width: 289 * fem,
+                                    height: 10 * fem,
+                                    decoration: BoxDecoration(
+                                      color: const Color(0x7fffffff),
+                                      borderRadius:
+                                          BorderRadius.circular(99 * fem),
+                                    ),
+                                    child: Align(
+                                      alignment: Alignment.topLeft,
+                                      child: Container(
+                                        width:
+                                            (alarms.isEmpty ? 289 : count) * fem,
+                                        height: 10 * fem,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                              BorderRadius.circular(99 * fem),
+                                          color: const Color(0xc6ffffff),
                                         ),
                                       ),
-                                Container(
-                                  margin: EdgeInsets.only(top: 5 * fem),
-                                  width: 289 * fem,
-                                  height: 10 * fem,
-                                  decoration: BoxDecoration(
-                                    color: const Color(0x7fffffff),
-                                    borderRadius:
-                                        BorderRadius.circular(99 * fem),
-                                  ),
-                                  child: Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Container(
-                                      width:
-                                          (alarms.isEmpty ? 289 : count) * fem,
-                                      height: 10 * fem,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(99 * fem),
-                                        color: const Color(0xc6ffffff),
-                                      ),
                                     ),
-                                  ),
-                                ), // 진행 바
-                              ],
-                            ), // 다음 알림까지 남은 시간
-                          ],
-                        ),
-                      ), // 배경 위 위젯
-                    ],
-                  ),
-                ), // 남은 약 체크 위젯
-                Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          'My Alarm',
-                          style: SafeGoogleFont(
-                            'Poppins',
-                            fontSize: 20 * fem,
-                            fontWeight: FontWeight.w500,
-                            color: const Color(0xff090045),
+                                  ), // 진행 바
+                                ],
+                              ), // 다음 알림까지 남은 시간
+                            ],
                           ),
-                        ),
+                        ), // 배경 위 위젯
                       ],
-                    ), // My Medicine
-                    ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: alarms.length,
-                      itemBuilder: (context, idx) => Container(
-                        padding: EdgeInsets.only(top: 10 * fem),
-                        height: 97 * fem,
-                        child: AlarmTile(
-                          key: Key(alarms[idx].id.toString()),
-                          onDismissed: () {
-                            Alarm.stop(alarms[idx].id)
-                                .then((_) => loadAlarms());
-                          },
-                          ontap: () => navigateToAlarmScreen(alarms[idx]),
-                          onPressed: () {},
-                          name: toTimeForm(idx),
-                          company: "dd",
+                    ),
+                  ), // 남은 약 체크 위젯
+                  Row(
+                    children: [
+                      Text(
+                        'My Alarm',
+                        style: SafeGoogleFont(
+                          'Poppins',
+                          fontSize: 20 * fem,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xff090045),
                         ),
                       ),
-                    ),
-                  ],
-                ), // 알람 리스트
-              ],
+                    ],
+                  ), // My Medicine
+                  alarms.isEmpty
+                      ? Padding(
+                          padding: EdgeInsets.only(top: 80 * fem),
+                          child: const Text("No alarms"),
+                        )
+                      : ListView.builder(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          itemCount: alarms.length,
+                          itemBuilder: (context, idx) => Container(
+                            padding: EdgeInsets.only(top: 10 * fem),
+                            height: 97 * fem,
+                            child: AlarmTile(
+                              key: Key(alarms[idx].id.toString()),
+                              onDismissed: () {
+                                Alarm.stop(alarms[idx].id)
+                                    .then((_) => loadAlarms());
+                              },
+                              ontap: () => navigateToAlarmScreen(alarms[idx]),
+                              onPressed: () {},
+                              name: toTimeForm(idx),
+                              company: "dd",
+                            ),
+                          ),
+                        ), // 알람 리스트
+                ],
+              ),
             ),
           ),
         ),
