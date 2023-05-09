@@ -167,7 +167,6 @@ class _SearchPageState extends State<SearchPage> {
                     ), // Search Bar
                     InkWell(
                       onTap: () {
-                        mediList.clear();
                         readMedicineFromApi();
                       },
                       child: Container(
