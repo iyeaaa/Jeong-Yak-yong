@@ -42,7 +42,7 @@ class _TapBarPageState extends State<TapBarPage>
 
   static const List<Widget> _widgetOptions = <Widget>[
     HomePage(),
-    SearchPage(),
+    SearchPage(mediList: []),
     ListPage(),
     MyPage(),
   ];

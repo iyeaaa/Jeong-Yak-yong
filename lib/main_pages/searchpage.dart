@@ -6,7 +6,12 @@ import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({Key? key}) : super(key: key);
+  final List<Medicine> mediList;
+
+  const SearchPage({
+    Key? key,
+    required this.mediList,
+  }) : super(key: key);
 
   @override
   State<SearchPage> createState() => _SearchPageState();
@@ -15,6 +20,12 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   String itemName = "";
   List<Medicine> mediList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    mediList = widget.mediList;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -185,7 +196,7 @@ class _SearchPageState extends State<SearchPage> {
                         itemCount: mediList.length,
                         itemBuilder: (context, idx) => Container(
                           padding: EdgeInsets.only(top: 10 * fem),
-                          height: 95*fem,
+                          height: 95 * fem,
                           child: MedicineCard(
                             isChecked: false,
                             fem: fem,

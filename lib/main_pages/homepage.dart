@@ -3,9 +3,12 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
 import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
+import '../medicine_data/medicine.dart';
+import '../medicine_data/network.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -17,12 +20,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
   final _authentication = FirebaseAuth.instance;
+  late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
+  late List<Medicine> mediList = [];
   var userEmail = "load fail";
   User? loggedUser; // Nullable
-  late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   int count = 289;
+  String itemName = "";
 
   @override
   void initState() {
@@ -90,7 +95,7 @@ class _HomePageState extends State<HomePage> {
         "${m < 10 ? "0$m" : m} : ${s < 10 ? "0$s" : s}";
   }
 
-  Widget notificationButton(double fem) {
+  Widget refreshButton(double fem) {
     return InkWell(
       onTap: () => _refreshIndicatorKey.currentState?.show(),
       child: Container(
@@ -116,6 +121,80 @@ class _HomePageState extends State<HomePage> {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
 
+    Future<void> readMedicineFromApi() async {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(15),
+              ),
+            ),
+            content: Row(
+              children: [
+                const CircularProgressIndicator(color: Color(0xffa07eff)),
+                SizedBox(width: 15 * fem),
+                Container(
+                  margin: const EdgeInsets.only(left: 7),
+                  child: Text(
+                    "Loading...",
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 17 * fem,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+
+      List<Medicine> tempMediList = [];
+      Network network = Network(itemName: itemName);
+      List<dynamic> listjson = await network.fetchMediList();
+
+      if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              "검색결과가 없습니다.",
+              textAlign: TextAlign.center,
+              style: SafeGoogleFont(
+                'Nunito',
+                fontSize: 15 * fem,
+                fontWeight: FontWeight.w400,
+                height: 1.3625 * fem / fem,
+                color: const Color(0xffffffff),
+              ),
+            ),
+            backgroundColor: const Color(0xff8a60ff),
+          ),
+        );
+        setState(() {
+          mediList.clear();
+        });
+        Navigator.pop(context);
+        return;
+      }
+
+      for (Map<String, dynamic> jsMedi in listjson) {
+        tempMediList.add(network.fetchMedicine(jsMedi));
+      }
+
+      if (context.mounted) {
+        Navigator.pop(context);
+      }
+
+      setState(() {
+        tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
+        mediList = tempMediList;
+      });
+    }
+
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
       body: RefreshIndicator(
@@ -123,9 +202,9 @@ class _HomePageState extends State<HomePage> {
         color: Colors.white,
         backgroundColor: Colors.blue,
         strokeWidth: 4.0,
-        onRefresh: () async {
+        onRefresh: () {
           loadAlarms();
-          await Future.delayed(const Duration(milliseconds: 300));
+          return Future.delayed(const Duration(milliseconds: 300));
         },
         child: SingleChildScrollView(
           child: SafeArea(
@@ -139,8 +218,15 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      introduceText(fem, loggedUser!.email!), // 인사 텍스트
-                      notificationButton(fem), // 알림 버튼
+                      TimerBuilder.periodic(
+                        const Duration(minutes: 5),
+                        builder: (BuildContext context) {
+                          return introduceText(fem, loggedUser!.email!);
+                        },
+                      ),
+                      // 인사 텍스트
+                      refreshButton(fem),
+                      // 알림 버튼
                     ],
                   ), // 인사말과 알림버튼 위젯
                   Form(
@@ -155,14 +241,15 @@ class _HomePageState extends State<HomePage> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
                               color: Colors.white,
-                              border: Border.all(color: const Color(0xff8a60ff)),
+                              border:
+                                  Border.all(color: const Color(0xff8a60ff)),
                             ),
                             width: 230 * fem,
                             height: double.infinity,
                             padding: EdgeInsets.only(left: 20 * fem),
                             child: Center(
                               child: TextFormField(
-                                // onChanged: (value) => itemName = value,
+                                onChanged: (value) => itemName = value,
                                 style: const TextStyle(
                                   fontSize: 20,
                                 ),
@@ -177,9 +264,20 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ), // Search Bar
                           InkWell(
-                            onTap: () {
-                              // mediList.clear();
-                              // readMedicineFromApi();
+                            onTap: () async {
+                              mediList.clear();
+                              await readMedicineFromApi();
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        SearchPage(
+                                          mediList: mediList,
+                                        ),
+                                  ),
+                                );
+                              }
                             },
                             child: Container(
                               padding: EdgeInsets.fromLTRB(
@@ -247,7 +345,9 @@ class _HomePageState extends State<HomePage> {
                                   ), // UI BOX 위젯
                                   SizedBox(width: 20 * fem),
                                   Text(
-                                    '아직 안 드신 약이 있어요!',
+                                    alarms.isNotEmpty
+                                        ? '아직 안 드신 약이 있어요!'
+                                        : '먹을 약이 없어요!',
                                     style: SafeGoogleFont(
                                       'Poppins',
                                       fontSize: 16 * fem,
@@ -310,8 +410,8 @@ class _HomePageState extends State<HomePage> {
                                     child: Align(
                                       alignment: Alignment.topLeft,
                                       child: Container(
-                                        width:
-                                            (alarms.isEmpty ? 289 : count) * fem,
+                                        width: (alarms.isEmpty ? 289 : count) *
+                                            fem,
                                         height: 10 * fem,
                                         decoration: BoxDecoration(
                                           borderRadius:
@@ -363,7 +463,8 @@ class _HomePageState extends State<HomePage> {
                               ontap: () => navigateToAlarmScreen(alarms[idx]),
                               onPressed: () {},
                               name: toTimeForm(idx),
-                              company: "dd",
+                              company:
+                                  toItemName(alarms[idx].notificationBody!),
                             ),
                           ),
                         ), // 알람 리스트
@@ -377,10 +478,33 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+String toItemName(String body) {
+  var nameentp = body.split('&').toList();
+  nameentp.removeLast();
+  String rtn = "";
+  for (String value in nameentp) {
+    rtn += '${value.substring(0, value.indexOf('#'))}, ';
+  }
+  return rtn;
+}
+
 Widget introduceText(double fem, String username) {
   username = username.substring(0, username.indexOf('@'));
+  var curTime = DateTime.now().hour;
+  var timeZone = "";
+
+  if (6 <= curTime && curTime < 12) {
+    timeZone = "Morning";
+  } else if (12 <= curTime && curTime < 18) {
+    timeZone = "Afternoon";
+  } else if (18 <= curTime && curTime < 24) {
+    timeZone = "Evening";
+  } else {
+    timeZone = "Night";
+  }
+
   return Text(
-    'Hello $username,\nGood Morning',
+    'Hello $username,\nGood $timeZone',
     style: SafeGoogleFont(
       'Poppins',
       fontSize: 22 * fem,
