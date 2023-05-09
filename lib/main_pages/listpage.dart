@@ -188,7 +188,7 @@ class _ListPageState extends State<ListPage> {
                 else {
                   return Expanded(
                     child: RefreshIndicator(
-                      onRefresh: () async {
+                      onRefresh: () {
                         setState(() {});
                         return Future.delayed(
                             const Duration(milliseconds: 200));

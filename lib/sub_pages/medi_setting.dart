@@ -295,7 +295,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                             overflow: TextOverflow.ellipsis,
                             style: SafeGoogleFont(
                               'Poppins',
-                              fontSize: 16 * fem,
+                              fontSize: 15 * fem,
                               fontWeight: FontWeight.w700,
                               height: 1.5,
                               color: const Color(0xffffffff),

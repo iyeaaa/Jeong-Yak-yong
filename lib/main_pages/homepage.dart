@@ -35,6 +35,7 @@ class _HomePageState extends State<HomePage> {
     getCurrentUser();
     userEmail = _authentication.currentUser!.email!;
     loadAlarms();
+    differTime();
   }
 
   void loadAlarms() {
