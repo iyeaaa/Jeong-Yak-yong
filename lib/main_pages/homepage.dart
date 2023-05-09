@@ -218,15 +218,8 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      TimerBuilder.periodic(
-                        const Duration(minutes: 5),
-                        builder: (BuildContext context) {
-                          return introduceText(fem, loggedUser!.email!);
-                        },
-                      ),
-                      // 인사 텍스트
-                      refreshButton(fem),
-                      // 알림 버튼
+                      introduceText(fem, loggedUser!.email!), // 인사 텍스트
+                      refreshButton(fem), // 알림 버튼
                     ],
                   ), // 인사말과 알림버튼 위젯
                   Form(

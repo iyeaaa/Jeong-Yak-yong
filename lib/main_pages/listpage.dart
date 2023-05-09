@@ -89,10 +89,46 @@ class _ListPageState extends State<ListPage> {
     // if (res != null && res == true) loadAlarms();
   }
 
+  // 데이터 베이스에서 약 삭제
+  Future<void> removeInDatabase(dynamic element) async {
+    _firestore.collection(userEmail).doc('mediInfo').update({
+      'medicine': FieldValue.arrayRemove([element])
+    });
+  }
+
+  // 삭제할 때 메시지 출력
+  void showRmvMessage(double fem, int idx) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          "${mediList[idx].itemName}을 삭제했습니다.",
+          textAlign: TextAlign.center,
+          style: SafeGoogleFont(
+            'Nunito',
+            fontSize: 15 * fem,
+            fontWeight: FontWeight.w400,
+            height: 1.3625 * fem / fem,
+            color: const Color(0xffffffff),
+          ),
+        ),
+        backgroundColor: const Color(0xff8a60ff),
+      ),
+    );
+  }
+
+  // 배열에서 약 삭제
+  void removeInArray(int idx, dynamic element, double fem) {
+    removeInDatabase(element);
+    showRmvMessage(fem, idx);
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
-    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double fem = MediaQuery
+        .of(context)
+        .size
+        .width / baseWidth;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
@@ -159,36 +195,76 @@ class _ListPageState extends State<ListPage> {
                       },
                       child: ListView.builder(
                         itemCount: snapshot.data.length,
-                        itemBuilder: (context, idx) => InkWell(
-                          onTap: () => setState(() {
-                            if (pressedAlarm) {
-                              isChecked[idx] = !isChecked[idx];
-                            }
-                          }),
-                          child: Container(
-                            margin: EdgeInsets.only(top: 10 * fem),
-                            width: double.infinity,
-                            height: 89 * fem,
-                            child: MedicineCard(
-                              isChecked: isChecked[idx],
-                              fem: fem,
-                              name: snapshot.data[idx].itemName,
-                              company: snapshot.data[idx].entpName,
-                              buttonName: '보기',
-                              ontap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MedicineSettingPage(
-                                      medicine: snapshot.data[idx],
-                                      creating: false,
-                                    ),
+                        itemBuilder: (context, idx) =>
+                            InkWell(
+                              onTap: () =>
+                                  setState(() {
+                                    if (pressedAlarm) {
+                                      isChecked[idx] = !isChecked[idx];
+                                    }
+                                  }),
+                              child: Dismissible(
+                                key: ValueKey(mediList[idx]),
+                                background: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(
+                                        20 * fem),
+                                    color: const Color(0xffa07eff),
                                   ),
-                                );
-                              },
+                                  alignment: Alignment.centerRight,
+                                  padding: const EdgeInsets.only(right: 30),
+                                  child: const Icon(
+                                    Icons.delete,
+                                    size: 30,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                onDismissed: (DismissDirection direction) {
+                                  removeInArray(
+                                    idx,
+                                    {
+                                      'itemName': mediList[idx].itemName,
+                                      'entpName': mediList[idx].entpName,
+                                      'effect': mediList[idx].effect,
+                                      'itemCode': mediList[idx].itemCode,
+                                      'useMethod': mediList[idx].useMethod,
+                                      'warmBeforeHave':
+                                      mediList[idx].warmBeforeHave,
+                                      'warmHave': mediList[idx].warmHave,
+                                      'interaction': mediList[idx].interaction,
+                                      'sideEffect': mediList[idx].sideEffect,
+                                      'depositMethod':
+                                      mediList[idx].depositMethod,
+                                    },
+                                    fem,
+                                  );
+                                },
+                                child: Container(
+                                  margin: EdgeInsets.only(top: 10 * fem),
+                                  width: double.infinity,
+                                  height: 89 * fem,
+                                  child: MedicineCard(
+                                    isChecked: isChecked[idx],
+                                    fem: fem,
+                                    name: snapshot.data[idx].itemName,
+                                    company: snapshot.data[idx].entpName,
+                                    buttonName: '보기',
+                                    ontap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              MedicineSettingPage(
+                                                medicine: snapshot.data[idx],
+                                                creating: false,
+                                              ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ),
                             ),
-                          ),
-                        ),
                       ),
                     ),
                   );
@@ -230,7 +306,7 @@ class _ListPageState extends State<ListPage> {
       ),
       // 하단부 버튼
       floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerDocked, // 버튼 위치 설정
+      FloatingActionButtonLocation.centerDocked, // 버튼 위치 설정
     );
   }
 }
