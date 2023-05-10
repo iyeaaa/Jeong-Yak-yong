@@ -285,34 +285,13 @@ class _ListPageState extends State<ListPage> {
         duration: const Duration(milliseconds: 300),
         child: Padding(
           padding: const EdgeInsets.all(10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              FloatingActionButton(
-                onPressed: () {
-                  final alarmSettings = AlarmSettings(
-                    id: 42,
-                    dateTime: DateTime.now(),
-                    assetAudioPath: 'assets/mozart.mp3',
-                  );
-                  Alarm.set(alarmSettings: alarmSettings);
-                },
-                backgroundColor: Colors.red,
-                heroTag: null,
-                child: const Text("RING NOW", textAlign: TextAlign.center),
-              ), // Ring Now 버튼
-              FloatingActionButton(
-                backgroundColor: const Color(0xffa07eff),
-                onPressed: () => navigateToAlarmScreen(null),
-                child: const Icon(Icons.alarm_add_rounded, size: 30),
-              ), // 알람 추가 버튼
-            ],
+          child: FloatingActionButton(
+            backgroundColor: const Color(0xffa07eff),
+            onPressed: () => navigateToAlarmScreen(null),
+            child: const Icon(Icons.alarm_add_rounded, size: 30),
           ),
         ),
       ),
-      // 하단부 버튼
-      floatingActionButtonLocation:
-          FloatingActionButtonLocation.centerDocked, // 버튼 위치 설정
     );
   }
 }
