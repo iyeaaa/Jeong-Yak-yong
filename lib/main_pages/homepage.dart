@@ -440,7 +440,7 @@ class _HomePageState extends State<HomePage> {
                   alarms.isEmpty
                       ? Padding(
                           padding: EdgeInsets.only(top: 80 * fem),
-                          child: const Text("No alarms"),
+                          child: const Text("설정된 알람이 없어요."),
                         )
                       : ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
@@ -459,7 +459,7 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () {},
                               name: toTimeForm(idx),
                               company:
-                                  toItemName(alarms[idx].notificationBody!),
+                                  toItemName(alarms[idx].notificationBody ?? "NULL"),
                             ),
                           ),
                         ), // 알람 리스트

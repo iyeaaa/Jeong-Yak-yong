@@ -26,7 +26,59 @@ class _ListPageState extends State<ListPage> {
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
   List<Medicine> mediList = [];
+  List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
 
+  @override
+  void initState() {
+    super.initState();
+    userEmail = _firebaseAuth.currentUser!.email!;
+    loadAlarms();
+  }
+
+  // 알람 배열 불러오기
+  void loadAlarms() {
+    setState(() {
+      alarms = Alarm.getAlarms();
+      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+    });
+  }
+
+  // 알람 삭제 기능
+  void rmvAlarms(String itemName, String entpName) {
+    for (int i = 0; i < alarms.length; i++) {
+      // alarmName은 약이 한 개 이상 선택되어야 하므로 Null이 될 수 없음.
+      var alarmName = alarms[i].notificationBody!;
+
+      // 삭제하는 약과 상관 없는 알람이면 무시하기
+      if (!alarmName.contains(itemName)) continue;
+
+      String newBody = alarmName.replaceAll('$itemName#$entpName&', '');
+
+      // 삭제하는 약 한개로만 이루어진 알람은 그냥 삭제시키기
+      if (newBody.isEmpty) {
+        Alarm.stop(alarms[i].id);
+        continue;
+      }
+
+      AlarmSettings alarmSettings = AlarmSettings(
+        id: alarms[i].id,
+        dateTime: alarms[i].dateTime,
+        assetAudioPath: alarms[i].assetAudioPath,
+        loopAudio: alarms[i].loopAudio,
+        vibrate: alarms[i].vibrate,
+        fadeDuration: alarms[i].fadeDuration,
+        notificationTitle: alarms[i].notificationTitle,
+        notificationBody: newBody,
+        enableNotificationOnKill: alarms[i].enableNotificationOnKill,
+        stopOnNotificationOpen: alarms[i].stopOnNotificationOpen,
+      );
+      Alarm.set(alarmSettings: alarmSettings).then((value) => loadAlarms());
+    }
+
+    loadAlarms();
+  }
+
+  // firestore에 저장된 약 목록 불러옴
   Future<List<Medicine>> getMediData() async {
     var list = await _firestore.collection(userEmail).doc('mediInfo').get();
     List<Medicine> tempMediList = [];
@@ -53,12 +105,6 @@ class _ListPageState extends State<ListPage> {
       }
     }
     return mediList = tempMediList;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    userEmail = _firebaseAuth.currentUser!.email!;
   }
 
   // 알람 설정 페이지로 이동
@@ -117,9 +163,10 @@ class _ListPageState extends State<ListPage> {
   }
 
   // 배열에서 약 삭제
-  void removeInArray(int idx, dynamic element, double fem) {
+  Future<void> removeInArray(int idx, dynamic element, double fem) async {
     removeInDatabase(element);
     showRmvMessage(fem, idx);
+    mediList.removeAt(idx);
   }
 
   @override
@@ -198,81 +245,95 @@ class _ListPageState extends State<ListPage> {
                   }
                   // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
                   else {
-                    return RefreshIndicator(
-                      onRefresh: () {
-                        setState(() {});
-                        return Future.delayed(
-                            const Duration(milliseconds: 200));
-                      },
-                      child: ListView.builder(
-                        itemCount: snapshot.data.length,
-                        itemBuilder: (context, idx) => InkWell(
-                          onTap: () => setState(() {
-                            if (pressedAlarm) {
-                              isChecked[idx] = !isChecked[idx];
-                            }
-                          }),
-                          child: Dismissible(
-                            key: ValueKey(mediList[idx]),
-                            background: Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(20 * fem),
-                                color: const Color(0xffa07eff),
-                              ),
-                              alignment: Alignment.centerRight,
-                              padding: const EdgeInsets.only(right: 30),
-                              child: const Icon(
-                                Icons.delete,
-                                size: 30,
-                                color: Colors.white,
-                              ),
-                            ),
-                            onDismissed: (DismissDirection direction) {
-                              removeInArray(
-                                idx,
-                                {
-                                  'itemName': mediList[idx].itemName,
-                                  'entpName': mediList[idx].entpName,
-                                  'effect': mediList[idx].effect,
-                                  'itemCode': mediList[idx].itemCode,
-                                  'useMethod': mediList[idx].useMethod,
-                                  'warmBeforeHave':
-                                      mediList[idx].warmBeforeHave,
-                                  'warmHave': mediList[idx].warmHave,
-                                  'interaction': mediList[idx].interaction,
-                                  'sideEffect': mediList[idx].sideEffect,
-                                  'depositMethod': mediList[idx].depositMethod,
-                                },
-                                fem,
-                              );
+                    return snapshot.data.isEmpty
+                        ? Padding(
+                            padding: EdgeInsets.only(top: 230 * fem),
+                            child: const Text("저장된 약이 없어요"),
+                          )
+                        : RefreshIndicator(
+                            onRefresh: () {
+                              setState(() {});
+                              return Future.delayed(
+                                  const Duration(milliseconds: 200));
                             },
-                            child: Container(
-                              margin: EdgeInsets.only(top: 10 * fem),
-                              width: double.infinity,
-                              height: 89 * fem,
-                              child: MedicineCard(
-                                isChecked: isChecked[idx],
-                                fem: fem,
-                                name: snapshot.data[idx].itemName,
-                                company: snapshot.data[idx].entpName,
-                                buttonName: '보기',
-                                ontap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => MedicineSettingPage(
-                                        medicine: snapshot.data[idx],
-                                        creating: false,
-                                      ),
+                            child: ListView.builder(
+                              itemCount: snapshot.data.length,
+                              itemBuilder: (context, idx) => InkWell(
+                                onTap: () => setState(() {
+                                  if (pressedAlarm) {
+                                    isChecked[idx] = !isChecked[idx];
+                                  }
+                                }),
+                                child: Dismissible(
+                                  key: ValueKey(mediList[idx]),
+                                  background: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.circular(20 * fem),
+                                      color: const Color(0xffa07eff),
                                     ),
-                                  );
-                                },
+                                    alignment: Alignment.centerRight,
+                                    padding: const EdgeInsets.only(right: 30),
+                                    child: const Icon(
+                                      Icons.delete,
+                                      size: 30,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  onDismissed: (DismissDirection direction) {
+                                    removeInArray(
+                                      idx,
+                                      {
+                                        'itemName': mediList[idx].itemName,
+                                        'entpName': mediList[idx].entpName,
+                                        'effect': mediList[idx].effect,
+                                        'itemCode': mediList[idx].itemCode,
+                                        'useMethod': mediList[idx].useMethod,
+                                        'warmBeforeHave':
+                                            mediList[idx].warmBeforeHave,
+                                        'warmHave': mediList[idx].warmHave,
+                                        'interaction':
+                                            mediList[idx].interaction,
+                                        'sideEffect': mediList[idx].sideEffect,
+                                        'depositMethod':
+                                            mediList[idx].depositMethod,
+                                      },
+                                      fem,
+                                    ).then(
+                                      (_) => rmvAlarms(
+                                        mediList[idx].itemName,
+                                        mediList[idx].entpName,
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(top: 10 * fem),
+                                    width: double.infinity,
+                                    height: 89 * fem,
+                                    child: MedicineCard(
+                                      isChecked: isChecked[idx],
+                                      fem: fem,
+                                      name: snapshot.data[idx].itemName,
+                                      company: snapshot.data[idx].entpName,
+                                      buttonName: '보기',
+                                      ontap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                MedicineSettingPage(
+                                              medicine: snapshot.data[idx],
+                                              creating: false,
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                    );
+                          );
                   }
                 },
               ),
@@ -287,7 +348,28 @@ class _ListPageState extends State<ListPage> {
           padding: const EdgeInsets.all(10),
           child: FloatingActionButton(
             backgroundColor: const Color(0xffa07eff),
-            onPressed: () => navigateToAlarmScreen(null),
+            onPressed: () {
+              if (isChecked.contains(true)) {
+                navigateToAlarmScreen(null);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '한 개 이상의 약을 추가해 주세요.',
+                      textAlign: TextAlign.center,
+                      style: SafeGoogleFont(
+                        'Nunito',
+                        fontSize: 15,
+                        fontWeight: FontWeight.w400,
+                        height: 1.3625,
+                        color: const Color(0xffffffff),
+                      ),
+                    ),
+                    backgroundColor: const Color(0xff8a60ff),
+                  ),
+                );
+              }
+            },
             child: const Icon(Icons.alarm_add_rounded, size: 30),
           ),
         ),

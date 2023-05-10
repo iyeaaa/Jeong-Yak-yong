@@ -32,12 +32,13 @@ class _TapBarPageState extends State<TapBarPage>
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
     await Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => AlarmRingScreen(
-            alarmSettings: alarmSettings,
-          ),
-        ));
+      context,
+      MaterialPageRoute(
+        builder: (context) => AlarmRingScreen(
+          alarmSettings: alarmSettings,
+        ),
+      ),
+    );
   }
 
   static const List<Widget> _widgetOptions = <Widget>[
