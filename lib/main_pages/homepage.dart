@@ -105,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         height: 65,
         decoration: BoxDecoration(
           color: Colors.deepPurple[50],
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(28),
         ),
         child: Center(
           child: Icon(
@@ -436,7 +436,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                     ],
-                  ), // My Medicine
+                  ), // My Alarm
                   alarms.isEmpty
                       ? Padding(
                           padding: EdgeInsets.only(top: 80 * fem),
