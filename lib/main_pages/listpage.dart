@@ -25,7 +25,8 @@ class _ListPageState extends State<ListPage> {
   var userEmail = "";
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
-  List<Medicine> mediList = [];
+  late Future<List<Medicine>> futureMediList =
+      getMediData(); // futureMediList 변수가 접근 될 때 getMediData() 함수 실행된다.
   List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
 
   @override
@@ -81,10 +82,10 @@ class _ListPageState extends State<ListPage> {
   // firestore에 저장된 약 목록 불러옴
   Future<List<Medicine>> getMediData() async {
     var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> tempMediList = [];
+    List<Medicine> mediList = [];
     for (var v in list.data()!['medicine']) {
       try {
-        tempMediList.add(
+        mediList.add(
           Medicine(
             itemName: v['itemName'],
             entpName: v['entpName'],
@@ -104,17 +105,19 @@ class _ListPageState extends State<ListPage> {
         }
       }
     }
-    return mediList = tempMediList;
+    return mediList;
   }
 
   // 알람 설정 페이지로 이동
   Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
     String itemNames = "";
-    for (int i = 0; i < mediList.length; i++) {
-      if (isChecked[i]) {
-        itemNames += "${mediList[i].itemName}#${mediList[i].entpName}&";
+    futureMediList.then((list) {
+      for (int i = 0; i < list.length; i++) {
+        if (isChecked[i]) {
+          itemNames += "${list[i].itemName}#${list[i].entpName}&";
+        }
       }
-    }
+    });
 
     await showModalBottomSheet<bool?>(
       context: context,
@@ -143,11 +146,11 @@ class _ListPageState extends State<ListPage> {
   }
 
   // 삭제할 때 메시지 출력
-  void showRmvMessage(double fem, int idx) {
+  void showRmvMessage(double fem, String itemName) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "${mediList[idx].itemName}을 삭제했습니다.",
+          "$itemName을 삭제했습니다.",
           textAlign: TextAlign.center,
           style: SafeGoogleFont(
             'Nunito',
@@ -165,8 +168,9 @@ class _ListPageState extends State<ListPage> {
   // 배열에서 약 삭제
   Future<void> removeInArray(int idx, dynamic element, double fem) async {
     removeInDatabase(element);
-    showRmvMessage(fem, idx);
-    mediList.removeAt(idx);
+    showRmvMessage(fem, element['itemName']);
+    futureMediList.then((value) => value.removeAt(idx));
+    rmvAlarms(element['itemName'], element['entpName']);
   }
 
   @override
@@ -229,7 +233,7 @@ class _ListPageState extends State<ListPage> {
             ), // My Medicine
             Expanded(
               child: FutureBuilder(
-                future: getMediData(),
+                future: futureMediList,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
                   if (snapshot.hasData == false) {
@@ -252,7 +256,9 @@ class _ListPageState extends State<ListPage> {
                           )
                         : RefreshIndicator(
                             onRefresh: () {
-                              setState(() {});
+                              setState(() {
+                                futureMediList = getMediData();
+                              });
                               return Future.delayed(
                                   const Duration(milliseconds: 200));
                             },
@@ -265,7 +271,7 @@ class _ListPageState extends State<ListPage> {
                                   }
                                 }),
                                 child: Dismissible(
-                                  key: ValueKey(mediList[idx]),
+                                  key: ValueKey(snapshot.data[idx]),
                                   background: Container(
                                     decoration: BoxDecoration(
                                       borderRadius:
@@ -281,6 +287,7 @@ class _ListPageState extends State<ListPage> {
                                     ),
                                   ),
                                   onDismissed: (DismissDirection direction) {
+                                    var mediList = snapshot.data;
                                     removeInArray(
                                       idx,
                                       {
@@ -299,11 +306,6 @@ class _ListPageState extends State<ListPage> {
                                             mediList[idx].depositMethod,
                                       },
                                       fem,
-                                    ).then(
-                                      (_) => rmvAlarms(
-                                        mediList[idx].itemName,
-                                        mediList[idx].entpName,
-                                      ),
                                     );
                                   },
                                   child: Container(
