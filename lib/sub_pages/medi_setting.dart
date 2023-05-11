@@ -397,41 +397,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                     );
                   },
                 ),
-              )
-              // if (!widget.creating)
-              //   Expanded(
-              //     child: Center(
-              //       child: alarms.isNotEmpty
-              //           ? ListView.separated(
-              //               itemCount: alarms.length,
-              //               padding: EdgeInsets.only(top: 5 * fem),
-              //               separatorBuilder: (context, index) =>
-              //                   const Divider(),
-              //               itemBuilder: (context, index) {
-              //                 return AlarmTile(
-              //                   key: Key(alarms[index].id.toString()),
-              //                   time: TimeOfDay(
-              //                     hour: alarms[index].dateTime.hour,
-              //                     minute: alarms[index].dateTime.minute,
-              //                   ).format(context),
-              //                   onPressed: () =>
-              //                       navigateToAlarmScreen(alarms[index]),
-              //                   // edit 페이지로 이동하는 함수 호출
-              //                   onDismissed: () {
-              //                     Alarm.stop(alarms[index].id)
-              //                         .then((_) => loadAlarms());
-              //                   },
-              //                   name: medicine.itemName,
-              //                   company: medicine.entpName,
-              //                 ); // 알람 타일,
-              //               },
-              //             )
-              //           : Text(
-              //               "No alarms set",
-              //               style: Theme.of(context).textTheme.titleMedium,
-              //             ),
-              //     ),
-              //   ), // 알람 리스트
+              ),
             ],
           ),
         ),
@@ -493,3 +459,39 @@ class _DayWidgetState extends State<DayWidget> {
     );
   }
 }
+
+
+// if (!widget.creating)
+//   Expanded(
+//     child: Center(
+//       child: alarms.isNotEmpty
+//           ? ListView.separated(
+//               itemCount: alarms.length,
+//               padding: EdgeInsets.only(top: 5 * fem),
+//               separatorBuilder: (context, index) =>
+//                   const Divider(),
+//               itemBuilder: (context, index) {
+//                 return AlarmTile(
+//                   key: Key(alarms[index].id.toString()),
+//                   time: TimeOfDay(
+//                     hour: alarms[index].dateTime.hour,
+//                     minute: alarms[index].dateTime.minute,
+//                   ).format(context),
+//                   onPressed: () =>
+//                       navigateToAlarmScreen(alarms[index]),
+//                   // edit 페이지로 이동하는 함수 호출
+//                   onDismissed: () {
+//                     Alarm.stop(alarms[index].id)
+//                         .then((_) => loadAlarms());
+//                   },
+//                   name: medicine.itemName,
+//                   company: medicine.entpName,
+//                 ); // 알람 타일,
+//               },
+//             )
+//           : Text(
+//               "No alarms set",
+//               style: Theme.of(context).textTheme.titleMedium,
+//             ),
+//     ),
+//   ), // 알람 리스트

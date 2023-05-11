@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
+import 'package:bottom_bar_with_sheet/bottom_bar_with_sheet.dart';
 import 'package:flutter/material.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/homepage.dart';
@@ -20,10 +21,14 @@ class _TapBarPageState extends State<TapBarPage>
     with SingleTickerProviderStateMixin {
   late int _selectedIndex = 0;
   static StreamSubscription? subscription;
+  final _bottomBarController = BottomBarWithSheetController(initialIndex: 0);
 
   @override
   void initState() {
     super.initState();
+    _bottomBarController.stream.listen((opened) {
+      debugPrint('Bottom bar ${opened ? 'opened' : 'closed'}');
+    });
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
@@ -48,41 +53,59 @@ class _TapBarPageState extends State<TapBarPage>
     MyPage(),
   ];
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_filled),
+      bottomNavigationBar: BottomBarWithSheet(
+        bottomBarTheme: const BottomBarTheme(
+          mainButtonPosition: MainButtonPosition.middle,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+          ),
+          itemIconColor: Colors.grey,
+          itemTextStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 10.0,
+          ),
+          selectedItemTextStyle: TextStyle(
+            color: Colors.blue,
+            fontSize: 10.0,
+          ),
+        ),
+        items: const [
+          BottomBarWithSheetItem(
+            icon: Icons.home_filled,
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
+          BottomBarWithSheetItem(
+            icon: Icons.search,
             label: 'Search',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.list_alt),
+          BottomBarWithSheetItem(
+            icon: Icons.list_alt,
             label: 'List',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
+          BottomBarWithSheetItem(
+            icon: Icons.account_circle,
             label: 'MyPage',
           ),
         ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: const Color(0xffa07eff),
-        onTap: _onItemTapped,
+        sheetChild: Center(
+          child: Text(
+            "Another content",
+            style: TextStyle(
+              color: Colors.grey[600],
+              fontSize: 20,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+        ),
+        controller: _bottomBarController,
+        onSelectItem: (index) => debugPrint('$index'),
       ),
     );
   }
