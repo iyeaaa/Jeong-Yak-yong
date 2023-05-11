@@ -9,6 +9,7 @@ class Medicine {
   final String interaction; // 상호작용
   final String sideEffect; // 부작용
   final String depositMethod; // 보관법
+  final String imageUrl;
 
   Medicine({
     required this.itemName,
@@ -21,12 +22,14 @@ class Medicine {
     required this.interaction,
     required this.sideEffect,
     required this.depositMethod,
+    required this.imageUrl,
   });
 
   factory Medicine.fromJson(Map<String, dynamic> json) {
     String removeTag(String x) {
       return x
-          .replaceAll(RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "")
+          .replaceAll(
+          RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "")
           .replaceAll("오.", "오.\n")
           .replaceAll(" .", ".\n");
     }
@@ -41,7 +44,9 @@ class Medicine {
         warmHave: removeTag(json['atpnQesitm'] ?? '알아야 할 내용이 없어요.'),
         interaction: removeTag(json['intrcQesitm'] ?? '알아야 할 내용이 없어요.'),
         sideEffect: removeTag(json['seQesitm'] ?? '알아야 할 내용이 없어요.'),
-        depositMethod: removeTag(json['depositMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
+        depositMethod: removeTag(
+            json['depositMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
+        imageUrl: json['itemImage'] ?? 'No Image',
       );
     } catch (e) {
       return Medicine(
@@ -55,6 +60,7 @@ class Medicine {
         interaction: "no found",
         sideEffect: "no found",
         depositMethod: "no found",
+        imageUrl: 'no found',
       );
     }
   }

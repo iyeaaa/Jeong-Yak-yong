@@ -3,6 +3,7 @@ import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
 import 'package:timer_builder/timer_builder.dart';
@@ -256,7 +257,8 @@ class _HomePageState extends State<HomePage> {
                     children: [
                       FutureBuilder(
                         future: _futureIntro,
-                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
                           //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
                           if (snapshot.hasData == false) {
                             return const Text("loading..");
@@ -491,24 +493,38 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.only(top: 80 * fem),
                           child: const Text("설정된 알람이 없어요."),
                         )
-                      : ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          itemCount: alarms.length,
-                          itemBuilder: (context, idx) => Container(
-                            padding: EdgeInsets.only(top: 10 * fem),
-                            height: 97 * fem,
-                            child: AlarmTile(
-                              key: Key(alarms[idx].id.toString()),
-                              onDismissed: () {
-                                Alarm.stop(alarms[idx].id)
-                                    .then((_) => loadAlarms());
-                              },
-                              ontap: () => navigateToAlarmScreen(alarms[idx]),
-                              onPressed: () {},
-                              name: toTimeForm(idx),
-                              company: toItemName(
-                                  alarms[idx].notificationBody ?? "NULL"),
+                      : AnimationLimiter(
+                          child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: alarms.length,
+                            itemBuilder: (context, idx) =>
+                                AnimationConfiguration.staggeredList(
+                              position: idx,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 10 * fem),
+                                    height: 97 * fem,
+                                    child: AlarmTile(
+                                      key: Key(alarms[idx].id.toString()),
+                                      onDismissed: () {
+                                        Alarm.stop(alarms[idx].id)
+                                            .then((_) => loadAlarms());
+                                      },
+                                      ontap: () =>
+                                          navigateToAlarmScreen(alarms[idx]),
+                                      onPressed: () {},
+                                      name: toTimeForm(idx),
+                                      company: toItemName(
+                                          alarms[idx].notificationBody ??
+                                              "NULL"),
+                                    ),
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
                         ), // 알람 리스트
@@ -532,18 +548,7 @@ String toItemName(String body) {
   return rtn;
 }
 
-Widget loadImageExample() {
-  return Container(
-    decoration: BoxDecoration(
-      border: Border.all(color: Colors.deepPurpleAccent, width: 3),
-    ),
-    child: Image.network(
-      "https://nedrug.mfds.go.kr/pbp/cmn/it"
-      "emImageDownload/1OKRXo9l4DN",
-      width: 100,
-    ),
-  );
-}
+
 
 // Widget myFutureBuilder() {
 //   return FutureBuilder(

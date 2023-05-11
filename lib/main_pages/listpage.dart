@@ -4,6 +4,7 @@ import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
 
@@ -97,6 +98,7 @@ class _ListPageState extends State<ListPage> {
             interaction: v['interaction'],
             sideEffect: v['sideEffect'],
             depositMethod: v['depositMethod'],
+            imageUrl: v['imageUrl']
           ),
         );
       } catch (e) {
@@ -262,74 +264,86 @@ class _ListPageState extends State<ListPage> {
                               return Future.delayed(
                                   const Duration(milliseconds: 200));
                             },
-                            child: ListView.builder(
-                              itemCount: snapshot.data.length,
-                              itemBuilder: (context, idx) => InkWell(
-                                onTap: () => setState(() {
-                                  if (pressedAlarm) {
-                                    isChecked[idx] = !isChecked[idx];
-                                  }
-                                }),
-                                child: Dismissible(
-                                  key: ValueKey(snapshot.data[idx]),
-                                  background: Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                          BorderRadius.circular(20 * fem),
-                                      color: const Color(0xffa07eff),
-                                    ),
-                                    alignment: Alignment.centerRight,
-                                    padding: const EdgeInsets.only(right: 30),
-                                    child: const Icon(
-                                      Icons.delete,
-                                      size: 30,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  onDismissed: (DismissDirection direction) {
-                                    var mediList = snapshot.data;
-                                    removeInArray(
-                                      idx,
-                                      {
-                                        'itemName': mediList[idx].itemName,
-                                        'entpName': mediList[idx].entpName,
-                                        'effect': mediList[idx].effect,
-                                        'itemCode': mediList[idx].itemCode,
-                                        'useMethod': mediList[idx].useMethod,
-                                        'warmBeforeHave':
-                                            mediList[idx].warmBeforeHave,
-                                        'warmHave': mediList[idx].warmHave,
-                                        'interaction':
-                                            mediList[idx].interaction,
-                                        'sideEffect': mediList[idx].sideEffect,
-                                        'depositMethod':
-                                            mediList[idx].depositMethod,
-                                      },
-                                      fem,
-                                    );
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.only(top: 10 * fem),
-                                    width: double.infinity,
-                                    height: 89 * fem,
-                                    child: MedicineCard(
-                                      isChecked: isChecked[idx],
-                                      fem: fem,
-                                      name: snapshot.data[idx].itemName,
-                                      company: snapshot.data[idx].entpName,
-                                      buttonName: '보기',
-                                      ontap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                MedicineSettingPage(
-                                              medicine: snapshot.data[idx],
-                                              creating: false,
+                            child: AnimationLimiter(
+                              child: ListView.builder(
+                                itemCount: snapshot.data.length,
+                                itemBuilder: (context, idx) => InkWell(
+                                  onTap: () => setState(() {
+                                    if (pressedAlarm) {
+                                      isChecked[idx] = !isChecked[idx];
+                                    }
+                                  }),
+                                  child: AnimationConfiguration.staggeredList(
+                                    position: idx,
+                                    duration: const Duration(milliseconds: 375),
+                                    child: SlideAnimation(
+                                      verticalOffset: 50,
+                                      child: FadeInAnimation(
+                                        child: Dismissible(
+                                          key: ValueKey(snapshot.data[idx]),
+                                          background: Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(20 * fem),
+                                              color: const Color(0xffa07eff),
+                                            ),
+                                            alignment: Alignment.centerRight,
+                                            padding: const EdgeInsets.only(right: 30),
+                                            child: const Icon(
+                                              Icons.delete,
+                                              size: 30,
+                                              color: Colors.white,
                                             ),
                                           ),
-                                        );
-                                      },
+                                          onDismissed: (DismissDirection direction) {
+                                            var mediList = snapshot.data;
+                                            removeInArray(
+                                              idx,
+                                              {
+                                                'itemName': mediList[idx].itemName,
+                                                'entpName': mediList[idx].entpName,
+                                                'effect': mediList[idx].effect,
+                                                'itemCode': mediList[idx].itemCode,
+                                                'useMethod': mediList[idx].useMethod,
+                                                'warmBeforeHave':
+                                                    mediList[idx].warmBeforeHave,
+                                                'warmHave': mediList[idx].warmHave,
+                                                'interaction':
+                                                    mediList[idx].interaction,
+                                                'sideEffect': mediList[idx].sideEffect,
+                                                'depositMethod':
+                                                    mediList[idx].depositMethod,
+                                                'imageUrl': mediList[idx].imageUrl,
+                                              },
+                                              fem,
+                                            );
+                                          },
+                                          child: Container(
+                                            margin: EdgeInsets.only(top: 10 * fem),
+                                            width: double.infinity,
+                                            height: 89 * fem,
+                                            child: MedicineCard(
+                                              isChecked: isChecked[idx],
+                                              fem: fem,
+                                              name: snapshot.data[idx].itemName,
+                                              company: snapshot.data[idx].entpName,
+                                              buttonName: '보기',
+                                              ontap: () {
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        MedicineSettingPage(
+                                                      medicine: snapshot.data[idx],
+                                                      creating: false,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                     ),
                                   ),
                                 ),

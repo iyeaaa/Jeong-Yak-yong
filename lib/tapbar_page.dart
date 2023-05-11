@@ -19,20 +19,19 @@ class TapBarPage extends StatefulWidget {
 
 class _TapBarPageState extends State<TapBarPage>
     with SingleTickerProviderStateMixin {
-  late int _selectedIndex = 0;
   static StreamSubscription? subscription;
   final _bottomBarController = BottomBarWithSheetController(initialIndex: 0);
+  final _pageController = PageController();
 
   @override
   void initState() {
-    super.initState();
     _bottomBarController.stream.listen((opened) {
       debugPrint('Bottom bar ${opened ? 'opened' : 'closed'}');
     });
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
-    _selectedIndex = widget.selectedIndex;
+    super.initState();
   }
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
@@ -46,20 +45,23 @@ class _TapBarPageState extends State<TapBarPage>
     );
   }
 
-  static const List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    SearchPage(mediList: []),
-    ListPage(),
-    MyPage(),
-  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: _widgetOptions.elementAt(_selectedIndex),
+      body: PageView(
+        controller: _pageController,
+        children: const [
+          HomePage(),
+          SearchPage(mediList: []),
+          ListPage(),
+          MyPage(),
+        ],
       ),
       bottomNavigationBar: BottomBarWithSheet(
+        autoClose: false,
+        duration: const Duration(milliseconds: 700),
+        curve: Curves.fastOutSlowIn,
         bottomBarTheme: const BottomBarTheme(
           mainButtonPosition: MainButtonPosition.middle,
           decoration: BoxDecoration(
@@ -71,9 +73,21 @@ class _TapBarPageState extends State<TapBarPage>
             color: Colors.grey,
             fontSize: 10.0,
           ),
+          selectedItemIconColor: Color(0xffA07EFF),
           selectedItemTextStyle: TextStyle(
-            color: Colors.blue,
+            color: Color(0xffA07EFF),
             fontSize: 10.0,
+            fontWeight: FontWeight.bold
+          ),
+        ),
+        mainActionButtonTheme: const MainActionButtonTheme(
+          size: 50,
+          color: Color(0xffA07EFF),
+          splash: Colors.purple,
+          icon: Icon(
+            Icons.add,
+            color: Colors.white,
+            size: 35,
           ),
         ),
         items: const [
@@ -105,7 +119,7 @@ class _TapBarPageState extends State<TapBarPage>
           ),
         ),
         controller: _bottomBarController,
-        onSelectItem: (index) => debugPrint('$index'),
+        onSelectItem: (index) => _pageController.jumpToPage(index),
       ),
     );
   }
