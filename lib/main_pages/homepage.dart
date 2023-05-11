@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
@@ -23,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   final _authentication = FirebaseAuth.instance;
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediList = [];
+  late Future<Widget> futureIntro = introduceText();
   var userEmail = "load fail";
   User? loggedUser; // Nullable
   int count = 289;
@@ -114,6 +116,38 @@ class _HomePageState extends State<HomePage> {
             size: 35 * fem,
           ),
         ),
+      ),
+    );
+  }
+
+  Future<Widget> introduceText() async {
+    var firestore = await FirebaseFirestore.instance
+        .collection(userEmail)
+        .doc('mediInfo')
+        .get();
+
+    var userName = firestore['name'];
+    var curTime = DateTime.now().hour;
+    var timeZone = "";
+
+    if (6 <= curTime && curTime < 12) {
+      timeZone = "Morning";
+    } else if (12 <= curTime && curTime < 18) {
+      timeZone = "Afternoon";
+    } else if (18 <= curTime && curTime < 24) {
+      timeZone = "Evening";
+    } else {
+      timeZone = "Night";
+    }
+
+    return Text(
+      'Hello $userName,\nGood $timeZone',
+      style: SafeGoogleFont(
+        'Poppins',
+        fontSize: 22,
+        fontWeight: FontWeight.w500,
+        height: 1.5,
+        color: const Color(0xff0a0146),
       ),
     );
   }
@@ -220,7 +254,23 @@ class _HomePageState extends State<HomePage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      introduceText(fem, loggedUser!.email!), // 인사 텍스트
+                      FutureBuilder(
+                        future: futureIntro,
+                        builder: (BuildContext context, AsyncSnapshot snapshot) {
+                          //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
+                          if (snapshot.hasData == false) {
+                            return const Text("loading..");
+                          }
+                          //error가 발생하게 될 경우 반환하게 되는 부분
+                          else if (snapshot.hasError) {
+                            return const Text("ERROR");
+                          }
+                          // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
+                          else {
+                            return snapshot.data;
+                          }
+                        },
+                      ),
                       refreshButton(fem), // 알림 버튼
                     ],
                   ), // 인사말과 알림버튼 위젯
@@ -266,10 +316,9 @@ class _HomePageState extends State<HomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) =>
-                                        SearchPage(
-                                          mediList: mediList,
-                                        ),
+                                    builder: (context) => SearchPage(
+                                      mediList: mediList,
+                                    ),
                                   ),
                                 );
                               }
@@ -458,8 +507,8 @@ class _HomePageState extends State<HomePage> {
                               ontap: () => navigateToAlarmScreen(alarms[idx]),
                               onPressed: () {},
                               name: toTimeForm(idx),
-                              company:
-                                  toItemName(alarms[idx].notificationBody ?? "NULL"),
+                              company: toItemName(
+                                  alarms[idx].notificationBody ?? "NULL"),
                             ),
                           ),
                         ), // 알람 리스트
@@ -481,33 +530,6 @@ String toItemName(String body) {
     rtn += '${value.substring(0, value.indexOf('#'))}, ';
   }
   return rtn;
-}
-
-Widget introduceText(double fem, String username) {
-  username = username.substring(0, username.indexOf('@'));
-  var curTime = DateTime.now().hour;
-  var timeZone = "";
-
-  if (6 <= curTime && curTime < 12) {
-    timeZone = "Morning";
-  } else if (12 <= curTime && curTime < 18) {
-    timeZone = "Afternoon";
-  } else if (18 <= curTime && curTime < 24) {
-    timeZone = "Evening";
-  } else {
-    timeZone = "Night";
-  }
-
-  return Text(
-    'Hello $username,\nGood $timeZone',
-    style: SafeGoogleFont(
-      'Poppins',
-      fontSize: 22 * fem,
-      fontWeight: FontWeight.w500,
-      height: 1.5 * fem / fem,
-      color: const Color(0xff0a0146),
-    ),
-  );
 }
 
 Widget loadImageExample() {

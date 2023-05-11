@@ -61,8 +61,8 @@ class _SignUpPageState extends State<SignUpPage> {
                     margin: EdgeInsets.only(top: 10 * fem),
                     child: TextFormField(
                       validator: (v) {
-                        if (v!.isEmpty || v.length < 4) {
-                          return '4자 이상의 사용자 이름을 입력하세요';
+                        if (v!.isEmpty) {
+                          return '사용자 이름을 입력하세요';
                         }
                         return null;
                       },
@@ -164,6 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Navigator.pop(context);
                     showSnackBar(context, "회원가입에 성공했습니다", fem);
                     _firestore.collection(userEmail).doc('mediInfo').set({
+                      "name": userName,
                       "medicine": [],
                     });
                   }
