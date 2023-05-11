@@ -24,7 +24,7 @@ class _HomePageState extends State<HomePage> {
   final _authentication = FirebaseAuth.instance;
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediList = [];
-  late Future<Widget> futureIntro = introduceText();
+  late final Future<Widget> _futureIntro = introduceText();
   var userEmail = "load fail";
   User? loggedUser; // Nullable
   int count = 289;
@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       FutureBuilder(
-                        future: futureIntro,
+                        future: _futureIntro,
                         builder: (BuildContext context, AsyncSnapshot snapshot) {
                           //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
                           if (snapshot.hasData == false) {
