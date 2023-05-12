@@ -13,9 +13,14 @@ import '../util/medicine_card.dart';
 import '../util/utils.dart';
 
 class ListPage extends StatefulWidget {
-  final Future<List<Medicine>> fMediList;
+  final Future<List<Medicine>> _futureMediList;
+  final ValueChanged<Future<List<Medicine>>> update;
 
-  const ListPage({Key? key, required this.fMediList,}) : super(key: key);
+  const ListPage({
+    Key? key,
+    required Future<List<Medicine>> futureMediList, required this.update,
+  })  : _futureMediList = futureMediList,
+        super(key: key);
 
   @override
   State<ListPage> createState() => _ListPageState();
@@ -29,14 +34,14 @@ class _ListPageState extends State<ListPage> {
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
   List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
-  late Future<List<Medicine>> futureMediList;
+  late Future<List<Medicine>> _futureMediList;
 
   @override
   void initState() {
     super.initState();
     userEmail = _firebaseAuth.currentUser!.email!;
     loadAlarms();
-    futureMediList = widget.fMediList;
+    _futureMediList = widget._futureMediList;
   }
 
   // 알람 배열 불러오기
@@ -85,7 +90,7 @@ class _ListPageState extends State<ListPage> {
   // 알람 설정 페이지로 이동
   Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
     String itemNames = "";
-    futureMediList.then((list) {
+    _futureMediList.then((list) {
       for (int i = 0; i < list.length; i++) {
         if (isChecked[i]) {
           itemNames += "${list[i].itemName}#${list[i].entpName}&";
@@ -139,11 +144,40 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
+  // firestore에 저장된 약 목록 불러옴
+  Future<List<Medicine>> getMediData() async {
+    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
+    List<Medicine> mediList = [];
+    for (var v in list.data()!['medicine']) {
+      try {
+        mediList.add(
+          Medicine(
+              itemName: v['itemName'],
+              entpName: v['entpName'],
+              effect: v['effect'],
+              itemCode: v['itemCode'],
+              useMethod: v['useMethod'],
+              warmBeforeHave: v['warmBeforeHave'],
+              warmHave: v['warmHave'],
+              interaction: v['interaction'],
+              sideEffect: v['sideEffect'],
+              depositMethod: v['depositMethod'],
+              imageUrl: v['imageUrl']),
+        );
+      } catch (e) {
+        if (context.mounted) {
+          debugPrint("medi load ERROR");
+        }
+      }
+    }
+    return mediList;
+  }
+
   // 배열에서 약 삭제
   Future<void> removeInArray(int idx, dynamic element, double fem) async {
     removeInDatabase(element);
     showRmvMessage(fem, element['itemName']);
-    futureMediList.then((value) => value.removeAt(idx));
+    _futureMediList.then((value) => value.removeAt(idx));
     rmvAlarms(element['itemName'], element['entpName']);
   }
 
@@ -207,7 +241,7 @@ class _ListPageState extends State<ListPage> {
             ), // My Medicine
             Expanded(
               child: FutureBuilder(
-                future: futureMediList,
+                future: _futureMediList,
                 builder: (BuildContext context, AsyncSnapshot snapshot) {
                   //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
                   if (snapshot.hasData == false) {
@@ -230,7 +264,9 @@ class _ListPageState extends State<ListPage> {
                           )
                         : RefreshIndicator(
                             onRefresh: () {
-                              setState(() {});
+                              setState(() {
+                                _futureMediList = getMediData();
+                              });
                               return Future.delayed(
                                   const Duration(milliseconds: 200));
                             },
@@ -254,49 +290,61 @@ class _ListPageState extends State<ListPage> {
                                           background: Container(
                                             decoration: BoxDecoration(
                                               borderRadius:
-                                                  BorderRadius.circular(20 * fem),
+                                                  BorderRadius.circular(
+                                                      20 * fem),
                                               color: const Color(0xffa07eff),
                                             ),
                                             alignment: Alignment.centerRight,
-                                            padding: const EdgeInsets.only(right: 30),
+                                            padding: const EdgeInsets.only(
+                                                right: 30),
                                             child: const Icon(
                                               Icons.delete,
                                               size: 30,
                                               color: Colors.white,
                                             ),
                                           ),
-                                          onDismissed: (DismissDirection direction) {
+                                          onDismissed:
+                                              (DismissDirection direction) {
                                             var mediList = snapshot.data;
                                             removeInArray(
                                               idx,
                                               {
-                                                'itemName': mediList[idx].itemName,
-                                                'entpName': mediList[idx].entpName,
+                                                'itemName':
+                                                    mediList[idx].itemName,
+                                                'entpName':
+                                                    mediList[idx].entpName,
                                                 'effect': mediList[idx].effect,
-                                                'itemCode': mediList[idx].itemCode,
-                                                'useMethod': mediList[idx].useMethod,
-                                                'warmBeforeHave':
-                                                    mediList[idx].warmBeforeHave,
-                                                'warmHave': mediList[idx].warmHave,
+                                                'itemCode':
+                                                    mediList[idx].itemCode,
+                                                'useMethod':
+                                                    mediList[idx].useMethod,
+                                                'warmBeforeHave': mediList[idx]
+                                                    .warmBeforeHave,
+                                                'warmHave':
+                                                    mediList[idx].warmHave,
                                                 'interaction':
                                                     mediList[idx].interaction,
-                                                'sideEffect': mediList[idx].sideEffect,
+                                                'sideEffect':
+                                                    mediList[idx].sideEffect,
                                                 'depositMethod':
                                                     mediList[idx].depositMethod,
-                                                'imageUrl': mediList[idx].imageUrl,
+                                                'imageUrl':
+                                                    mediList[idx].imageUrl,
                                               },
                                               fem,
                                             );
                                           },
                                           child: Container(
-                                            margin: EdgeInsets.only(top: 10 * fem),
+                                            margin:
+                                                EdgeInsets.only(top: 10 * fem),
                                             width: double.infinity,
                                             height: 89 * fem,
                                             child: MedicineCard(
                                               isChecked: isChecked[idx],
                                               fem: fem,
                                               name: snapshot.data[idx].itemName,
-                                              company: snapshot.data[idx].entpName,
+                                              company:
+                                                  snapshot.data[idx].entpName,
                                               buttonName: '보기',
                                               ontap: () {
                                                 Navigator.push(
@@ -304,8 +352,10 @@ class _ListPageState extends State<ListPage> {
                                                   MaterialPageRoute(
                                                     builder: (context) =>
                                                         MedicineSettingPage(
-                                                      medicine: snapshot.data[idx],
+                                                      medicine:
+                                                          snapshot.data[idx],
                                                       creating: false,
+                                                      update: widget.update,
                                                     ),
                                                   ),
                                                 );

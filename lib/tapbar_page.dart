@@ -29,6 +29,8 @@ class _TapBarPageState extends State<TapBarPage>
   final _pageController = PageController();
   late String userEmail;
   late Future<List<Medicine>> futureMediList = getMediData();
+  late Future<String> futureUserName = getUserName();
+
   // futureMediList 변수가 접근 될 때 getMediData() 함수 실행된다.
 
   @override
@@ -41,6 +43,17 @@ class _TapBarPageState extends State<TapBarPage>
     );
     userEmail = _firebaseAuth.currentUser!.email!;
     super.initState();
+  }
+
+  void update(Future<List<Medicine>> newData) {
+    setState(() {
+      futureMediList = newData;
+      futureMediList.then((value) {
+        for (var v in value) {
+          print(v.itemName);
+        }
+      });
+    });
   }
 
   // firestore에 저장된 약 목록 불러옴
@@ -61,8 +74,7 @@ class _TapBarPageState extends State<TapBarPage>
               interaction: v['interaction'],
               sideEffect: v['sideEffect'],
               depositMethod: v['depositMethod'],
-              imageUrl: v['imageUrl']
-          ),
+              imageUrl: v['imageUrl']),
         );
       } catch (e) {
         if (context.mounted) {
@@ -71,6 +83,14 @@ class _TapBarPageState extends State<TapBarPage>
       }
     }
     return mediList;
+  }
+
+  Future<String> getUserName() async {
+    var firestore = await FirebaseFirestore.instance
+        .collection(userEmail)
+        .doc('mediInfo')
+        .get();
+    return firestore['name'];
   }
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
@@ -90,9 +110,18 @@ class _TapBarPageState extends State<TapBarPage>
       body: PageView(
         controller: _pageController,
         children: [
-          const HomePage(),
-          const SearchPage(mediList: []),
-          ListPage(fMediList: futureMediList,),
+          HomePage(
+            futureUserName: futureUserName,
+            futureMediList: futureMediList,
+            update: update,
+          ),
+          SearchPage(
+            mediList: const [],
+            update: update,
+          ),
+          ListPage(
+            futureMediList: futureMediList, update: update,
+          ),
           const MyPage(),
         ],
       ),

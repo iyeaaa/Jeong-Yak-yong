@@ -12,11 +12,13 @@ import '../util/utils.dart';
 class MedicineSettingPage extends StatefulWidget {
   final Medicine medicine;
   final bool creating;
+  final ValueChanged<Future<List<Medicine>>> update;
 
   const MedicineSettingPage({
     Key? key,
     required this.medicine,
     required this.creating,
+    required this.update,
   }) : super(key: key);
 
   @override
@@ -255,10 +257,41 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     );
   }
 
+  // firestore에 저장된 약 목록 불러옴
+  Future<List<Medicine>> getMediData() async {
+    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
+    List<Medicine> mediList = [];
+    for (var v in list.data()!['medicine']) {
+      try {
+        mediList.add(
+          Medicine(
+              itemName: v['itemName'],
+              entpName: v['entpName'],
+              effect: v['effect'],
+              itemCode: v['itemCode'],
+              useMethod: v['useMethod'],
+              warmBeforeHave: v['warmBeforeHave'],
+              warmHave: v['warmHave'],
+              interaction: v['interaction'],
+              sideEffect: v['sideEffect'],
+              depositMethod: v['depositMethod'],
+              imageUrl: v['imageUrl']
+          ),
+        );
+      } catch (e) {
+        if (context.mounted) {
+          debugPrint("medi load ERROR");
+        }
+      }
+    }
+    return mediList;
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
+    void _;
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
@@ -284,10 +317,10 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                       'imageUrl': medicine.imageUrl,
                     });
               showAddOrRmvMessage(fem);
+              widget.update(getMediData());
               if (context.mounted) {
                 Navigator.pop(context);
               }
-              setState(() {});
             },
             icon: Icon(
               widget.creating ? Icons.add : Icons.playlist_remove,

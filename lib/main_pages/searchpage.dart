@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/network.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
@@ -7,10 +8,11 @@ import '../util/utils.dart';
 
 class SearchPage extends StatefulWidget {
   final List<Medicine> mediList;
+  final ValueChanged<Future<List<Medicine>>> update;
 
   const SearchPage({
     Key? key,
-    required this.mediList,
+    required this.mediList, required this.update,
   }) : super(key: key);
 
   @override
@@ -18,12 +20,15 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  var userEmail = "";
   String itemName = "";
   List<Medicine> mediList = [];
 
   @override
   void initState() {
     super.initState();
+    userEmail = _firebaseAuth.currentUser!.email!;
     mediList = widget.mediList;
   }
 
@@ -207,6 +212,7 @@ class _SearchPageState extends State<SearchPage> {
                                 builder: (context) => MedicineSettingPage(
                                   medicine: mediList[idx],
                                   creating: true,
+                                  update: widget.update,
                                 ),
                               ),
                             ),

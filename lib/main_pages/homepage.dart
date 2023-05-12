@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
@@ -13,7 +12,16 @@ import '../medicine_data/network.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final Future<String> futureUserName;
+  final Future<void> futureMediList;
+  final ValueChanged<Future<List<Medicine>>> update;
+
+  const HomePage(
+      {Key? key,
+      required this.futureUserName,
+      required this.futureMediList,
+      required this.update})
+      : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -25,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   final _authentication = FirebaseAuth.instance;
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediList = [];
-  late final Future<Widget> _futureIntro = introduceText();
+  late final Future<String> _futureUserName;
   var userEmail = "load fail";
   User? loggedUser; // Nullable
   int count = 289;
@@ -40,6 +48,7 @@ class _HomePageState extends State<HomePage> {
     if (alarms.isNotEmpty) {
       differTime();
     }
+    _futureUserName = widget.futureUserName;
   }
 
   void loadAlarms() {
@@ -121,13 +130,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Future<Widget> introduceText() async {
-    var firestore = await FirebaseFirestore.instance
-        .collection(userEmail)
-        .doc('mediInfo')
-        .get();
-
-    var userName = firestore['name'];
+  Widget introduceText(String userName) {
     var curTime = DateTime.now().hour;
     var timeZone = "";
 
@@ -153,84 +156,84 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> readMedicineFromApi(double fem) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+          content: Row(
+            children: [
+              const CircularProgressIndicator(color: Color(0xffa07eff)),
+              SizedBox(width: 15 * fem),
+              Container(
+                margin: const EdgeInsets.only(left: 7),
+                child: Text(
+                  "Loading...",
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 17 * fem,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    List<Medicine> tempMediList = [];
+    Network network = Network(itemName: itemName);
+    List<dynamic> listjson = await network.fetchMediList();
+
+    if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "검색결과가 없습니다.",
+            textAlign: TextAlign.center,
+            style: SafeGoogleFont(
+              'Nunito',
+              fontSize: 15 * fem,
+              fontWeight: FontWeight.w400,
+              height: 1.3625 * fem / fem,
+              color: const Color(0xffffffff),
+            ),
+          ),
+          backgroundColor: const Color(0xff8a60ff),
+        ),
+      );
+      setState(() {
+        mediList.clear();
+      });
+      Navigator.pop(context);
+      return;
+    }
+
+    for (Map<String, dynamic> jsMedi in listjson) {
+      tempMediList.add(network.fetchMedicine(jsMedi));
+    }
+
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+
+    setState(() {
+      tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
+      mediList = tempMediList;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
-
-    Future<void> readMedicineFromApi() async {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-            content: Row(
-              children: [
-                const CircularProgressIndicator(color: Color(0xffa07eff)),
-                SizedBox(width: 15 * fem),
-                Container(
-                  margin: const EdgeInsets.only(left: 7),
-                  child: Text(
-                    "Loading...",
-                    style: SafeGoogleFont(
-                      'Poppins',
-                      fontSize: 17 * fem,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-
-      List<Medicine> tempMediList = [];
-      Network network = Network(itemName: itemName);
-      List<dynamic> listjson = await network.fetchMediList();
-
-      if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "검색결과가 없습니다.",
-              textAlign: TextAlign.center,
-              style: SafeGoogleFont(
-                'Nunito',
-                fontSize: 15 * fem,
-                fontWeight: FontWeight.w400,
-                height: 1.3625 * fem / fem,
-                color: const Color(0xffffffff),
-              ),
-            ),
-            backgroundColor: const Color(0xff8a60ff),
-          ),
-        );
-        setState(() {
-          mediList.clear();
-        });
-        Navigator.pop(context);
-        return;
-      }
-
-      for (Map<String, dynamic> jsMedi in listjson) {
-        tempMediList.add(network.fetchMedicine(jsMedi));
-      }
-
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
-
-      setState(() {
-        tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
-        mediList = tempMediList;
-      });
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
@@ -256,7 +259,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       FutureBuilder(
-                        future: _futureIntro,
+                        future: _futureUserName,
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
@@ -269,7 +272,7 @@ class _HomePageState extends State<HomePage> {
                           }
                           // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
                           else {
-                            return snapshot.data;
+                            return introduceText(snapshot.data);
                           }
                         },
                       ),
@@ -313,13 +316,14 @@ class _HomePageState extends State<HomePage> {
                           InkWell(
                             onTap: () async {
                               mediList.clear();
-                              await readMedicineFromApi();
+                              await readMedicineFromApi(fem);
                               if (context.mounted) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SearchPage(
                                       mediList: mediList,
+                                      update: widget.update,
                                     ),
                                   ),
                                 );
@@ -547,8 +551,6 @@ String toItemName(String body) {
   }
   return rtn;
 }
-
-
 
 // Widget myFutureBuilder() {
 //   return FutureBuilder(
