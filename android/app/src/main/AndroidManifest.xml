@@ -6,7 +6,7 @@
     <!-- For apps with targetSDK=31 (Android 12) -->
     <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
    <application
-        android:label="medicine_app"
+        android:label="정약용"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <service

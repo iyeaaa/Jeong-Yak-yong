@@ -238,22 +238,22 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       ),
       child: medicine.imageUrl == "No Image"
           ? SizedBox(
-              width: 400,
-              height: 300,
-              child: Center(
-                  child: Text(
-                "이미지가 없어요",
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
-              )),
-            )
+        width: 400,
+        height: 300,
+        child: Center(
+            child: Text(
+              "이미지가 없어요",
+              style: SafeGoogleFont(
+                'Poppins',
+                fontSize: 17,
+                fontWeight: FontWeight.w600,
+              ),
+            )),
+      )
           : Image.network(
-              medicine.imageUrl,
-              width: 400,
-            ),
+        medicine.imageUrl,
+        width: 400,
+      ),
     );
   }
 
@@ -304,18 +304,18 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
               widget.creating
                   ? await appendToArray(fem)
                   : await removeToArray({
-                      'itemName': medicine.itemName,
-                      'entpName': medicine.entpName,
-                      'effect': medicine.effect,
-                      'itemCode': medicine.itemCode,
-                      'useMethod': medicine.useMethod,
-                      'warmBeforeHave': medicine.warmBeforeHave,
-                      'warmHave': medicine.warmHave,
-                      'interaction': medicine.interaction,
-                      'sideEffect': medicine.sideEffect,
-                      'depositMethod': medicine.depositMethod,
-                      'imageUrl': medicine.imageUrl,
-                    });
+                'itemName': medicine.itemName,
+                'entpName': medicine.entpName,
+                'effect': medicine.effect,
+                'itemCode': medicine.itemCode,
+                'useMethod': medicine.useMethod,
+                'warmBeforeHave': medicine.warmBeforeHave,
+                'warmHave': medicine.warmHave,
+                'interaction': medicine.interaction,
+                'sideEffect': medicine.sideEffect,
+                'depositMethod': medicine.depositMethod,
+                'imageUrl': medicine.imageUrl,
+              });
               showAddOrRmvMessage(fem);
               widget.update(getMediData());
               if (context.mounted) {
@@ -357,251 +357,15 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             30 * fem,
             20 * fem,
           ),
-          child: Column(
-            children: [
-              Expanded(
-                child: ListView(
-                  children: [
-                    SlimyCard(
-                      color: Colors.transparent,
-                      width: 400,
-                      topCardHeight: 200,
-                      bottomCardHeight: 200,
-                      borderRadius: 15,
-                      topCardWidget: profile(fem),
-                      bottomCardWidget: loadImageExample(),
-                      slimeEnabled: true,
-                    ),
-                  ],
-                ),
-              ),
-              // Container(
-              //   margin: EdgeInsets.fromLTRB(0, 10*fem, 0, 10*fem),
-              //   width: double.infinity,
-              //   height: 195 * fem,
-              //   child: Stack(
-              //     children: [
-              //       SizedBox(
-              //         width: 324 * fem,
-              //         height: 195 * fem,
-              //         child: Image.asset(
-              //           'image/group-842-eqt.png',
-              //           width: 324 * fem,
-              //           height: 195 * fem,
-              //         ),
-              //       ), // 배경
-              //       Container(
-              //         margin: EdgeInsets.fromLTRB(
-              //             20 * fem, 20 * fem, 20 * fem, 20 * fem),
-              //         child: Column(
-              //           crossAxisAlignment: CrossAxisAlignment.start,
-              //           children: [
-              //             Row(
-              //               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //               children: [
-              //                 Row(
-              //                   children: [
-              //                     Container(
-              //                       width: 50 * fem,
-              //                       height: 50 * fem,
-              //                       decoration: BoxDecoration(
-              //                         borderRadius:
-              //                         BorderRadius.circular(18 * fem),
-              //                         color: const Color(0xffffffff),
-              //                       ),
-              //                       child: Center(
-              //                         child: Text(
-              //                           'UI',
-              //                           textAlign: TextAlign.center,
-              //                           style: SafeGoogleFont(
-              //                             'Poppins',
-              //                             fontSize: 16 * fem,
-              //                             fontWeight: FontWeight.w700,
-              //                             height: 1.5 * fem,
-              //                             color: const Color(0xffa07eff),
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ), // UI BOX 위젯
-              //                     SizedBox(width: 10 * fem),
-              //                     SizedBox(
-              //                       width: 120 * fem,
-              //                       child: Column(
-              //                         crossAxisAlignment:
-              //                         CrossAxisAlignment.start,
-              //                         children: [
-              //                           Text(
-              //                             medicine.itemName,
-              //                             style: SafeGoogleFont(
-              //                               'Poppins',
-              //                               fontSize: 16 * fem,
-              //                               fontWeight: FontWeight.w700,
-              //                               height: 1.5 * fem,
-              //                               color: const Color(0xffffffff),
-              //                             ),
-              //                             overflow: TextOverflow.ellipsis,
-              //                           ),
-              //                           Text(
-              //                             medicine.entpName,
-              //                             style: SafeGoogleFont(
-              //                               'Poppins',
-              //                               fontSize: 12 * fem,
-              //                               fontWeight: FontWeight.w600,
-              //                               height: 1.5 * fem,
-              //                               color: const Color(0xffffffff),
-              //                             ),
-              //                             overflow: TextOverflow.ellipsis,
-              //                           ),
-              //                         ],
-              //                       ),
-              //                     ), // 약 이름, 회사
-              //                   ],
-              //                 ), // UI BOX, 약 이름, 회사
-              //                 InkWell(
-              //                   onTap: () => Navigator.push(
-              //                     context,
-              //                     MaterialPageRoute(
-              //                       builder: (context) => CautionPage(
-              //                         medicine: medicine,
-              //                       ),
-              //                     ),
-              //                   ),
-              //                   child: Container(
-              //                     width: 90 * fem,
-              //                     height: 30 * fem,
-              //                     decoration: BoxDecoration(
-              //                       color: const Color(0xffffffff),
-              //                       borderRadius:
-              //                       BorderRadius.circular(99 * fem),
-              //                     ),
-              //                     child: Center(
-              //                       child: Text(
-              //                         '주의사항',
-              //                         textAlign: TextAlign.center,
-              //                         style: SafeGoogleFont(
-              //                           'Poppins',
-              //                           fontSize: 14 * fem,
-              //                           fontWeight: FontWeight.w800,
-              //                           height: 1.5 * fem,
-              //                           color: const Color(0xffa98aff),
-              //                         ),
-              //                       ),
-              //                     ),
-              //                   ),
-              //                 ),
-              //               ],
-              //             ), // UI BOX and 주의사항
-              //             SizedBox(height: 5 * fem),
-              //             AutoSizeText(
-              //               medicine.effect,
-              //               maxLines: 4,
-              //               overflow: TextOverflow.ellipsis,
-              //               style: SafeGoogleFont(
-              //                 'Poppins',
-              //                 fontSize: 15 * fem,
-              //                 fontWeight: FontWeight.w700,
-              //                 height: 1.5,
-              //                 color: const Color(0xffffffff),
-              //               ),
-              //             ), // 약 설명
-              //           ],
-              //         ),
-              //       ), // 배경 위 위젯
-              //     ],
-              //   ),
-              // ),
-              // Expanded(
-              //   child: ListView.builder(
-              //     itemCount: 7,
-              //     itemBuilder: (BuildContext context, int index) {
-              //       return Container(
-              //         padding: EdgeInsets.only(bottom: 20 * fem),
-              //         child: Stack(
-              //           children: [
-              //             SizedBox(
-              //               width: double.infinity,
-              //               child: Image.asset(
-              //                 'image/causionbox.png',
-              //               ),
-              //             ), // 배경
-              //             Container(
-              //               margin: EdgeInsets.fromLTRB(
-              //                   20 * fem, 20 * fem, 20 * fem, 0 * fem),
-              //               child: Column(
-              //                 crossAxisAlignment: CrossAxisAlignment.center,
-              //                 children: [
-              //                   Row(
-              //                     mainAxisAlignment:
-              //                         MainAxisAlignment.spaceBetween,
-              //                     children: [
-              //                       Text(
-              //                         titleList[index],
-              //                         style: SafeGoogleFont(
-              //                           'Poppins',
-              //                           fontSize: 16 * fem,
-              //                           fontWeight: FontWeight.w700,
-              //                           height: 1.5 * fem,
-              //                           color: const Color(0xffffffff),
-              //                         ),
-              //                       ),
-              //                       InkWell(
-              //                         onTap: () => Navigator.push(
-              //                           context,
-              //                           MaterialPageRoute(
-              //                             builder: (context) => InfoPage(
-              //                               title: titleList[index],
-              //                               content: contentList[index],
-              //                             ),
-              //                           ),
-              //                         ),
-              //                         child: Container(
-              //                           width: 90 * fem,
-              //                           height: 30 * fem,
-              //                           decoration: BoxDecoration(
-              //                             color: const Color(0xffffffff),
-              //                             borderRadius:
-              //                                 BorderRadius.circular(99 * fem),
-              //                           ),
-              //                           child: Center(
-              //                             child: Text(
-              //                               "자세히보기",
-              //                               textAlign: TextAlign.center,
-              //                               style: SafeGoogleFont(
-              //                                 'Poppins',
-              //                                 fontSize: 14 * fem,
-              //                                 fontWeight: FontWeight.w800,
-              //                                 height: 1.5 * fem,
-              //                                 color: const Color(0xffa98aff),
-              //                               ),
-              //                             ),
-              //                           ),
-              //                         ),
-              //                       ),
-              //                     ],
-              //                   ), // UI BOX and 주의사항
-              //                   SizedBox(height: 10 * fem),
-              //                   Text(
-              //                     contentList[index],
-              //                     maxLines: 2,
-              //                     overflow: TextOverflow.ellipsis,
-              //                     style: SafeGoogleFont(
-              //                       'Poppins',
-              //                       fontSize: 16 * fem,
-              //                       fontWeight: FontWeight.w500,
-              //                       height: 1.5,
-              //                       color: const Color(0xffffffff),
-              //                     ),
-              //                   ), // 약 설명
-              //                 ],
-              //               ),
-              //             ), // 배경 위 위젯
-              //           ],
-              //         ),
-              //       );
-              //     },
-              //   ),
-              // ),
-            ],
+          child: SlimyCard(
+            color: Colors.transparent,
+            width: 400,
+            topCardHeight: 200,
+            bottomCardHeight: 200,
+            borderRadius: 15,
+            topCardWidget: profile(fem),
+            bottomCardWidget: loadImageExample(),
+            slimeEnabled: true,
           ),
         ),
       ),
