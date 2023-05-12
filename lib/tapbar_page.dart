@@ -1,12 +1,15 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:bottom_bar_with_sheet/bottom_bar_with_sheet.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/homepage.dart';
 import 'main_pages/listpage.dart';
 import 'main_pages/mypage.dart';
 import 'main_pages/searchpage.dart';
+import 'medicine_data/medicine.dart';
 
 class TapBarPage extends StatefulWidget {
   final int selectedIndex;
@@ -21,7 +24,12 @@ class _TapBarPageState extends State<TapBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
   final _bottomBarController = BottomBarWithSheetController(initialIndex: 0);
+  final _firebaseAuth = FirebaseAuth.instance;
+  final _firestore = FirebaseFirestore.instance;
   final _pageController = PageController();
+  late String userEmail;
+  late Future<List<Medicine>> futureMediList = getMediData();
+  // futureMediList 변수가 접근 될 때 getMediData() 함수 실행된다.
 
   @override
   void initState() {
@@ -31,7 +39,38 @@ class _TapBarPageState extends State<TapBarPage>
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
+    userEmail = _firebaseAuth.currentUser!.email!;
     super.initState();
+  }
+
+  // firestore에 저장된 약 목록 불러옴
+  Future<List<Medicine>> getMediData() async {
+    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
+    List<Medicine> mediList = [];
+    for (var v in list.data()!['medicine']) {
+      try {
+        mediList.add(
+          Medicine(
+              itemName: v['itemName'],
+              entpName: v['entpName'],
+              effect: v['effect'],
+              itemCode: v['itemCode'],
+              useMethod: v['useMethod'],
+              warmBeforeHave: v['warmBeforeHave'],
+              warmHave: v['warmHave'],
+              interaction: v['interaction'],
+              sideEffect: v['sideEffect'],
+              depositMethod: v['depositMethod'],
+              imageUrl: v['imageUrl']
+          ),
+        );
+      } catch (e) {
+        if (context.mounted) {
+          debugPrint("medi load ERROR");
+        }
+      }
+    }
+    return mediList;
   }
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
@@ -45,17 +84,16 @@ class _TapBarPageState extends State<TapBarPage>
     );
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        children: const [
-          HomePage(),
-          SearchPage(mediList: []),
-          ListPage(),
-          MyPage(),
+        children: [
+          const HomePage(),
+          const SearchPage(mediList: []),
+          ListPage(fMediList: futureMediList,),
+          const MyPage(),
         ],
       ),
       bottomNavigationBar: BottomBarWithSheet(
@@ -75,10 +113,9 @@ class _TapBarPageState extends State<TapBarPage>
           ),
           selectedItemIconColor: Color(0xffA07EFF),
           selectedItemTextStyle: TextStyle(
-            color: Color(0xffA07EFF),
-            fontSize: 10.0,
-            fontWeight: FontWeight.bold
-          ),
+              color: Color(0xffA07EFF),
+              fontSize: 10.0,
+              fontWeight: FontWeight.bold),
         ),
         mainActionButtonTheme: const MainActionButtonTheme(
           size: 50,
@@ -93,19 +130,15 @@ class _TapBarPageState extends State<TapBarPage>
         items: const [
           BottomBarWithSheetItem(
             icon: Icons.home_filled,
-            label: 'Home',
           ),
           BottomBarWithSheetItem(
             icon: Icons.search,
-            label: 'Search',
           ),
           BottomBarWithSheetItem(
             icon: Icons.list_alt,
-            label: 'List',
           ),
           BottomBarWithSheetItem(
             icon: Icons.account_circle,
-            label: 'MyPage',
           ),
         ],
         sheetChild: Center(

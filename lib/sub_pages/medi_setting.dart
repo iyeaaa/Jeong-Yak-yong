@@ -281,6 +281,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                       'interaction': medicine.interaction,
                       'sideEffect': medicine.sideEffect,
                       'depositMethod': medicine.depositMethod,
+                      'imageUrl': medicine.imageUrl,
                     });
               showAddOrRmvMessage(fem);
               if (context.mounted) {

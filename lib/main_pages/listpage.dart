@@ -13,7 +13,9 @@ import '../util/medicine_card.dart';
 import '../util/utils.dart';
 
 class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
+  final Future<List<Medicine>> fMediList;
+
+  const ListPage({Key? key, required this.fMediList,}) : super(key: key);
 
   @override
   State<ListPage> createState() => _ListPageState();
@@ -26,15 +28,15 @@ class _ListPageState extends State<ListPage> {
   var userEmail = "";
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
-  late Future<List<Medicine>> futureMediList =
-      getMediData(); // futureMediList 변수가 접근 될 때 getMediData() 함수 실행된다.
   List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
+  late Future<List<Medicine>> futureMediList;
 
   @override
   void initState() {
     super.initState();
     userEmail = _firebaseAuth.currentUser!.email!;
     loadAlarms();
+    futureMediList = widget.fMediList;
   }
 
   // 알람 배열 불러오기
@@ -78,36 +80,6 @@ class _ListPageState extends State<ListPage> {
     }
 
     loadAlarms();
-  }
-
-  // firestore에 저장된 약 목록 불러옴
-  Future<List<Medicine>> getMediData() async {
-    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> mediList = [];
-    for (var v in list.data()!['medicine']) {
-      try {
-        mediList.add(
-          Medicine(
-            itemName: v['itemName'],
-            entpName: v['entpName'],
-            effect: v['effect'],
-            itemCode: v['itemCode'],
-            useMethod: v['useMethod'],
-            warmBeforeHave: v['warmBeforeHave'],
-            warmHave: v['warmHave'],
-            interaction: v['interaction'],
-            sideEffect: v['sideEffect'],
-            depositMethod: v['depositMethod'],
-            imageUrl: v['imageUrl']
-          ),
-        );
-      } catch (e) {
-        if (context.mounted) {
-          debugPrint("medi load ERROR");
-        }
-      }
-    }
-    return mediList;
   }
 
   // 알람 설정 페이지로 이동
@@ -258,9 +230,7 @@ class _ListPageState extends State<ListPage> {
                           )
                         : RefreshIndicator(
                             onRefresh: () {
-                              setState(() {
-                                futureMediList = getMediData();
-                              });
+                              setState(() {});
                               return Future.delayed(
                                   const Duration(milliseconds: 200));
                             },
