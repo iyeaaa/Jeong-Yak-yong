@@ -107,25 +107,23 @@ class _TapBarPageState extends State<TapBarPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IgnorePointer(
-        child: PageView(
-          controller: _pageController,
-          children: [
-            HomePage(
-              futureUserName: futureUserName,
-              futureMediList: futureMediList,
-              update: update,
-            ),
-            SearchPage(
-              mediList: const [],
-              update: update,
-            ),
-            ListPage(
-              futureMediList: futureMediList, update: update,
-            ),
-            const MyPage(),
-          ],
-        ),
+      body: PageView(
+        controller: _pageController,
+        children: [
+          HomePage(
+            futureUserName: futureUserName,
+            futureMediList: futureMediList,
+            update: update,
+          ),
+          SearchPage(
+            mediList: const [],
+            update: update,
+          ),
+          ListPage(
+            futureMediList: futureMediList, update: update,
+          ),
+          const MyPage(),
+        ],
       ),
       bottomNavigationBar: BottomBarWithSheet(
         autoClose: false,
