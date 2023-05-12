@@ -119,7 +119,7 @@ class _ListPageState extends State<ListPage> {
 
   // 데이터 베이스에서 약 삭제
   Future<void> removeInDatabase(dynamic element) async {
-    _firestore.collection(userEmail).doc('mediInfo').update({
+    await _firestore.collection(userEmail).doc('mediInfo').update({
       'medicine': FieldValue.arrayRemove([element])
     });
   }
@@ -175,10 +175,16 @@ class _ListPageState extends State<ListPage> {
 
   // 배열에서 약 삭제
   Future<void> removeInArray(int idx, dynamic element, double fem) async {
-    removeInDatabase(element);
+    await removeInDatabase(element);
     showRmvMessage(fem, element['itemName']);
     _futureMediList.then((value) => value.removeAt(idx));
     rmvAlarms(element['itemName'], element['entpName']);
+    getMediData().then((value) {
+      for (var v in value) {
+        print(v.itemName);
+      }
+    });
+    widget.update(getMediData());
   }
 
   @override
