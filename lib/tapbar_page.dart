@@ -48,11 +48,11 @@ class _TapBarPageState extends State<TapBarPage>
   void update(Future<List<Medicine>> newData) {
     setState(() {
       futureMediList = newData;
-      futureMediList.then((value) {
-        for (var v in value) {
-          print(v.itemName);
-        }
-      });
+      // newData.then((value) {
+      //   for (var v in value) {
+      //     print(v.itemName);
+      //   }
+      // });
     });
   }
 
@@ -107,28 +107,29 @@ class _TapBarPageState extends State<TapBarPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        children: [
-          HomePage(
-            futureUserName: futureUserName,
-            futureMediList: futureMediList,
-            update: update,
-          ),
-          SearchPage(
-            mediList: const [],
-            update: update,
-          ),
-          ListPage(
-            futureMediList: futureMediList, update: update,
-          ),
-          const MyPage(),
-        ],
+      body: IgnorePointer(
+        child: PageView(
+          controller: _pageController,
+          children: [
+            HomePage(
+              futureUserName: futureUserName,
+              futureMediList: futureMediList,
+              update: update,
+            ),
+            SearchPage(
+              mediList: const [],
+              update: update,
+            ),
+            ListPage(
+              futureMediList: futureMediList, update: update,
+            ),
+            const MyPage(),
+          ],
+        ),
       ),
       bottomNavigationBar: BottomBarWithSheet(
         autoClose: false,
         duration: const Duration(milliseconds: 700),
-        curve: Curves.fastOutSlowIn,
         bottomBarTheme: const BottomBarTheme(
           mainButtonPosition: MainButtonPosition.middle,
           decoration: BoxDecoration(
