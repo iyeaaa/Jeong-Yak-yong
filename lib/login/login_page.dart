@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/signup_page.dart';
-import '../tapbar_page.dart';
+import '../tabbar_page.dart';
 import '../util/utils.dart';
 
 class LoginPage extends StatefulWidget {
@@ -138,7 +138,7 @@ class _LoginPageState extends State<LoginPage> {
                     Navigator.pushReplacement(
                       context,
                       PageRouteBuilder(
-                        pageBuilder: (_, __, ___) => const TapBarPage(
+                        pageBuilder: (_, __, ___) => const TabBarPage(
                           selectedIndex: 0,
                         ),
                         transitionDuration: Duration.zero,

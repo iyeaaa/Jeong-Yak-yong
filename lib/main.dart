@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
-import 'package:medicine_app/tapbar_page.dart';
+import 'package:medicine_app/tabbar_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: _firebaseAuth.currentUser != null
-          ? const TapBarPage(selectedIndex: 0,)
+          ? const TabBarPage(selectedIndex: 0,)
           : const LoginPage(),
       debugShowCheckedModeBanner: false,
     );

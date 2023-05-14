@@ -11,16 +11,16 @@ import 'main_pages/mypage.dart';
 import 'main_pages/searchpage.dart';
 import 'medicine_data/medicine.dart';
 
-class TapBarPage extends StatefulWidget {
+class TabBarPage extends StatefulWidget {
   final int selectedIndex;
 
-  const TapBarPage({super.key, required this.selectedIndex});
+  const TabBarPage({super.key, required this.selectedIndex});
 
   @override
-  State<TapBarPage> createState() => _TapBarPageState();
+  State<TabBarPage> createState() => _TabBarPageState();
 }
 
-class _TapBarPageState extends State<TapBarPage>
+class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
   final _bottomBarController = BottomBarWithSheetController(initialIndex: 0);
