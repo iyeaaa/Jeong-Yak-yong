@@ -109,6 +109,7 @@ class _TabBarPageState extends State<TabBarPage>
     return Scaffold(
       body: PageView(
         controller: _pageController,
+        onPageChanged: (value) { _bottomBarController.selectItem(value); },
         children: [
           HomePage(
             futureUserName: futureUserName,
@@ -120,7 +121,8 @@ class _TabBarPageState extends State<TabBarPage>
             update: update,
           ),
           ListPage(
-            futureMediList: futureMediList, update: update,
+            futureMediList: futureMediList,
+            update: update,
           ),
           const MyPage(),
         ],
@@ -156,18 +158,10 @@ class _TabBarPageState extends State<TabBarPage>
           ),
         ),
         items: const [
-          BottomBarWithSheetItem(
-            icon: Icons.home_filled,
-          ),
-          BottomBarWithSheetItem(
-            icon: Icons.search,
-          ),
-          BottomBarWithSheetItem(
-            icon: Icons.list_alt,
-          ),
-          BottomBarWithSheetItem(
-            icon: Icons.account_circle,
-          ),
+          BottomBarWithSheetItem(icon: Icons.home_filled),
+          BottomBarWithSheetItem(icon: Icons.search),
+          BottomBarWithSheetItem(icon: Icons.list_alt),
+          BottomBarWithSheetItem(icon: Icons.account_circle),
         ],
         sheetChild: Center(
           child: Text(
