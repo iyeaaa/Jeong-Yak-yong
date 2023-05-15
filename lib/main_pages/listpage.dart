@@ -351,7 +351,7 @@ class _ListPageState extends State<ListPage> {
                                               name: snapshot.data[idx].itemName,
                                               company:
                                                   snapshot.data[idx].entpName,
-                                              buttonName: '보기',
+                                              buttonName: 'View',
                                               ontap: () {
                                                 Navigator.push(
                                                   context,

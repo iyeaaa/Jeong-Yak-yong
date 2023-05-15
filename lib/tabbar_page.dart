@@ -152,9 +152,9 @@ class _TabBarPageState extends State<TabBarPage>
           color: Color(0xffA07EFF),
           splash: Colors.purple,
           icon: Icon(
-            Icons.add,
+            Icons.settings,
             color: Colors.white,
-            size: 35,
+            size: 30,
           ),
         ),
         items: const [
