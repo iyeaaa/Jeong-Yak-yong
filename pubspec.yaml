@@ -44,6 +44,7 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   flare_flutter: ^3.0.2
   styled_widget: ^0.4.1
+  unicons: ^2.1.1
 
 dev_dependencies:
   flutter_test:

@@ -179,12 +179,41 @@ class _ListPageState extends State<ListPage> {
     showRmvMessage(fem, element['itemName']);
     _futureMediList.then((value) => value.removeAt(idx));
     rmvAlarms(element['itemName'], element['entpName']);
-    getMediData().then((value) {
-      for (var v in value) {
-        print(v.itemName);
-      }
-    });
+    getMediData();
     widget.update(getMediData());
+  }
+
+  void showCustomDialog(BuildContext context, double fem, String imageUrl) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (_, __, ___) {
+        return Center(
+          child: SizedBox(width: 300 * fem, child: loadImageExample(imageUrl)),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        return FadeTransition(
+          opacity: anim,
+          child: child,
+        );
+      },
+    );
+  }
+
+  Widget loadImageExample(String imageUrl) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.deepPurpleAccent, width: 2),
+      ),
+      child: Image.network(
+        imageUrl,
+        width: 400,
+      ),
+    );
   }
 
   @override
@@ -346,6 +375,29 @@ class _ListPageState extends State<ListPage> {
                                             width: double.infinity,
                                             height: 89 * fem,
                                             child: MedicineCard(
+                                              imageOntap: () {
+                                                if (snapshot.data[idx].imageUrl == "No Image") {
+                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                    SnackBar(
+                                                      duration: const Duration(milliseconds: 800),
+                                                      content: Text(
+                                                        "이미지가 없어요",
+                                                        textAlign: TextAlign.center,
+                                                        style: SafeGoogleFont(
+                                                          'Nunito',
+                                                          fontSize: 15 * fem,
+                                                          fontWeight: FontWeight.w400,
+                                                          height: 1.3625 * fem / fem,
+                                                          color: const Color(0xffffffff),
+                                                        ),
+                                                      ),
+                                                      backgroundColor: const Color(0xff8a60ff),
+                                                    ),
+                                                  );
+                                                } else {
+                                                  showCustomDialog(context, fem, snapshot.data[idx].imageUrl);
+                                                }
+                                              },
                                               isChecked: isChecked[idx],
                                               fem: fem,
                                               name: snapshot.data[idx].itemName,

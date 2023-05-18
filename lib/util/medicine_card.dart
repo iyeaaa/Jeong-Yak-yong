@@ -9,6 +9,7 @@ class MedicineCard extends StatefulWidget {
   final String buttonName;
   final GestureTapCallback ontap;
   final bool isChecked;
+  final GestureTapCallback? imageOntap;
 
   const MedicineCard({
     super.key,
@@ -18,6 +19,7 @@ class MedicineCard extends StatefulWidget {
     required this.ontap,
     required this.buttonName,
     required this.isChecked,
+    this.imageOntap,
   });
 
   @override
@@ -44,21 +46,24 @@ class _MedicineCardState extends State<MedicineCard> {
           Expanded(
             child: Row(
               children: [
-                Container(
-                  width: 70 * widget.fem,
-                  height: 70 * widget.fem,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffa07eff),
-                    borderRadius: BorderRadius.circular(20 * widget.fem),
-                  ),
-                  child: Center(
-                    child: SizedBox(
-                      width: 32 * widget.fem,
-                      height: 32 * widget.fem,
-                      child: Image.asset(
-                        'image/vector-Yd4.png',
+                InkWell(
+                  onTap: widget.imageOntap,
+                  child: Container(
+                    width: 70 * widget.fem,
+                    height: 70 * widget.fem,
+                    decoration: BoxDecoration(
+                      color: const Color(0xffa07eff),
+                      borderRadius: BorderRadius.circular(20 * widget.fem),
+                    ),
+                    child: Center(
+                      child: SizedBox(
                         width: 32 * widget.fem,
                         height: 32 * widget.fem,
+                        child: Image.asset(
+                          'image/vector-Yd4.png',
+                          width: 32 * widget.fem,
+                          height: 32 * widget.fem,
+                        ),
                       ),
                     ),
                   ),
