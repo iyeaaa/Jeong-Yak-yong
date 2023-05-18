@@ -192,7 +192,7 @@ class _ListPageState extends State<ListPage> {
       transitionDuration: const Duration(milliseconds: 300),
       pageBuilder: (_, __, ___) {
         return Center(
-          child: SizedBox(width: 300 * fem, child: loadImageExample(imageUrl)),
+          child: SizedBox(width: 300 * fem, child: loadImage(imageUrl)),
         );
       },
       transitionBuilder: (_, anim, __, child) {
@@ -204,7 +204,7 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  Widget loadImageExample(String imageUrl) {
+  Widget loadImage(String imageUrl) {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(color: Colors.deepPurpleAccent, width: 2),

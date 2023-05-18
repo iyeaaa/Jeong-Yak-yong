@@ -32,6 +32,39 @@ class _SearchPageState extends State<SearchPage> {
     mediList = widget.mediList;
   }
 
+  void showCustomDialog(BuildContext context, double fem, String imageUrl) {
+    showGeneralDialog(
+      context: context,
+      barrierLabel: "Barrier",
+      barrierDismissible: true,
+      barrierColor: Colors.black.withOpacity(0.5),
+      transitionDuration: const Duration(milliseconds: 300),
+      pageBuilder: (_, __, ___) {
+        return Center(
+          child: SizedBox(width: 300 * fem, child: loadImageExample(imageUrl)),
+        );
+      },
+      transitionBuilder: (_, anim, __, child) {
+        return FadeTransition(
+          opacity: anim,
+          child: child,
+        );
+      },
+    );
+  }
+
+  Widget loadImageExample(String imageUrl) {
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.deepPurpleAccent, width: 2),
+      ),
+      child: Image.network(
+        imageUrl,
+        width: 400,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -202,6 +235,29 @@ class _SearchPageState extends State<SearchPage> {
                           padding: EdgeInsets.only(top: 10 * fem),
                           height: 95 * fem,
                           child: MedicineCard(
+                            imageOntap: () {
+                              if (mediList[idx].imageUrl == "No Image") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    duration: const Duration(milliseconds: 800),
+                                    content: Text(
+                                      "이미지가 없어요",
+                                      textAlign: TextAlign.center,
+                                      style: SafeGoogleFont(
+                                        'Nunito',
+                                        fontSize: 15 * fem,
+                                        fontWeight: FontWeight.w400,
+                                        height: 1.3625 * fem / fem,
+                                        color: const Color(0xffffffff),
+                                      ),
+                                    ),
+                                    backgroundColor: const Color(0xff8a60ff),
+                                  ),
+                                );
+                              } else {
+                                showCustomDialog(context, fem, mediList[idx].imageUrl);
+                              }
+                            },
                             isChecked: false,
                             fem: fem,
                             name: mediList[idx].itemName,

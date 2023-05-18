@@ -30,8 +30,6 @@ class _CautionPageState extends State<CautionPage> {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
     List<String> titleList = [
-      "다음과 같은 효능이 있어요",
-      "다음과 같이 사용해야 해요",
       "의약품 복용 전 참고하세요",
       "주의해야하는 사항이에요",
       "주의가 필요한 음식이에요",
@@ -39,8 +37,6 @@ class _CautionPageState extends State<CautionPage> {
       "다음과같이 보관해야 해요",
     ];
     List<String> contentList = [
-      medicine.effect,
-      medicine.useMethod,
       medicine.warmBeforeHave,
       medicine.warmHave,
       medicine.interaction,
@@ -72,7 +68,7 @@ class _CautionPageState extends State<CautionPage> {
             30 * fem,
             20 * fem,
           ),
-          itemCount: 7,
+          itemCount: 5,
           itemBuilder: (BuildContext context, int index) {
             return Container(
               padding: EdgeInsets.only(bottom: 20 * fem),
