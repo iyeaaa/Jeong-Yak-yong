@@ -125,9 +125,7 @@ class _SearchPageState extends State<SearchPage> {
             backgroundColor: const Color(0xff8a60ff),
           ),
         );
-        setState(() {
-          mediList.clear();
-        });
+
         Navigator.pop(context);
         return;
       }
