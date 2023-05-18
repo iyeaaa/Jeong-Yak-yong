@@ -104,8 +104,65 @@ class _TabBarPageState extends State<TabBarPage>
     );
   }
 
+  Widget bottomPage(double fem) => SingleChildScrollView(
+    child: Container(
+      padding: EdgeInsets.fromLTRB(
+        30 * fem,
+        20 * fem,
+        30 * fem,
+        20 * fem,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 130 * fem,
+                height: 130 * fem,
+                decoration: BoxDecoration(
+                  color: Colors.purpleAccent
+                ),
+              ),
+              Container(
+                width: 130 * fem,
+                height: 130 * fem,
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent
+                ),
+              )
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                width: 130 * fem,
+                height: 130 * fem,
+                decoration: BoxDecoration(
+                  color: Colors.purpleAccent
+                ),
+              ),
+              Container(
+                width: 130 * fem,
+                height: 130 * fem,
+                decoration: BoxDecoration(
+                    color: Colors.purpleAccent
+                ),
+              )
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+
   @override
   Widget build(BuildContext context) {
+    double baseWidth = 380;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
+
     return Scaffold(
       body: PageView(
         controller: _pageController,
@@ -163,16 +220,7 @@ class _TabBarPageState extends State<TabBarPage>
           BottomBarWithSheetItem(icon: Icons.list_alt),
           BottomBarWithSheetItem(icon: Icons.account_circle),
         ],
-        sheetChild: Center(
-          child: Text(
-            "Another content",
-            style: TextStyle(
-              color: Colors.grey[600],
-              fontSize: 20,
-              fontWeight: FontWeight.w900,
-            ),
-          ),
-        ),
+        sheetChild: bottomPage(fem),
         controller: _bottomBarController,
         onSelectItem: (index) => _pageController.jumpToPage(index),
       ),
