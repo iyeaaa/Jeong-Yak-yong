@@ -71,6 +71,20 @@ class _MakingMediPageState extends State<MakingMediPage> {
             color: const Color(0xffffffff),
           ),
         ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 30 * fem),
+            child: InkWell(
+              onTap: () {
+
+              },
+              child: Icon(
+                MaterialSymbols.save_filled,
+                size: 30 * fem,
+              ),
+            ),
+          ),
+        ],
         elevation: 0,
         toolbarHeight: 80 * fem,
       ),
@@ -92,7 +106,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                 border: Border.all(color: const Color(0xff8559FF)),
               ),
               child: Padding(
-                padding: const EdgeInsets.all(10),
+                padding: EdgeInsets.all(8 * fem),
                 child: Row(
                   children: [
                     Container(
@@ -108,10 +122,54 @@ class _MakingMediPageState extends State<MakingMediPage> {
                         child: Icon(
                           Icons.image_search,
                           color: Colors.white,
-                          size: 35*fem,
+                          size: 35 * fem,
                         ),
                       ),
                     ),
+                    SizedBox(width: 8 * fem),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          SizedBox(
+                            height: 30 * fem,
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                hintText: 'name',
+                                hintStyle: TextStyle(color: Color(0xff6B35FF)),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xff3600CA)),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff8559FF),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 30 * fem,
+                            child: TextFormField(
+                              decoration: const InputDecoration(
+                                hintText: 'company',
+                                hintStyle: TextStyle(color: Color(0xff6B35FF)),
+                                focusedBorder: UnderlineInputBorder(
+                                  borderSide:
+                                      BorderSide(color: Color(0xff3600CA)),
+                                ),
+                                enabledBorder: UnderlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff8559FF),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                   ],
                 ),
               ),
