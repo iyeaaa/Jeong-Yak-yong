@@ -104,6 +104,8 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                   child: SizedBox(
                     height: 85 * fem,
                     child: MedicineCard(
+                      isAlarm: true,
+                      existEmage: true,
                       fem: fem,
                       name: mediList[i].item1,
                       company: mediList[i].item2,

@@ -237,6 +237,7 @@ class _SearchPageState extends State<SearchPage> {
                           padding: EdgeInsets.only(top: 10 * fem),
                           height: 95 * fem,
                           child: MedicineCard(
+                            existEmage: mediList[idx].imageUrl != "No Image",
                             imageOntap: () {
                               if (mediList[idx].imageUrl == "No Image") {
                                 ScaffoldMessenger.of(context).showSnackBar(

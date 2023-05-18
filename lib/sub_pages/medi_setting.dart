@@ -31,24 +31,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Medicine medicine;
   late String userEmail;
-  late List<String> titleList = [
-    "다음과 같은 효능이 있어요",
-    "다음과 같이 사용해야 해요",
-    "의약품 복용 전 참고하세요",
-    "주의해야하는 사항이에요",
-    "주의가 필요한 음식이에요",
-    "이러한 부작용이 있어요",
-    "다음과같이 보관해야 해요",
-  ];
-  late List<String> contentList = [
-    medicine.effect,
-    medicine.useMethod,
-    medicine.warmBeforeHave,
-    medicine.warmHave,
-    medicine.interaction,
-    medicine.sideEffect,
-    medicine.depositMethod,
-  ];
+
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -314,8 +297,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 
   Widget mediInfoCard(int index, double fem) {
-    titleList = ["다음과 같은 효능이 있어요", "다음과 같이 사용해야 해요"];
-    contentList = [medicine.effect, medicine.useMethod];
+    var titleList = ["다음과 같은 효능이 있어요", "다음과 같이 사용해야 해요"];
+    var contentList = [medicine.effect, medicine.useMethod];
+
     return Container(
       padding: EdgeInsets.only(bottom: 20 * fem),
       child: Stack(

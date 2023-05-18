@@ -375,6 +375,7 @@ class _ListPageState extends State<ListPage> {
                                             width: double.infinity,
                                             height: 89 * fem,
                                             child: MedicineCard(
+                                              existEmage: snapshot.data[idx].imageUrl != "No Image",
                                               imageOntap: () {
                                                 if (snapshot.data[idx].imageUrl == "No Image") {
                                                   ScaffoldMessenger.of(context).showSnackBar(

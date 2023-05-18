@@ -10,6 +10,8 @@ class MedicineCard extends StatefulWidget {
   final GestureTapCallback ontap;
   final bool isChecked;
   final GestureTapCallback? imageOntap;
+  final bool existEmage;
+  final bool? isAlarm;
 
   const MedicineCard({
     super.key,
@@ -19,7 +21,9 @@ class MedicineCard extends StatefulWidget {
     required this.ontap,
     required this.buttonName,
     required this.isChecked,
+    required this.existEmage,
     this.imageOntap,
+    this.isAlarm,
   });
 
   @override
@@ -49,21 +53,20 @@ class _MedicineCardState extends State<MedicineCard> {
                 InkWell(
                   onTap: widget.imageOntap,
                   child: Container(
-                    width: 70 * widget.fem,
-                    height: 70 * widget.fem,
+                    width: 68 * widget.fem,
+                    height: 68 * widget.fem,
                     decoration: BoxDecoration(
                       color: const Color(0xffa07eff),
                       borderRadius: BorderRadius.circular(20 * widget.fem),
                     ),
                     child: Center(
-                      child: SizedBox(
-                        width: 32 * widget.fem,
-                        height: 32 * widget.fem,
-                        child: Image.asset(
-                          'image/vector-Yd4.png',
-                          width: 32 * widget.fem,
-                          height: 32 * widget.fem,
-                        ),
+                      child: Icon(
+                        (widget.isAlarm ?? false) ? Icons.alarm :
+                        (widget.existEmage
+                            ? Icons.image
+                            : Icons.image_not_supported),
+                        size: 40 * widget.fem,
+                        color: Colors.white,
                       ),
                     ),
                   ),
