@@ -35,8 +35,8 @@ class Medicine {
     }
     try {
       return Medicine(
-        itemName: json['itemName'] ?? '알아야 할 내용이 없어요.',
-        entpName: json['entpName'] ?? '알아야 할 내용이 없어요.',
+        itemName: json['itemName'] ?? '이름이 없어요',
+        entpName: json['entpName'] ?? '회사이름 없어요',
         effect: removeTag(json['efcyQesitm'] ?? '알아야 할 내용이 없어요.'),
         itemCode: removeTag(json['itemSeq'] ?? '알아야 할 내용이 없어요.'),
         useMethod: removeTag(json['useMethodQesitm'] ?? '알아야 할 내용이 없어요.'),

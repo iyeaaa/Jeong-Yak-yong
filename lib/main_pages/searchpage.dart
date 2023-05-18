@@ -67,6 +67,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -293,7 +294,10 @@ class _SearchPageState extends State<SearchPage> {
               onPressed: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const MakingMediPage(),
+                  builder: (context) => MakingMediPage(
+                    userEmail: userEmail,
+                    update: widget.update,
+                  ),
                 ),
               ),
               child: Text(

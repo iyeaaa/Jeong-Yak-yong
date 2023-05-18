@@ -1,16 +1,35 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_symbols/flutter_material_symbols.dart';
 
+import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 
 class MakingMediPage extends StatefulWidget {
-  const MakingMediPage({Key? key}) : super(key: key);
+  final String userEmail;
+  final ValueChanged<Future<List<Medicine>>> update;
+
+  const MakingMediPage({
+    Key? key,
+    required this.userEmail,
+    required this.update,
+  }) : super(key: key);
 
   @override
   State<MakingMediPage> createState() => _MakingMediPageState();
 }
 
 class _MakingMediPageState extends State<MakingMediPage> {
+  final _firestore = FirebaseFirestore.instance;
+  List<String> variName = [
+    "effect", // 효능
+    "useMethod", // 사용법
+    "warmBeforeHave", // 약 먹기전 알아야할 사항
+    "warmHave", // 약 사용상 주의사항
+    "interaction", // 상호작용
+    "sideEffect", // 부작용
+    "depositMethod", // 보관법
+  ];
   List<String> titleList = [
     "다음과 같은 효능이 있어요",
     "다음과 같이 사용해야 해요",
@@ -29,8 +48,57 @@ class _MakingMediPageState extends State<MakingMediPage> {
     MaterialSymbols.sick,
     MaterialSymbols.desk,
   ];
+  Map<String, String?> mediInfo = {
+    'imageUrl': "No Image",
+    'itemCode': "알아야 할 내용이 없어요.",
+    'entpName': "알아야 할 내용이 없어요.",
+    "effect": "알아야 할 내용이 없어요.", // 효능
+    "useMethod": "알아야 할 내용이 없어요.", // 사용법
+    "warmBeforeHave": "알아야 할 내용이 없어요.", // 약 먹기전 알아야할 사항
+    "warmHave": "알아야 할 내용이 없어요.", // 약 사용상 주의사항
+    "interaction": "알아야 할 내용이 없어요.", // 상호작용
+    "sideEffect": "알아야 할 내용이 없어요.", // 부작용
+    "depositMethod": "알아야 할 내용이 없어요.", // 보관법
+  };
+
+  // 데이터베이스에 약 추가
+  Future<void> appendToArray(double fem) async {
+    _firestore.collection(widget.userEmail).doc('mediInfo').update({
+      'medicine': FieldValue.arrayUnion([mediInfo]),
+    });
+  }
+
+  Future<List<Medicine>> getMediData() async {
+    var list =
+        await _firestore.collection(widget.userEmail).doc('mediInfo').get();
+    List<Medicine> mediList = [];
+    for (var v in list.data()!['medicine']) {
+      try {
+        mediList.add(
+          Medicine(
+              itemName: v['itemName'],
+              entpName: v['entpName'],
+              effect: v['effect'],
+              itemCode: v['itemCode'],
+              useMethod: v['useMethod'],
+              warmBeforeHave: v['warmBeforeHave'],
+              warmHave: v['warmHave'],
+              interaction: v['interaction'],
+              sideEffect: v['sideEffect'],
+              depositMethod: v['depositMethod'],
+              imageUrl: v['imageUrl']),
+        );
+      } catch (e) {
+        if (context.mounted) {
+          debugPrint("medi load ERROR");
+        }
+      }
+    }
+    return mediList;
+  }
 
   Widget myTextField(int idx) => TextFormField(
+        onChanged: (value) => mediInfo[variName[idx]] = value,
         style: const TextStyle(color: Color(0xff3600CA)),
         decoration: InputDecoration(
           focusedBorder: OutlineInputBorder(
@@ -52,6 +120,26 @@ class _MakingMediPageState extends State<MakingMediPage> {
           labelStyle: const TextStyle(color: Color(0xff6B35FF)),
         ),
       );
+
+  void showMySnackBar(double fem, String body) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(milliseconds: 1000),
+        content: Text(
+          body,
+          textAlign: TextAlign.center,
+          style: SafeGoogleFont(
+            'Nunito',
+            fontSize: 15 * fem,
+            fontWeight: FontWeight.w400,
+            height: 1.3625 * fem / fem,
+            color: const Color(0xffffffff),
+          ),
+        ),
+        backgroundColor: const Color(0xff8a60ff),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -75,8 +163,17 @@ class _MakingMediPageState extends State<MakingMediPage> {
           Padding(
             padding: EdgeInsets.only(right: 30 * fem),
             child: InkWell(
-              onTap: () {
-
+              onTap: () async {
+                if (!mediInfo.containsKey('itemName')) {
+                  showMySnackBar(fem, '약 이름을 설정해주세요.');
+                  return;
+                }
+                await appendToArray(fem);
+                widget.update(getMediData());
+                if (context.mounted) {
+                  debugPrint("약 추가 성공");
+                  showMySnackBar(fem, "${mediInfo['itemName']}을 추가했습니다.");
+                }
               },
               child: Icon(
                 MaterialSymbols.save_filled,
@@ -125,7 +222,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                           size: 35 * fem,
                         ),
                       ),
-                    ),
+                    ), // Image Box
                     SizedBox(width: 8 * fem),
                     Expanded(
                       child: Column(
@@ -134,6 +231,8 @@ class _MakingMediPageState extends State<MakingMediPage> {
                           SizedBox(
                             height: 30 * fem,
                             child: TextFormField(
+                              onChanged: (value) =>
+                                  mediInfo['itemName'] = value,
                               decoration: const InputDecoration(
                                 hintText: 'name',
                                 hintStyle: TextStyle(color: Color(0xff6B35FF)),
@@ -152,6 +251,8 @@ class _MakingMediPageState extends State<MakingMediPage> {
                           SizedBox(
                             height: 30 * fem,
                             child: TextFormField(
+                              onChanged: (value) =>
+                                  mediInfo['entpName'] = value,
                               decoration: const InputDecoration(
                                 hintText: 'company',
                                 hintStyle: TextStyle(color: Color(0xff6B35FF)),
@@ -169,7 +270,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                           ),
                         ],
                       ),
-                    )
+                    ) // name, company
                   ],
                 ),
               ),
