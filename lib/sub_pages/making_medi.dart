@@ -151,7 +151,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          "사용자 지정 약",
+          "약 추가",
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 23 * fem,
