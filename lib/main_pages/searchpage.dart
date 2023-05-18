@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/network.dart';
+import 'package:medicine_app/sub_pages/making_medi.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
@@ -12,7 +13,8 @@ class SearchPage extends StatefulWidget {
 
   const SearchPage({
     Key? key,
-    required this.mediList, required this.update,
+    required this.mediList,
+    required this.update,
   }) : super(key: key);
 
   @override
@@ -255,7 +257,8 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                 );
                               } else {
-                                showCustomDialog(context, fem, mediList[idx].imageUrl);
+                                showCustomDialog(
+                                    context, fem, mediList[idx].imageUrl);
                               }
                             },
                             isChecked: false,
@@ -288,7 +291,12 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       )), // 약 목록 리스트 위젯
             TextButton(
-              onPressed: () {},
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MakingMediPage(),
+                ),
+              ),
               child: Text(
                 '찾는 약이 없으신가요?',
                 style: SafeGoogleFont(
