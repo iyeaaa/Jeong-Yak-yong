@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:unicons/unicons.dart';
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 import 'info_page.dart';
@@ -31,7 +30,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Medicine medicine;
   late String userEmail;
-
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -162,7 +160,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                           },
                           child: Center(
                             child: Icon(
-                              UniconsLine.image,
+                              medicine.imageUrl != "No Image"
+                                  ? Icons.image_outlined
+                                  : Icons.image_not_supported_outlined,
                               color: const Color(0xffa07eff),
                               size: 30 * fem,
                             ),
