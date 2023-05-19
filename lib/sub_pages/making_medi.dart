@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_material_symbols/flutter_material_symbols.dart';
@@ -60,6 +62,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
     "sideEffect": "알아야 할 내용이 없어요.", // 부작용
     "depositMethod": "알아야 할 내용이 없어요.", // 보관법
   };
+  int mediCount = 0;
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -142,6 +145,76 @@ class _MakingMediPageState extends State<MakingMediPage> {
       ),
     );
   }
+
+  Widget settingCount(double fem) => Padding(
+    padding: EdgeInsets.only(top: 10 * fem),
+    child: Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        Text(
+          "먹을 약 개수: ",
+          overflow: TextOverflow.ellipsis,
+          style: SafeGoogleFont(
+            'Poppins',
+            fontSize: 22 * fem,
+            fontWeight: FontWeight.w700,
+            height: 1.5,
+            color: const Color(0xffa98aff),
+          ),
+        ),
+        Container(
+          width: 120 * fem,
+          height: 50 * fem,
+          padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.deepPurple),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () => setState(() {
+                  mediCount = max(0, mediCount - 1);
+                }),
+                child: Text(
+                  "-",
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 20 * fem,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+              Text(
+                mediCount.toString(),
+                style: SafeGoogleFont(
+                  'Poppins',
+                  fontSize: 22 * fem,
+                  fontWeight: FontWeight.w500,
+                  height: 1.5,
+                ),
+              ),
+              InkWell(
+                onTap: () => setState(() {
+                  mediCount = max(0, mediCount + 1);
+                }),
+                child: Text(
+                  "+",
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 20 * fem,
+                    fontWeight: FontWeight.w700,
+                    height: 1.5,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -272,7 +345,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                           ),
                         ],
                       ),
-                    ) // name, company
+                    ),// name// , company
                   ],
                 ),
               ),
@@ -286,7 +359,8 @@ class _MakingMediPageState extends State<MakingMediPage> {
                   child: myTextField(idx),
                 ),
               ),
-            )
+            ),
+            settingCount(fem),
           ],
         ),
       ),
