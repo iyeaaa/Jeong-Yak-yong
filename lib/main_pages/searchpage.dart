@@ -9,12 +9,10 @@ import '../util/utils.dart';
 
 class SearchPage extends StatefulWidget {
   final List<Medicine> mediList;
-  final ValueChanged<Future<List<Medicine>>> update;
 
   const SearchPage({
     Key? key,
     required this.mediList,
-    required this.update,
   }) : super(key: key);
 
   @override
@@ -67,83 +65,82 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
+  void readMedicineFromApi(double fem) async {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(15),
+            ),
+          ),
+          content: Row(
+            children: [
+              const CircularProgressIndicator(color: Color(0xffa07eff)),
+              SizedBox(width: 15 * fem),
+              Container(
+                margin: const EdgeInsets.only(left: 7),
+                child: Text(
+                  "Loading...",
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 17 * fem,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+
+    List<Medicine> tempMediList = [];
+    Network network = Network(itemName: itemName);
+    List<dynamic> listjson = await network.fetchMediList();
+
+    if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            "검색결과가 없습니다.",
+            textAlign: TextAlign.center,
+            style: SafeGoogleFont(
+              'Nunito',
+              fontSize: 15 * fem,
+              fontWeight: FontWeight.w400,
+              height: 1.3625 * fem / fem,
+              color: const Color(0xffffffff),
+            ),
+          ),
+          backgroundColor: const Color(0xff8a60ff),
+        ),
+      );
+
+      Navigator.pop(context);
+      return;
+    }
+
+    for (Map<String, dynamic> jsMedi in listjson) {
+      tempMediList.add(network.fetchMedicine(jsMedi));
+    }
+
+    if (context.mounted) {
+      Navigator.pop(context);
+    }
+
+    setState(() {
+      tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
+      mediList = tempMediList;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
-
-    void readMedicineFromApi() async {
-      showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(15),
-              ),
-            ),
-            content: Row(
-              children: [
-                const CircularProgressIndicator(color: Color(0xffa07eff)),
-                SizedBox(width: 15 * fem),
-                Container(
-                  margin: const EdgeInsets.only(left: 7),
-                  child: Text(
-                    "Loading...",
-                    style: SafeGoogleFont(
-                      'Poppins',
-                      fontSize: 17 * fem,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      );
-
-      List<Medicine> tempMediList = [];
-      Network network = Network(itemName: itemName);
-      List<dynamic> listjson = await network.fetchMediList();
-
-      if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              "검색결과가 없습니다.",
-              textAlign: TextAlign.center,
-              style: SafeGoogleFont(
-                'Nunito',
-                fontSize: 15 * fem,
-                fontWeight: FontWeight.w400,
-                height: 1.3625 * fem / fem,
-                color: const Color(0xffffffff),
-              ),
-            ),
-            backgroundColor: const Color(0xff8a60ff),
-          ),
-        );
-
-        Navigator.pop(context);
-        return;
-      }
-
-      for (Map<String, dynamic> jsMedi in listjson) {
-        tempMediList.add(network.fetchMedicine(jsMedi));
-      }
-
-      if (context.mounted) {
-        Navigator.pop(context);
-      }
-
-      setState(() {
-        tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
-        mediList = tempMediList;
-      });
-    }
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
@@ -206,7 +203,7 @@ class _SearchPageState extends State<SearchPage> {
                     ), // Search Bar
                     InkWell(
                       onTap: () {
-                        readMedicineFromApi();
+                        readMedicineFromApi(fem);
                       },
                       child: Container(
                         padding: EdgeInsets.fromLTRB(
@@ -271,7 +268,6 @@ class _SearchPageState extends State<SearchPage> {
                                 builder: (context) => MedicineSettingPage(
                                   medicine: mediList[idx],
                                   creating: true,
-                                  update: widget.update,
                                 ),
                               ),
                             ),
@@ -296,7 +292,6 @@ class _SearchPageState extends State<SearchPage> {
                 MaterialPageRoute(
                   builder: (context) => MakingMediPage(
                     userEmail: userEmail,
-                    update: widget.update,
                   ),
                 ),
               ),

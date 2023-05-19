@@ -7,19 +7,18 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import '../medicine_data/medicine.dart';
+import '../util/medicine_list.dart';
 import '../util/utils.dart';
 import 'info_page.dart';
 
 class MedicineSettingPage extends StatefulWidget {
   final Medicine medicine;
   final bool creating;
-  final ValueChanged<Future<List<Medicine>>> update;
 
   const MedicineSettingPage({
     Key? key,
     required this.medicine,
     required this.creating,
-    required this.update,
   }) : super(key: key);
 
   @override
@@ -31,6 +30,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Medicine medicine;
   late String userEmail;
+  MediList mediList = MediList();
   int mediCount = 0;
 
   @override
@@ -39,34 +39,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     medicine = widget.medicine;
     userEmail = _firebaseAuth.currentUser!.email!;
     mediCount = medicine.count;
-  }
-
-  // 데이터베이스에 약 추가
-  Future<void> appendToArray(double fem) async {
-    _firestore.collection(userEmail).doc('mediInfo').update({
-      'medicine': FieldValue.arrayUnion([
-        {
-          'itemName': medicine.itemName,
-          'entpName': medicine.entpName,
-          'effect': medicine.effect,
-          'itemCode': medicine.itemCode,
-          'useMethod': medicine.useMethod,
-          'warmBeforeHave': medicine.warmBeforeHave,
-          'warmHave': medicine.warmHave,
-          'interaction': medicine.interaction,
-          'sideEffect': medicine.sideEffect,
-          'depositMethod': medicine.depositMethod,
-          'imageUrl': medicine.imageUrl,
-          'count': mediCount,
-        }
-      ])
-    });
-  }
-
-  Future<void> changeToArray(dynamic element) async {
-    _firestore.collection(userEmail).doc('mediInfo').update({
-      'medicine': FieldValue.arrayRemove([element])
-    });
   }
 
   void showAddOrChangeMessage(double fem) {
@@ -475,25 +447,11 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             child: IconButton(
               onPressed: () async {
                 widget.creating
-                    ? await appendToArray(fem)
-                    : await changeToArray({
-                        'itemName': medicine.itemName,
-                        'entpName': medicine.entpName,
-                        'effect': medicine.effect,
-                        'itemCode': medicine.itemCode,
-                        'useMethod': medicine.useMethod,
-                        'warmBeforeHave': medicine.warmBeforeHave,
-                        'warmHave': medicine.warmHave,
-                        'interaction': medicine.interaction,
-                        'sideEffect': medicine.sideEffect,
-                        'depositMethod': medicine.depositMethod,
-                        'imageUrl': medicine.imageUrl,
-                        'count': medicine.count,
-                      });
+                    ? await mediList.appendToArray(medicine, medicine.count)
+                    : await mediList.removeToArray(medicine);
                 if (!widget.creating) {
-                  await appendToArray(fem);
+                  await mediList.appendToArray(medicine, mediCount);
                 }
-                widget.update(getMediData());
                 showAddOrChangeMessage(fem);
               },
               icon: Icon(

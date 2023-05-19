@@ -1,48 +1,37 @@
 import 'dart:async';
 
 import 'package:alarm/alarm.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
 
 import '../alarm_screens/edit_alarm.dart';
 import '../util/medicine_card.dart';
+import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
 class ListPage extends StatefulWidget {
-  final Future<List<Medicine>> _futureMediList;
-  final ValueChanged<Future<List<Medicine>>> update;
-
   const ListPage({
     Key? key,
-    required Future<List<Medicine>> futureMediList,
-    required this.update,
-  })  : _futureMediList = futureMediList,
-        super(key: key);
+  }) : super(key: key);
 
   @override
   State<ListPage> createState() => _ListPageState();
 }
 
 class _ListPageState extends State<ListPage> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  var name = "??";
-  var userEmail = "";
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
   List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
+  late MediList mediList = MediList();
   late Future<List<Medicine>> _futureMediList;
 
   @override
   void initState() {
     super.initState();
-    userEmail = _firebaseAuth.currentUser!.email!;
     loadAlarms();
-    _futureMediList = widget._futureMediList;
+    _futureMediList = mediList.getMediList();
   }
 
   // 알람 배열 불러오기
@@ -90,11 +79,11 @@ class _ListPageState extends State<ListPage> {
 
   // 알람 설정 페이지로 이동
   Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
-    String itemInfo = "";
+    String itemIndex = "";
     _futureMediList.then((list) {
       for (int i = 0; i < list.length; i++) {
         if (isChecked[i] && list[i].count > 0) {
-          itemInfo += "${list[i].itemName}%${list[i].entpName}@${list[i].count}#";
+          itemIndex += "$i,";
         }
       }
     });
@@ -110,19 +99,12 @@ class _ListPageState extends State<ListPage> {
           heightFactor: 0.6,
           child: AlarmEditScreen(
             alarmSettings: settings,
-            itemName: itemInfo,
+            mediIndex: itemIndex,
           ),
         );
       },
     );
     // if (res != null && res == true) loadAlarms();
-  }
-
-  // 데이터 베이스에서 약 삭제
-  Future<void> removeInDatabase(dynamic element) async {
-    await _firestore.collection(userEmail).doc('mediInfo').update({
-      'medicine': FieldValue.arrayRemove([element])
-    });
   }
 
   // 삭제할 때 메시지 출력
@@ -145,46 +127,12 @@ class _ListPageState extends State<ListPage> {
     );
   }
 
-  // firestore에 저장된 약 목록 불러옴
-  Future<List<Medicine>> getMediData() async {
-    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> mediList = [];
-    for (var v in list.data()!['medicine']) {
-      try {
-        mediList.add(
-          Medicine(
-            itemName: v['itemName'],
-            entpName: v['entpName'],
-            effect: v['effect'],
-            itemCode: v['itemCode'],
-            useMethod: v['useMethod'],
-            warmBeforeHave: v['warmBeforeHave'],
-            warmHave: v['warmHave'],
-            interaction: v['interaction'],
-            sideEffect: v['sideEffect'],
-            depositMethod: v['depositMethod'],
-            imageUrl: v['imageUrl'],
-            count: v['count'],
-          ),
-        );
-      } catch (e) {
-        if (context.mounted) {
-          debugPrint("medi load ERROR");
-        }
-      }
-    }
-    mediList.sort((a, b) => a.itemName.compareTo(b.itemName));
-    return mediList;
-  }
-
   // 배열에서 약 삭제
-  Future<void> removeInArray(int idx, dynamic element, double fem) async {
-    await removeInDatabase(element);
-    showRmvMessage(fem, element['itemName']);
+  Future<void> removeInArray(int idx, Medicine medicine, double fem) async {
+    await MediList().removeToArray(medicine);
+    showRmvMessage(fem, medicine.itemName);
     _futureMediList.then((value) => value.removeAt(idx));
-    rmvAlarms(element['itemName'], element['entpName']);
-    getMediData();
-    widget.update(getMediData());
+    rmvAlarms(medicine.itemName, medicine.entpName);
   }
 
   void showCustomDialog(BuildContext context, double fem, String imageUrl) {
@@ -304,8 +252,8 @@ class _ListPageState extends State<ListPage> {
                         : RefreshIndicator(
                             onRefresh: () {
                               setState(() {
-                                _futureMediList = getMediData();
-                                widget.update(_futureMediList);
+                                MediList().update();
+                                _futureMediList = mediList.getMediList();
                               });
                               return Future.delayed(
                                   const Duration(milliseconds: 200));
@@ -345,34 +293,9 @@ class _ListPageState extends State<ListPage> {
                                           ),
                                           onDismissed:
                                               (DismissDirection direction) {
-                                            var mediList = snapshot.data;
                                             removeInArray(
                                               idx,
-                                              {
-                                                'itemName':
-                                                    mediList[idx].itemName,
-                                                'entpName':
-                                                    mediList[idx].entpName,
-                                                'effect': mediList[idx].effect,
-                                                'itemCode':
-                                                    mediList[idx].itemCode,
-                                                'useMethod':
-                                                    mediList[idx].useMethod,
-                                                'warmBeforeHave': mediList[idx]
-                                                    .warmBeforeHave,
-                                                'warmHave':
-                                                    mediList[idx].warmHave,
-                                                'interaction':
-                                                    mediList[idx].interaction,
-                                                'sideEffect':
-                                                    mediList[idx].sideEffect,
-                                                'depositMethod':
-                                                    mediList[idx].depositMethod,
-                                                'imageUrl':
-                                                    mediList[idx].imageUrl,
-                                                'count':
-                                                    mediList[idx].count,
-                                              },
+                                              snapshot.data[idx],
                                               fem,
                                             );
                                           },
@@ -438,16 +361,17 @@ class _ListPageState extends State<ListPage> {
                                                       medicine:
                                                           snapshot.data[idx],
                                                       creating: false,
-                                                      update: widget.update,
                                                     ),
                                                   ),
                                                 ).then((value) => setState(() {
-                                                  _futureMediList = getMediData();
-                                                  widget.update(_futureMediList);
-                                                  if (context.mounted) {
-                                                    debugPrint("Listview 새로고침");
-                                                  }
-                                                }));
+                                                      _futureMediList =
+                                                          mediList
+                                                              .getMediList();
+                                                      if (context.mounted) {
+                                                        debugPrint(
+                                                            "Listview 새로고침");
+                                                      }
+                                                    }));
                                               },
                                             ),
                                           ),

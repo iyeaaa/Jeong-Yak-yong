@@ -9,7 +9,6 @@ import 'main_pages/homepage.dart';
 import 'main_pages/listpage.dart';
 import 'main_pages/mypage.dart';
 import 'main_pages/searchpage.dart';
-import 'medicine_data/medicine.dart';
 
 class TabBarPage extends StatefulWidget {
   final int selectedIndex;
@@ -24,11 +23,8 @@ class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
   late BottomBarWithSheetController _bottomBarController;
-  final _firebaseAuth = FirebaseAuth.instance;
-  final _firestore = FirebaseFirestore.instance;
   late PageController _pageController;
   late String userEmail;
-  late Future<List<Medicine>> futureMediList = getMediData();
   late Future<String> futureUserName = getUserName();
 
   @override
@@ -41,47 +37,9 @@ class _TabBarPageState extends State<TabBarPage>
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
-    userEmail = _firebaseAuth.currentUser!.email!;
     _pageController = PageController(initialPage: widget.selectedIndex);
+    userEmail = FirebaseAuth.instance.currentUser!.email!;
     super.initState();
-  }
-
-  void update(Future<List<Medicine>> newData) {
-    setState(() {
-      futureMediList = newData;
-    });
-  }
-
-  // firestore에 저장된 약 목록 불러옴
-  Future<List<Medicine>> getMediData() async {
-    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> mediList = [];
-    for (var v in list.data()!['medicine']) {
-      try {
-        mediList.add(
-          Medicine(
-            itemName: v['itemName'],
-            entpName: v['entpName'],
-            effect: v['effect'],
-            itemCode: v['itemCode'],
-            useMethod: v['useMethod'],
-            warmBeforeHave: v['warmBeforeHave'],
-            warmHave: v['warmHave'],
-            interaction: v['interaction'],
-            sideEffect: v['sideEffect'],
-            depositMethod: v['depositMethod'],
-            imageUrl: v['imageUrl'],
-            count: v['count'],
-          ),
-        );
-      } catch (e) {
-        if (context.mounted) {
-          debugPrint("medi load ERROR");
-        }
-      }
-    }
-    mediList.sort((a, b) => a.itemName.compareTo(b.itemName));
-    return mediList;
   }
 
   Future<String> getUserName() async {
@@ -161,19 +119,9 @@ class _TabBarPageState extends State<TabBarPage>
           _bottomBarController.selectItem(value);
         },
         children: [
-          HomePage(
-            futureUserName: futureUserName,
-            futureMediList: futureMediList,
-            update: update,
-          ),
-          SearchPage(
-            mediList: const [],
-            update: update,
-          ),
-          ListPage(
-            futureMediList: futureMediList,
-            update: update,
-          ),
+          HomePage(futureUserName: futureUserName),
+          const SearchPage(mediList: [],),
+          const ListPage(),
           const MyPage(),
         ],
       ),

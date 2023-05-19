@@ -1,16 +1,15 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
-
 import '../util/utils.dart';
 
 class AlarmEditScreen extends StatefulWidget {
   final AlarmSettings? alarmSettings;
-  final String itemName;
+  final String mediIndex;
 
   const AlarmEditScreen({
     Key? key,
     this.alarmSettings,
-    required this.itemName,
+    required this.mediIndex,
   }) : super(key: key);
 
   @override
@@ -103,8 +102,8 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
       dateTime: dateTime,
       loopAudio: loopAudio,
       vibrate: vibrate,
-      notificationTitle: showNotification ? 'Alarm example' : null,
-      notificationBody: showNotification ? widget.itemName : null,
+      notificationTitle: showNotification ? widget.mediIndex : null,
+      notificationBody: showNotification ? widget.mediIndex : null,
       assetAudioPath: assetAudio,
       stopOnNotificationOpen: false,
     );

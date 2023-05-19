@@ -41,12 +41,13 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     super.initState();
     var splitedList = widget.alarmSettings.notificationBody!.split('#');
     splitedList.removeLast();
-    for (var nameentp in splitedList) { // 약이름%회사이름@횟수#
+    for (var nameentp in splitedList) {
+      // 약이름%회사이름@횟수#
       int split1 = nameentp.indexOf('%');
       int split2 = nameentp.indexOf('@');
       String itemName = nameentp.substring(0, split1);
-      String entpName = nameentp.substring(split1+1, split2);
-      String count = nameentp.substring(split2+1);
+      String entpName = nameentp.substring(split1 + 1, split2);
+      String count = nameentp.substring(split2 + 1);
       if (int.parse(count) > 0) {
         mediList.add(Tuple3(itemName, entpName, count));
       }
@@ -97,7 +98,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                   ),
                 ],
               ),
-            ),  // 시간, 날짜
+            ), // 시간, 날짜
             Expanded(
               flex: 3,
               child: ListView.builder(

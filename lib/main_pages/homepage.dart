@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
@@ -13,15 +12,8 @@ import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
   final Future<String> futureUserName;
-  final Future<void> futureMediList;
-  final ValueChanged<Future<List<Medicine>>> update;
 
-  const HomePage(
-      {Key? key,
-      required this.futureUserName,
-      required this.futureMediList,
-      required this.update})
-      : super(key: key);
+  const HomePage({Key? key, required this.futureUserName}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -30,20 +22,15 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
-  final _authentication = FirebaseAuth.instance;
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediList = [];
   late final Future<String> _futureUserName;
-  var userEmail = "load fail";
-  User? loggedUser; // Nullable
   int count = 289;
-  String itemName = "";
+  String itemName = ""; // 검색을 위한
 
   @override
   void initState() {
     super.initState();
-    getCurrentUser();
-    userEmail = _authentication.currentUser!.email!;
     loadAlarms();
     if (alarms.isNotEmpty) {
       differTime();
@@ -56,17 +43,6 @@ class _HomePageState extends State<HomePage> {
       alarms = Alarm.getAlarms();
       alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
     });
-  }
-
-  void getCurrentUser() {
-    try {
-      final user = _authentication.currentUser;
-      if (user != null) {
-        loggedUser = user;
-      }
-    } catch (e) {
-      debugPrint(e as String?);
-    }
   }
 
   String toTimeForm(int idx) {
@@ -88,8 +64,8 @@ class _HomePageState extends State<HomePage> {
         return FractionallySizedBox(
           heightFactor: 0.6,
           child: AlarmEditScreen(
+            mediIndex: itemNames,
             alarmSettings: settings,
-            itemName: itemNames,
           ),
         );
       },
@@ -323,7 +299,6 @@ class _HomePageState extends State<HomePage> {
                                   MaterialPageRoute(
                                     builder: (context) => SearchPage(
                                       mediList: mediList,
-                                      update: widget.update,
                                     ),
                                   ),
                                 );

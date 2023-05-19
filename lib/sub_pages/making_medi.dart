@@ -5,16 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_material_symbols/flutter_material_symbols.dart';
 
 import '../medicine_data/medicine.dart';
+import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
 class MakingMediPage extends StatefulWidget {
   final String userEmail;
-  final ValueChanged<Future<List<Medicine>>> update;
 
   const MakingMediPage({
     Key? key,
     required this.userEmail,
-    required this.update,
   }) : super(key: key);
 
   @override
@@ -244,7 +243,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                   return;
                 }
                 await appendToArray(fem);
-                widget.update(getMediData());
+                MediList().update();
                 if (context.mounted) {
                   debugPrint("약 추가 성공");
                   showMySnackBar(fem, "${mediInfo['itemName']}을 추가했습니다.");
