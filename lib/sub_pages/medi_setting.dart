@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -30,6 +31,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Medicine medicine;
   late String userEmail;
+  int mediCount = 0;
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -383,6 +385,76 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     );
   }
 
+  Widget settingCount(double fem) => Padding(
+    padding: EdgeInsets.only(top: 10*fem),
+    child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "먹을 약 개수: ",
+              overflow: TextOverflow.ellipsis,
+              style: SafeGoogleFont(
+                'Poppins',
+                fontSize: 22 * fem,
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                color: const Color(0xffa98aff),
+              ),
+            ),
+            Container(
+              width: 120 * fem,
+              height: 50 * fem,
+              padding: EdgeInsets.fromLTRB(12*fem, 0, 12*fem, 0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.deepPurple),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () => setState(() {
+                      mediCount = max(0, mediCount-1);
+                    }),
+                    child: Text(
+                      "-",
+                      style: SafeGoogleFont(
+                        'Poppins',
+                        fontSize: 20 * fem,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    mediCount.toString(),
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 22 * fem,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () => setState(() {
+                      mediCount = max(0, mediCount+1);
+                    }),
+                    child: Text(
+                      "+",
+                      style: SafeGoogleFont(
+                        'Poppins',
+                        fontSize: 20 * fem,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+  );
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -454,11 +526,13 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
               20 * fem,
             ),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 profile(fem),
                 SizedBox(height: 30 * fem),
                 mediInfoCard(0, fem),
                 mediInfoCard(1, fem),
+                settingCount(fem),
               ],
             ),
           ),
