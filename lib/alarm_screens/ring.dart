@@ -34,18 +34,22 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     "Nov",
     "Dec"
   ];
-  List<Tuple2<String, String>> mediList = [];
+  List<Tuple3<String, String, String>> mediList = [];
 
   @override
   void initState() {
     super.initState();
-    var splitedList = widget.alarmSettings.notificationBody!.split('&');
+    var splitedList = widget.alarmSettings.notificationBody!.split('#');
     splitedList.removeLast();
-    for (var nameentp in splitedList) {
-      int sharpIdx = nameentp.indexOf('#');
-      String itemName = nameentp.substring(0, sharpIdx);
-      String entpName = nameentp.substring(sharpIdx + 1);
-      mediList.add(Tuple2(itemName, entpName));
+    for (var nameentp in splitedList) { // 약이름%회사이름@횟수#
+      int split1 = nameentp.indexOf('%');
+      int split2 = nameentp.indexOf('@');
+      String itemName = nameentp.substring(0, split1);
+      String entpName = nameentp.substring(split1+1, split2);
+      String count = nameentp.substring(split2+1);
+      if (int.parse(count) > 0) {
+        mediList.add(Tuple3(itemName, entpName, count));
+      }
     }
   }
 
@@ -93,7 +97,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                   ),
                 ],
               ),
-            ), // 시간, 날짜
+            ),  // 시간, 날짜
             Expanded(
               flex: 3,
               child: ListView.builder(
@@ -110,7 +114,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                       name: mediList[i].item1,
                       company: mediList[i].item2,
                       ontap: () {},
-                      buttonName: "약",
+                      buttonName: "${mediList[i].item3}회",
                       isChecked: false,
                     ),
                   ),

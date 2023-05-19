@@ -395,7 +395,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
-              "먹을 약 개수: ",
+              "남은 약 개수: ",
               overflow: TextOverflow.ellipsis,
               style: SafeGoogleFont(
                 'Poppins',

@@ -102,6 +102,7 @@ class _MedicineCardState extends State<MedicineCard> {
                     ],
                   ),
                 ), // 약 이름, 회사
+                SizedBox(width: 9 * widget.fem),
               ],
             ),
           ), // 프로필

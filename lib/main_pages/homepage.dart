@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
-import 'package:styled_widget/styled_widget.dart';
 import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
@@ -543,12 +542,13 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
+// 약이름%회사이름@횟수#
 String toItemName(String body) {
-  var nameentp = body.split('&').toList();
+  var nameentp = body.split('#').toList();
   nameentp.removeLast();
   String rtn = "";
   for (String value in nameentp) {
-    rtn += '${value.substring(0, value.indexOf('#'))}, ';
+    rtn += '${value.substring(0, value.indexOf('%'))}, ';
   }
   return rtn;
 }

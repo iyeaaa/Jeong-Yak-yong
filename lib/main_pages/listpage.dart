@@ -90,11 +90,11 @@ class _ListPageState extends State<ListPage> {
 
   // 알람 설정 페이지로 이동
   Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
-    String itemNames = "";
+    String itemInfo = "";
     _futureMediList.then((list) {
       for (int i = 0; i < list.length; i++) {
-        if (isChecked[i]) {
-          itemNames += "${list[i].itemName}#${list[i].entpName}&";
+        if (isChecked[i] && list[i].count > 0) {
+          itemInfo += "${list[i].itemName}%${list[i].entpName}@${list[i].count}#";
         }
       }
     });
@@ -110,7 +110,7 @@ class _ListPageState extends State<ListPage> {
           heightFactor: 0.6,
           child: AlarmEditScreen(
             alarmSettings: settings,
-            itemName: itemNames,
+            itemName: itemInfo,
           ),
         );
       },
@@ -444,7 +444,9 @@ class _ListPageState extends State<ListPage> {
                                                 ).then((value) => setState(() {
                                                   _futureMediList = getMediData();
                                                   widget.update(_futureMediList);
-                                                  print("업데이트완료");
+                                                  if (context.mounted) {
+                                                    debugPrint("Listview 새로고침");
+                                                  }
                                                 }));
                                               },
                                             ),
