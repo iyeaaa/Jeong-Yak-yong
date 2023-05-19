@@ -80,6 +80,7 @@ class _TabBarPageState extends State<TabBarPage>
         }
       }
     }
+    mediList.sort((a, b) => a.itemName.compareTo(b.itemName));
     return mediList;
   }
 

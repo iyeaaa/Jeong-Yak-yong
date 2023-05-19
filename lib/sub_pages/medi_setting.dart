@@ -6,7 +6,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:medicine_app/tabbar_page.dart';
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 import 'info_page.dart';
@@ -494,8 +493,8 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                 if (!widget.creating) {
                   await appendToArray(fem);
                 }
-                showAddOrChangeMessage(fem);
                 widget.update(getMediData());
+                showAddOrChangeMessage(fem);
               },
               icon: Icon(
                 widget.creating ? Icons.add : Icons.save_outlined,
@@ -507,18 +506,10 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         elevation: 0,
         toolbarHeight: 80 * fem,
         leading: IconButton(
-          onPressed: () {
-            Navigator.pushAndRemoveUntil(
-              context,
-              PageRouteBuilder(
-                pageBuilder: (context, animation1, animation2) =>
-                    const TabBarPage(selectedIndex: 2),
-              ),
-              (Route<dynamic> route) => false,
-            );
-          },
+          onPressed: () => Navigator.pop(context),
           icon: const Icon(Icons.arrow_back_ios_new_sharp),
         ),
+        automaticallyImplyLeading: false,
         title: AutoSizeText(
           medicine.itemName,
           textAlign: TextAlign.start,

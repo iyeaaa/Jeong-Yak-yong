@@ -173,6 +173,7 @@ class _ListPageState extends State<ListPage> {
         }
       }
     }
+    mediList.sort((a, b) => a.itemName.compareTo(b.itemName));
     return mediList;
   }
 
@@ -440,7 +441,11 @@ class _ListPageState extends State<ListPage> {
                                                       update: widget.update,
                                                     ),
                                                   ),
-                                                );
+                                                ).then((value) => setState(() {
+                                                  _futureMediList = getMediData();
+                                                  widget.update(_futureMediList);
+                                                  print("업데이트완료");
+                                                }));
                                               },
                                             ),
                                           ),
