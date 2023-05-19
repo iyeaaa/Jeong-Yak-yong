@@ -50,7 +50,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
     MaterialSymbols.sick,
     MaterialSymbols.desk,
   ];
-  Map<String, String?> mediInfo = {
+  Map<String, Object> mediInfo = {
     'imageUrl': "No Image",
     'itemCode': "알아야 할 내용이 없어요.",
     'entpName': "알아야 할 내용이 없어요.",
@@ -61,8 +61,8 @@ class _MakingMediPageState extends State<MakingMediPage> {
     "interaction": "알아야 할 내용이 없어요.", // 상호작용
     "sideEffect": "알아야 할 내용이 없어요.", // 부작용
     "depositMethod": "알아야 할 내용이 없어요.", // 보관법
+    "count": 0, // 약 개수
   };
-  int mediCount = 0;
 
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
@@ -174,7 +174,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
             children: [
               InkWell(
                 onTap: () => setState(() {
-                  mediCount = max(0, mediCount - 1);
+                  mediInfo['count'] = max(0, (mediInfo['count'] as int) - 1);
                 }),
                 child: Text(
                   "-",
@@ -187,7 +187,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                 ),
               ),
               Text(
-                mediCount.toString(),
+                mediInfo['count'].toString(),
                 style: SafeGoogleFont(
                   'Poppins',
                   fontSize: 22 * fem,
@@ -197,7 +197,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
               ),
               InkWell(
                 onTap: () => setState(() {
-                  mediCount = max(0, mediCount + 1);
+                  mediInfo['count'] = max(0, (mediInfo['count'] as int) + 1);
                 }),
                 child: Text(
                   "+",
