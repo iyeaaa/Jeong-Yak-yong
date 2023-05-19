@@ -23,18 +23,18 @@ class TabBarPage extends StatefulWidget {
 class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
-  final _bottomBarController = BottomBarWithSheetController(initialIndex: 0);
+  late BottomBarWithSheetController _bottomBarController;
   final _firebaseAuth = FirebaseAuth.instance;
   final _firestore = FirebaseFirestore.instance;
-  final _pageController = PageController();
+  late PageController _pageController;
   late String userEmail;
   late Future<List<Medicine>> futureMediList = getMediData();
   late Future<String> futureUserName = getUserName();
 
-  // futureMediList 변수가 접근 될 때 getMediData() 함수 실행된다.
-
   @override
   void initState() {
+    _bottomBarController =
+        BottomBarWithSheetController(initialIndex: widget.selectedIndex);
     _bottomBarController.stream.listen((opened) {
       debugPrint('Bottom bar ${opened ? 'opened' : 'closed'}');
     });
@@ -42,17 +42,13 @@ class _TabBarPageState extends State<TabBarPage>
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
     userEmail = _firebaseAuth.currentUser!.email!;
+    _pageController = PageController(initialPage: widget.selectedIndex);
     super.initState();
   }
 
   void update(Future<List<Medicine>> newData) {
     setState(() {
       futureMediList = newData;
-      // newData.then((value) {
-      //   for (var v in value) {
-      //     print(v.itemName);
-      //   }
-      // });
     });
   }
 
@@ -64,17 +60,19 @@ class _TabBarPageState extends State<TabBarPage>
       try {
         mediList.add(
           Medicine(
-              itemName: v['itemName'],
-              entpName: v['entpName'],
-              effect: v['effect'],
-              itemCode: v['itemCode'],
-              useMethod: v['useMethod'],
-              warmBeforeHave: v['warmBeforeHave'],
-              warmHave: v['warmHave'],
-              interaction: v['interaction'],
-              sideEffect: v['sideEffect'],
-              depositMethod: v['depositMethod'],
-              imageUrl: v['imageUrl']),
+            itemName: v['itemName'],
+            entpName: v['entpName'],
+            effect: v['effect'],
+            itemCode: v['itemCode'],
+            useMethod: v['useMethod'],
+            warmBeforeHave: v['warmBeforeHave'],
+            warmHave: v['warmHave'],
+            interaction: v['interaction'],
+            sideEffect: v['sideEffect'],
+            depositMethod: v['depositMethod'],
+            imageUrl: v['imageUrl'],
+            count: v['count'],
+          ),
         );
       } catch (e) {
         if (context.mounted) {
@@ -105,58 +103,50 @@ class _TabBarPageState extends State<TabBarPage>
   }
 
   Widget bottomPage(double fem) => SingleChildScrollView(
-    child: Container(
-      padding: EdgeInsets.fromLTRB(
-        30 * fem,
-        20 * fem,
-        30 * fem,
-        20 * fem,
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Row(
+        child: Container(
+          padding: EdgeInsets.fromLTRB(
+            30 * fem,
+            20 * fem,
+            30 * fem,
+            20 * fem,
+          ),
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                width: 130 * fem,
-                height: 130 * fem,
-                decoration: BoxDecoration(
-                  color: Colors.purpleAccent
-                ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 130 * fem,
+                    height: 130 * fem,
+                    decoration: const BoxDecoration(color: Colors.purpleAccent),
+                  ),
+                  Container(
+                    width: 130 * fem,
+                    height: 130 * fem,
+                    decoration: const BoxDecoration(color: Colors.purpleAccent),
+                  )
+                ],
               ),
-              Container(
-                width: 130 * fem,
-                height: 130 * fem,
-                decoration: BoxDecoration(
-                    color: Colors.purpleAccent
-                ),
-              )
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(
+                    width: 130 * fem,
+                    height: 130 * fem,
+                    decoration: const BoxDecoration(color: Colors.purpleAccent),
+                  ),
+                  Container(
+                    width: 130 * fem,
+                    height: 130 * fem,
+                    decoration: const BoxDecoration(color: Colors.purpleAccent),
+                  )
+                ],
+              ),
             ],
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                width: 130 * fem,
-                height: 130 * fem,
-                decoration: BoxDecoration(
-                  color: Colors.purpleAccent
-                ),
-              ),
-              Container(
-                width: 130 * fem,
-                height: 130 * fem,
-                decoration: BoxDecoration(
-                    color: Colors.purpleAccent
-                ),
-              )
-            ],
-          ),
-        ],
-      ),
-    ),
-  );
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +156,9 @@ class _TabBarPageState extends State<TabBarPage>
     return Scaffold(
       body: PageView(
         controller: _pageController,
-        onPageChanged: (value) { _bottomBarController.selectItem(value); },
+        onPageChanged: (value) {
+          _bottomBarController.selectItem(value);
+        },
         children: [
           HomePage(
             futureUserName: futureUserName,

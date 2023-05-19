@@ -32,7 +32,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       title: '정약용',
       home: _firebaseAuth.currentUser != null
-          ? const TabBarPage(selectedIndex: 0,)
+          ? const TabBarPage(selectedIndex: 0)
           : const LoginPage(),
       debugShowCheckedModeBanner: false,
     );

@@ -10,6 +10,7 @@ class Medicine {
   final String sideEffect; // 부작용
   final String depositMethod; // 보관법
   final String imageUrl;
+  final int count;
 
   Medicine({
     required this.itemName,
@@ -23,6 +24,7 @@ class Medicine {
     required this.sideEffect,
     required this.depositMethod,
     required this.imageUrl,
+    required this.count,
   });
 
   factory Medicine.fromJson(Map<String, dynamic> json) {
@@ -47,6 +49,7 @@ class Medicine {
         depositMethod: removeTag(
             json['depositMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
         imageUrl: json['itemImage'] ?? 'No Image',
+        count: json['count'] ?? 0,
       );
     } catch (e) {
       return Medicine(
@@ -61,6 +64,7 @@ class Medicine {
         sideEffect: "no found",
         depositMethod: "no found",
         imageUrl: 'no found',
+        count: 0,
       );
     }
   }

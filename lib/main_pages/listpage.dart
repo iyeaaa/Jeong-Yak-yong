@@ -18,7 +18,8 @@ class ListPage extends StatefulWidget {
 
   const ListPage({
     Key? key,
-    required Future<List<Medicine>> futureMediList, required this.update,
+    required Future<List<Medicine>> futureMediList,
+    required this.update,
   })  : _futureMediList = futureMediList,
         super(key: key);
 
@@ -152,17 +153,19 @@ class _ListPageState extends State<ListPage> {
       try {
         mediList.add(
           Medicine(
-              itemName: v['itemName'],
-              entpName: v['entpName'],
-              effect: v['effect'],
-              itemCode: v['itemCode'],
-              useMethod: v['useMethod'],
-              warmBeforeHave: v['warmBeforeHave'],
-              warmHave: v['warmHave'],
-              interaction: v['interaction'],
-              sideEffect: v['sideEffect'],
-              depositMethod: v['depositMethod'],
-              imageUrl: v['imageUrl']),
+            itemName: v['itemName'],
+            entpName: v['entpName'],
+            effect: v['effect'],
+            itemCode: v['itemCode'],
+            useMethod: v['useMethod'],
+            warmBeforeHave: v['warmBeforeHave'],
+            warmHave: v['warmHave'],
+            interaction: v['interaction'],
+            sideEffect: v['sideEffect'],
+            depositMethod: v['depositMethod'],
+            imageUrl: v['imageUrl'],
+            count: v['count'],
+          ),
         );
       } catch (e) {
         if (context.mounted) {
@@ -366,6 +369,8 @@ class _ListPageState extends State<ListPage> {
                                                     mediList[idx].depositMethod,
                                                 'imageUrl':
                                                     mediList[idx].imageUrl,
+                                                'count':
+                                                    mediList[idx].count,
                                               },
                                               fem,
                                             );
@@ -376,28 +381,45 @@ class _ListPageState extends State<ListPage> {
                                             width: double.infinity,
                                             height: 89 * fem,
                                             child: MedicineCard(
-                                              existEmage: snapshot.data[idx].imageUrl != "No Image",
+                                              existEmage:
+                                                  snapshot.data[idx].imageUrl !=
+                                                      "No Image",
                                               imageOntap: () {
-                                                if (snapshot.data[idx].imageUrl == "No Image") {
-                                                  ScaffoldMessenger.of(context).showSnackBar(
+                                                if (snapshot
+                                                        .data[idx].imageUrl ==
+                                                    "No Image") {
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
                                                     SnackBar(
-                                                      duration: const Duration(milliseconds: 800),
+                                                      duration: const Duration(
+                                                          milliseconds: 800),
                                                       content: Text(
                                                         "이미지가 없어요",
-                                                        textAlign: TextAlign.center,
+                                                        textAlign:
+                                                            TextAlign.center,
                                                         style: SafeGoogleFont(
                                                           'Nunito',
                                                           fontSize: 15 * fem,
-                                                          fontWeight: FontWeight.w400,
-                                                          height: 1.3625 * fem / fem,
-                                                          color: const Color(0xffffffff),
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                          height: 1.3625 *
+                                                              fem /
+                                                              fem,
+                                                          color: const Color(
+                                                              0xffffffff),
                                                         ),
                                                       ),
-                                                      backgroundColor: const Color(0xff8a60ff),
+                                                      backgroundColor:
+                                                          const Color(
+                                                              0xff8a60ff),
                                                     ),
                                                   );
                                                 } else {
-                                                  showCustomDialog(context, fem, snapshot.data[idx].imageUrl);
+                                                  showCustomDialog(
+                                                      context,
+                                                      fem,
+                                                      snapshot
+                                                          .data[idx].imageUrl);
                                                 }
                                               },
                                               isChecked: isChecked[idx],

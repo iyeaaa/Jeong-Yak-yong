@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:medicine_app/tabbar_page.dart';
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
 import 'info_page.dart';
@@ -33,6 +34,14 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   late String userEmail;
   int mediCount = 0;
 
+  @override
+  void initState() {
+    super.initState();
+    medicine = widget.medicine;
+    userEmail = _firebaseAuth.currentUser!.email!;
+    mediCount = medicine.count;
+  }
+
   // 데이터베이스에 약 추가
   Future<void> appendToArray(double fem) async {
     _firestore.collection(userEmail).doc('mediInfo').update({
@@ -49,22 +58,23 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
           'sideEffect': medicine.sideEffect,
           'depositMethod': medicine.depositMethod,
           'imageUrl': medicine.imageUrl,
+          'count': mediCount,
         }
       ])
     });
   }
 
-  Future<void> removeToArray(dynamic element) async {
+  Future<void> changeToArray(dynamic element) async {
     _firestore.collection(userEmail).doc('mediInfo').update({
       'medicine': FieldValue.arrayRemove([element])
     });
   }
 
-  void showAddOrRmvMessage(double fem) {
+  void showAddOrChangeMessage(double fem) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "${medicine.itemName}을 ${widget.creating ? "추가" : "삭제"}했습니다.",
+          "${medicine.itemName}을 ${widget.creating ? "추가" : "변경"}했어요.",
           textAlign: TextAlign.center,
           style: SafeGoogleFont(
             'Nunito',
@@ -77,13 +87,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         backgroundColor: const Color(0xff8a60ff),
       ),
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    medicine = widget.medicine;
-    userEmail = _firebaseAuth.currentUser!.email!;
   }
 
   Widget profile(double fem) {
@@ -277,17 +280,19 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       try {
         mediList.add(
           Medicine(
-              itemName: v['itemName'],
-              entpName: v['entpName'],
-              effect: v['effect'],
-              itemCode: v['itemCode'],
-              useMethod: v['useMethod'],
-              warmBeforeHave: v['warmBeforeHave'],
-              warmHave: v['warmHave'],
-              interaction: v['interaction'],
-              sideEffect: v['sideEffect'],
-              depositMethod: v['depositMethod'],
-              imageUrl: v['imageUrl']),
+            itemName: v['itemName'],
+            entpName: v['entpName'],
+            effect: v['effect'],
+            itemCode: v['itemCode'],
+            useMethod: v['useMethod'],
+            warmBeforeHave: v['warmBeforeHave'],
+            warmHave: v['warmHave'],
+            interaction: v['interaction'],
+            sideEffect: v['sideEffect'],
+            depositMethod: v['depositMethod'],
+            imageUrl: v['imageUrl'],
+            count: v['count'],
+          ),
         );
       } catch (e) {
         if (context.mounted) {
@@ -386,8 +391,8 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 
   Widget settingCount(double fem) => Padding(
-    padding: EdgeInsets.only(top: 10*fem),
-    child: Row(
+        padding: EdgeInsets.only(top: 10 * fem),
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Text(
@@ -404,7 +409,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             Container(
               width: 120 * fem,
               height: 50 * fem,
-              padding: EdgeInsets.fromLTRB(12*fem, 0, 12*fem, 0),
+              padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.deepPurple),
               ),
@@ -413,7 +418,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                 children: [
                   InkWell(
                     onTap: () => setState(() {
-                      mediCount = max(0, mediCount-1);
+                      mediCount = max(0, mediCount - 1);
                     }),
                     child: Text(
                       "-",
@@ -436,7 +441,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                   ),
                   InkWell(
                     onTap: () => setState(() {
-                      mediCount = max(0, mediCount+1);
+                      mediCount = max(0, mediCount + 1);
                     }),
                     child: Text(
                       "+",
@@ -453,7 +458,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             ),
           ],
         ),
-  );
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -466,42 +471,52 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () async {
-              widget.creating
-                  ? await appendToArray(fem)
-                  : await removeToArray({
-                      'itemName': medicine.itemName,
-                      'entpName': medicine.entpName,
-                      'effect': medicine.effect,
-                      'itemCode': medicine.itemCode,
-                      'useMethod': medicine.useMethod,
-                      'warmBeforeHave': medicine.warmBeforeHave,
-                      'warmHave': medicine.warmHave,
-                      'interaction': medicine.interaction,
-                      'sideEffect': medicine.sideEffect,
-                      'depositMethod': medicine.depositMethod,
-                      'imageUrl': medicine.imageUrl,
-                    });
-              showAddOrRmvMessage(fem);
-              widget.update(getMediData());
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
-            },
-            icon: Icon(
-              widget.creating ? Icons.add : Icons.playlist_remove,
-              size: 35 * fem,
+          Padding(
+            padding: EdgeInsets.only(right: 30 * fem),
+            child: IconButton(
+              onPressed: () async {
+                widget.creating
+                    ? await appendToArray(fem)
+                    : await changeToArray({
+                        'itemName': medicine.itemName,
+                        'entpName': medicine.entpName,
+                        'effect': medicine.effect,
+                        'itemCode': medicine.itemCode,
+                        'useMethod': medicine.useMethod,
+                        'warmBeforeHave': medicine.warmBeforeHave,
+                        'warmHave': medicine.warmHave,
+                        'interaction': medicine.interaction,
+                        'sideEffect': medicine.sideEffect,
+                        'depositMethod': medicine.depositMethod,
+                        'imageUrl': medicine.imageUrl,
+                        'count': medicine.count,
+                      });
+                if (!widget.creating) {
+                  await appendToArray(fem);
+                }
+                showAddOrChangeMessage(fem);
+                widget.update(getMediData());
+              },
+              icon: Icon(
+                widget.creating ? Icons.add : Icons.save_outlined,
+                size: 35 * fem,
+              ),
             ),
-          ),
-          SizedBox(
-            width: 10 * fem,
           ),
         ],
         elevation: 0,
         toolbarHeight: 80 * fem,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
+          onPressed: () {
+            Navigator.pushAndRemoveUntil(
+              context,
+              PageRouteBuilder(
+                pageBuilder: (context, animation1, animation2) =>
+                    const TabBarPage(selectedIndex: 2),
+              ),
+              (Route<dynamic> route) => false,
+            );
+          },
           icon: const Icon(Icons.arrow_back_ios_new_sharp),
         ),
         title: AutoSizeText(

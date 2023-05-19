@@ -76,17 +76,19 @@ class _MakingMediPageState extends State<MakingMediPage> {
       try {
         mediList.add(
           Medicine(
-              itemName: v['itemName'],
-              entpName: v['entpName'],
-              effect: v['effect'],
-              itemCode: v['itemCode'],
-              useMethod: v['useMethod'],
-              warmBeforeHave: v['warmBeforeHave'],
-              warmHave: v['warmHave'],
-              interaction: v['interaction'],
-              sideEffect: v['sideEffect'],
-              depositMethod: v['depositMethod'],
-              imageUrl: v['imageUrl']),
+            itemName: v['itemName'],
+            entpName: v['entpName'],
+            effect: v['effect'],
+            itemCode: v['itemCode'],
+            useMethod: v['useMethod'],
+            warmBeforeHave: v['warmBeforeHave'],
+            warmHave: v['warmHave'],
+            interaction: v['interaction'],
+            sideEffect: v['sideEffect'],
+            depositMethod: v['depositMethod'],
+            imageUrl: v['imageUrl'],
+            count: v['count'],
+          ),
         );
       } catch (e) {
         if (context.mounted) {
