@@ -33,159 +33,163 @@ class _SignUpPageState extends State<SignUpPage> {
 
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
-      body: Container(
-        margin: EdgeInsets.all(20 * fem),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              // loginseW (5:12)
-              margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 51 * fem),
-              child: Text(
-                'Sign Up',
-                style: SafeGoogleFont(
-                  'Inter',
-                  fontSize: 40 * fem,
-                  fontWeight: FontWeight.w700,
-                  height: 1.2125 * fem / fem,
-                  color: const Color(0xff000000),
-                ),
-              ),
-            ), // SignUp Text
-            Form(
-              key: _formKey,
-              child: Column(
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 10 * fem),
-                    child: TextFormField(
-                      validator: (v) {
-                        if (v!.isEmpty) {
-                          return '사용자 이름을 입력하세요';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => userName = value!,
-                      onChanged: (value) => userName = value,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.account_circle_outlined,
-                          size: 30 * fem,
-                        ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff8a60ff), width: 1.0),
-                        ),
-                        border: const OutlineInputBorder(),
-                        hintText: "USERNAME",
-                      ),
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            margin: EdgeInsets.all(20 * fem),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Container(
+                  // loginseW (5:12)
+                  margin: EdgeInsets.fromLTRB(0 * fem, 0 * fem, 0 * fem, 51 * fem),
+                  child: Text(
+                    'Sign Up',
+                    style: SafeGoogleFont(
+                      'Inter',
+                      fontSize: 40 * fem,
+                      fontWeight: FontWeight.w700,
+                      height: 1.2125 * fem / fem,
+                      color: const Color(0xff000000),
                     ),
-                  ), // USERNAME BOX
-                  Container(
-                    margin: EdgeInsets.only(top: 10 * fem),
-                    child: TextFormField(
-                      validator: (v) {
-                        String emailRegix =
-                            '^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+\$';
-                        if (v!.isEmpty || !RegExp(emailRegix).hasMatch(v)) {
-                          return '유효한 이메일 주소를 입력하세요';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => userEmail = value!,
-                      onChanged: (value) => userEmail = value,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.mail_outline,
-                          size: 30 * fem,
+                  ),
+                ), // SignUp Text
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Container(
+                        margin: EdgeInsets.only(top: 10 * fem),
+                        child: TextFormField(
+                          validator: (v) {
+                            if (v!.isEmpty) {
+                              return '사용자 이름을 입력하세요';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => userName = value!,
+                          onChanged: (value) => userName = value,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.account_circle_outlined,
+                              size: 30 * fem,
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                            ),
+                            border: const OutlineInputBorder(),
+                            hintText: "USERNAME",
+                          ),
                         ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                      ), // USERNAME BOX
+                      Container(
+                        margin: EdgeInsets.only(top: 10 * fem),
+                        child: TextFormField(
+                          validator: (v) {
+                            String emailRegix =
+                                '^[a-zA-Z0-9+-\\_.]+@[a-zA-Z0-9-]+\\.[a-zA-Z0-9-.]+\$';
+                            if (v!.isEmpty || !RegExp(emailRegix).hasMatch(v)) {
+                              return '유효한 이메일 주소를 입력하세요';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => userEmail = value!,
+                          onChanged: (value) => userEmail = value,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.mail_outline,
+                              size: 30 * fem,
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                            ),
+                            border: const OutlineInputBorder(),
+                            hintText: "EMAIL",
+                          ),
                         ),
-                        border: const OutlineInputBorder(),
-                        hintText: "EMAIL",
-                      ),
-                    ),
-                  ), // EMAIL BOX,
-                  Container(
-                    margin: EdgeInsets.only(top: 10 * fem),
-                    child: TextFormField(
-                      keyboardType: TextInputType.emailAddress,
-                      obscureText: true,
-                      validator: (v) {
-                        if (v!.isEmpty || v.length < 6) {
-                          return '6자 이상의 비밀번호를 입력하세요';
-                        }
-                        return null;
-                      },
-                      onSaved: (value) => userPassword = value!,
-                      onChanged: (value) => userPassword = value,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(
-                          Icons.lock_outline,
-                          size: 30 * fem,
+                      ), // EMAIL BOX,
+                      Container(
+                        margin: EdgeInsets.only(top: 10 * fem),
+                        child: TextFormField(
+                          keyboardType: TextInputType.emailAddress,
+                          obscureText: true,
+                          validator: (v) {
+                            if (v!.isEmpty || v.length < 6) {
+                              return '6자 이상의 비밀번호를 입력하세요';
+                            }
+                            return null;
+                          },
+                          onSaved: (value) => userPassword = value!,
+                          onChanged: (value) => userPassword = value,
+                          decoration: InputDecoration(
+                            prefixIcon: Icon(
+                              Icons.lock_outline,
+                              size: 30 * fem,
+                            ),
+                            enabledBorder: const OutlineInputBorder(
+                              borderSide:
+                                  BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                            ),
+                            border: const OutlineInputBorder(),
+                            hintText: "PASSWORD",
+                          ),
                         ),
-                        enabledBorder: const OutlineInputBorder(
-                          borderSide:
-                              BorderSide(color: Color(0xff8a60ff), width: 1.0),
+                      ), // PASSWORD BOX
+                    ],
+                  ),
+                ), // PASSWORD BOX
+                SizedBox(height: 10 * fem),
+                ElevatedButton(
+                  style: ButtonStyle(
+                      backgroundColor:
+                          const MaterialStatePropertyAll(Color(0xff8a60ff)),
+                      minimumSize:
+                          MaterialStatePropertyAll(Size(double.infinity, 40 * fem)),
+                      shape: MaterialStatePropertyAll(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                        border: const OutlineInputBorder(),
-                        hintText: "PASSWORD",
-                      ),
-                    ),
-                  ), // PASSWORD BOX
-                ],
-              ),
-            ), // PASSWORD BOX
-            SizedBox(height: 10 * fem),
-            ElevatedButton(
-              style: ButtonStyle(
-                  backgroundColor:
-                      const MaterialStatePropertyAll(Color(0xff8a60ff)),
-                  minimumSize:
-                      MaterialStatePropertyAll(Size(double.infinity, 40 * fem)),
-                  shape: MaterialStatePropertyAll(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                  )),
-              onPressed: () async {
-                _tryValidation();
-                try {
-                  final newUser =
-                      await _authentication.createUserWithEmailAndPassword(
-                    email: userEmail,
-                    password: userPassword,
-                  ); // authentication은 비동기적으로 처리한다.
+                      )),
+                  onPressed: () async {
+                    _tryValidation();
+                    try {
+                      final newUser =
+                          await _authentication.createUserWithEmailAndPassword(
+                        email: userEmail,
+                        password: userPassword,
+                      ); // authentication은 비동기적으로 처리한다.
 
-                  if (newUser.user != null && context.mounted) {
-                    Navigator.pop(context);
-                    showSnackBar(context, "회원가입에 성공했습니다", fem);
-                    _firestore.collection(userEmail).doc('mediInfo').set({
-                      "name": userName,
-                      "medicine": [],
-                    });
-                  }
-                } catch (e) {
-                  showSnackBar(context, "회원가입에 실패했습니다", fem);
-                }
-              },
-              child: Text(
-                'Sign up',
-                textAlign: TextAlign.center,
-                style: SafeGoogleFont(
-                  'Nunito',
-                  fontSize: 22 * fem,
-                  fontWeight: FontWeight.w400,
-                  height: 1.3625 * fem / fem,
-                  color: const Color(0xffffffff),
-                ),
-              ),
-            ), // SignUp Button
-            signUpText("Login", context)
-          ],
+                      if (newUser.user != null && context.mounted) {
+                        Navigator.pop(context);
+                        showSnackBar(context, "회원가입에 성공했습니다", fem);
+                        _firestore.collection(userEmail).doc('mediInfo').set({
+                          "name": userName,
+                          "medicine": [],
+                        });
+                      }
+                    } catch (e) {
+                      showSnackBar(context, "회원가입에 실패했습니다", fem);
+                    }
+                  },
+                  child: Text(
+                    'Sign up',
+                    textAlign: TextAlign.center,
+                    style: SafeGoogleFont(
+                      'Nunito',
+                      fontSize: 22 * fem,
+                      fontWeight: FontWeight.w400,
+                      height: 1.3625 * fem / fem,
+                      color: const Color(0xffffffff),
+                    ),
+                  ),
+                ), // SignUp Button
+                signUpText("Login", context)
+              ],
+            ),
+          ),
         ),
       ),
     );
