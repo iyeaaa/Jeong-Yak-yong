@@ -122,7 +122,7 @@ class _TabBarPageState extends State<TabBarPage>
           HomePage(futureUserName: futureUserName),
           const SearchPage(mediList: [],),
           const ListPage(),
-          const CalendarPage(),
+          const WeekViewDemo(),
         ],
       ),
       bottomNavigationBar: BottomBarWithSheet(
