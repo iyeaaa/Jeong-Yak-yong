@@ -158,8 +158,8 @@ class _TabBarPageState extends State<TabBarPage>
         items: const [
           BottomBarWithSheetItem(icon: Icons.home_filled),
           BottomBarWithSheetItem(icon: Icons.search),
-          BottomBarWithSheetItem(icon: Icons.list_alt),
-          BottomBarWithSheetItem(icon: Icons.account_circle),
+          BottomBarWithSheetItem(icon: Icons.view_list_rounded),
+          BottomBarWithSheetItem(icon: Icons.calendar_month),
         ],
         sheetChild: bottomPage(fem),
         controller: _bottomBarController,
