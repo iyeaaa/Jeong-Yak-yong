@@ -1,7 +1,8 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/util/medicine_card.dart';
-import 'package:tuple/tuple.dart';
+import '../medicine_data/medicine.dart';
+import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
 // 알림 울릴 때 페이지
@@ -34,24 +35,19 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     "Nov",
     "Dec"
   ];
-  List<Tuple3<String, String, String>> mediList = [];
+  var idxList = [];
+  late final Future<List<Medicine>> _futureMediList = MediList().getMediList();
 
   @override
   void initState() {
     super.initState();
-    var splitedList = widget.alarmSettings.notificationBody!.split('#');
+    var splitedList = widget.alarmSettings.notificationBody!.split(',');
     splitedList.removeLast();
-    for (var nameentp in splitedList) {
-      // 약이름%회사이름@횟수#
-      int split1 = nameentp.indexOf('%');
-      int split2 = nameentp.indexOf('@');
-      String itemName = nameentp.substring(0, split1);
-      String entpName = nameentp.substring(split1 + 1, split2);
-      String count = nameentp.substring(split2 + 1);
-      if (int.parse(count) > 0) {
-        mediList.add(Tuple3(itemName, entpName, count));
-      }
+    print(splitedList);
+    for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
+      idxList.add(idx);
     }
+    print("idxList: $idxList");
   }
 
   String toTimeForm(int h, int m) {
@@ -87,8 +83,8 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                   SizedBox(height: 20 * fem),
                   Text(
                     "${toWeekDay[widget.alarmSettings.dateTime.weekday]},"
-                    " ${widget.alarmSettings.dateTime.day}"
-                    " ${toMonth[widget.alarmSettings.dateTime.month]}",
+                        " ${widget.alarmSettings.dateTime.day}"
+                        " ${toMonth[widget.alarmSettings.dateTime.month]}",
                     style: SafeGoogleFont(
                       'DM Sans',
                       fontSize: 16 * fem,
@@ -99,29 +95,41 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                 ],
               ),
             ), // 시간, 날짜
-            Expanded(
-              flex: 3,
-              child: ListView.builder(
-                itemCount: mediList.length,
-                itemBuilder: (context, i) => Container(
-                  padding:
-                      EdgeInsets.fromLTRB(20 * fem, 7 * fem, 20 * fem, 7 * fem),
-                  child: SizedBox(
-                    height: 85 * fem,
-                    child: MedicineCard(
-                      isAlarm: true,
-                      existEmage: true,
-                      fem: fem,
-                      name: mediList[i].item1,
-                      company: mediList[i].item2,
-                      ontap: () {},
-                      buttonName: "${mediList[i].item3}회",
-                      isChecked: false,
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            FutureBuilder(
+                future: _futureMediList,
+                builder: (BuildContext context, AsyncSnapshot snapshot) {
+                  if (snapshot.hasError) {
+                    debugPrint("MediList ERROR from Ring Page");
+                    return const Icon(Icons.error);
+                  } else if (!snapshot.hasData) {
+                    return const Text("loading");
+                  } else {
+                    return Expanded(
+                      flex: 2,
+                      child: ListView.builder(
+                        itemCount: idxList.length,
+                        itemBuilder: (context, i) => Container(
+                          padding: EdgeInsets.fromLTRB(
+                              20 * fem, 7 * fem, 20 * fem, 7 * fem),
+                          child: SizedBox(
+                            height: 85 * fem,
+                            child: MedicineCard(
+                              isAlarm: true,
+                              existEmage: true,
+                              fem: fem,
+                              name: snapshot.data[idxList[i]].itemName,
+                              company: snapshot.data[idxList[i]].entpName,
+                              ontap: () {},
+                              buttonName:
+                              "${snapshot.data[idxList[i]].count}회",
+                              isChecked: false,
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  }
+                }),
             Expanded(
               flex: 2,
               child: Column(
@@ -175,13 +183,13 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius:
-                              BorderRadius.all(Radius.circular(30 * fem)),
+                          BorderRadius.all(Radius.circular(30 * fem)),
                         ),
                       ),
                       backgroundColor:
-                          const MaterialStatePropertyAll(Color(0xffA07EFF)),
+                      const MaterialStatePropertyAll(Color(0xffA07EFF)),
                       minimumSize:
-                          MaterialStatePropertyAll(Size(150 * fem, 30 * fem)),
+                      MaterialStatePropertyAll(Size(150 * fem, 30 * fem)),
                     ),
                     child: Text(
                       "+30분",
