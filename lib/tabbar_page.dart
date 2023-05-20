@@ -132,7 +132,7 @@ class _TabBarPageState extends State<TabBarPage>
           mainButtonPosition: MainButtonPosition.middle,
           decoration: BoxDecoration(
             color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
+            // borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
           ),
           itemIconColor: Colors.grey,
           itemTextStyle: TextStyle(

@@ -18,7 +18,17 @@ class WeekViewDemoState extends State<WeekViewDemo> {
         onPressed: () {},
         child: const Icon(Icons.add),
       ),
-      body: const WeekView<Event>(),
+      body: const WeekView<Event>(
+        headerStyle: HeaderStyle(
+          headerTextStyle: TextStyle(
+            color: Colors.white,
+            fontSize: 17,
+          ),
+          decoration: BoxDecoration(
+            color: Color(0xFFA07EFF),
+          )
+        ),
+      ),
     );
   }
 

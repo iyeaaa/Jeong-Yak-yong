@@ -43,11 +43,9 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     super.initState();
     var splitedList = widget.alarmSettings.notificationBody!.split(',');
     splitedList.removeLast();
-    print(splitedList);
     for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
       idxList.add(idx);
     }
-    print("idxList: $idxList");
   }
 
   String toTimeForm(int h, int m) {
