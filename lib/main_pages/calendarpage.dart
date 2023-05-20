@@ -18,8 +18,9 @@ class WeekViewDemoState extends State<WeekViewDemo> {
         onPressed: () {},
         child: const Icon(Icons.add),
       ),
-      body: const WeekView<Event>(
-        headerStyle: HeaderStyle(
+      body: WeekView<Event>(
+        onDateTap: (date) => debugPrint(date.toString()),
+        headerStyle: const HeaderStyle(
           headerTextStyle: TextStyle(
             color: Colors.white,
             fontSize: 17,
