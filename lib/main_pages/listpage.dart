@@ -112,7 +112,7 @@ class _ListPageState extends State<ListPage> {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          "$itemName을 삭제했습니다.",
+          "$itemName을 삭제했어요",
           textAlign: TextAlign.center,
           style: SafeGoogleFont(
             'Nunito',

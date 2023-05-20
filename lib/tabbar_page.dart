@@ -4,10 +4,10 @@ import 'package:bottom_bar_with_sheet/bottom_bar_with_sheet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/main_pages/calendarpage.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/homepage.dart';
 import 'main_pages/listpage.dart';
-import 'main_pages/mypage.dart';
 import 'main_pages/searchpage.dart';
 
 class TabBarPage extends StatefulWidget {
@@ -122,7 +122,7 @@ class _TabBarPageState extends State<TabBarPage>
           HomePage(futureUserName: futureUserName),
           const SearchPage(mediList: [],),
           const ListPage(),
-          const MyPage(),
+          const CalendarPage(),
         ],
       ),
       bottomNavigationBar: BottomBarWithSheet(
