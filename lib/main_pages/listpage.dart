@@ -131,7 +131,7 @@ class _ListPageState extends State<ListPage> {
   Future<void> removeInArray(int idx, Medicine medicine, double fem) async {
     await MediList().removeToArray(medicine);
     showRmvMessage(fem, medicine.itemName);
-    _futureMediList.then((value) => value.removeAt(idx));
+    await _futureMediList.then((value) => value.removeAt(idx));
     rmvAlarms(medicine.itemName, medicine.entpName);
   }
 

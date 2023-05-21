@@ -36,7 +36,8 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     "Dec"
   ];
   var idxList = [];
-  late final Future<List<Medicine>> _futureMediList = MediList().getMediList();
+  MediList mediList = MediList();
+  late final Future<List<Medicine>> _futureMediList = mediList.getMediList();
 
   @override
   void initState() {
@@ -127,37 +128,60 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                       ),
                     );
                   }
-                }),
+                }), // 약 리스트
             Expanded(
               flex: 2,
               child: Column(
                 children: [
                   InkWell(
                     onTap: () async {
-                      await Alarm.stop(widget.alarmSettings.id);
-                      final now = DateTime.now();
-                      Alarm.set(
-                        alarmSettings: widget.alarmSettings.copyWith(
-                          dateTime: DateTime(
-                            now.year,
-                            now.month,
-                            now.day,
-                            now.hour,
-                            now.minute,
-                            0,
-                            0,
-                          ).add(const Duration(days: 1)),
-                        ),
-                      ).then((_) {
+                      List<Medicine> medi = await _futureMediList;
+                      String newNotication = "";
+                      bool haveToMake = false;
+
+                      for (int idx in idxList) {
+                        Medicine medicine = medi[idx];
+                        int newMediCnt = medicine.count - 1;
+
+                        await mediList.removeToArray(medicine);
+                        if (newMediCnt > 0) {
+                          await mediList.appendToArray(medicine, newMediCnt);
+                          newNotication += "$idx,";
+                          haveToMake = true;
+                        }
+                      }
+                      mediList.update();
+
+                      if (haveToMake) {
+                        await Alarm.stop(widget.alarmSettings.id);
+                        final now = DateTime.now();
+                        await Alarm.set(
+                          alarmSettings: widget.alarmSettings.copyWith(
+                            notificationTitle: newNotication,
+                            notificationBody: newNotication,
+                            dateTime: DateTime(
+                              now.year,
+                              now.month,
+                              now.day,
+                              now.hour,
+                              now.minute,
+                              0,
+                              0,
+                            ).add(const Duration(days: 1)),
+                          ),
+                        );
+                      }
+
+                      if (context.mounted) {
                         Navigator.pop(context);
-                      });
+                      }
                     },
                     child: SizedBox(
                       width: 150 * fem,
                       height: 150 * fem,
                       child: Image.asset('image/cancle.png'),
                     ),
-                  ),
+                  ), // 끄기 버튼
                   ElevatedButton(
                     onPressed: () {
                       final now = DateTime.now();
@@ -198,10 +222,10 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                         color: Colors.white,
                       ),
                     ),
-                  ),
+                  ), // 미루기 버튼
                 ],
               ),
-            ),
+            ), // 끄기, 미루기 버튼
           ],
         ),
       ),

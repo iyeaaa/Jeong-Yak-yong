@@ -120,8 +120,8 @@ List<CalendarEventData<Event>> _events = [
         _now.subtract(const Duration(days: 2)).month,
         _now.subtract(const Duration(days: 2)).day,
         12),
-    event: const Event(title: "Chemistry Viva"),
-    title: "Chemistry Viva",
+    event: const Event(title: "Chemistry"),
+    title: "Chemistry",
     description: "Today is Joe's birthday.",
   ),
 ];
