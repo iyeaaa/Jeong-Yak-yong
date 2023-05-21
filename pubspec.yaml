@@ -47,6 +47,7 @@ dependencies:
   unicons: ^2.1.1
   flutter_material_symbols: ^0.0.4
   calendar_view: ^1.0.3
+  flutter_native_splash: ^2.3.0
 
 dev_dependencies:
   flutter_test:
