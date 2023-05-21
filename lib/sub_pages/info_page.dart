@@ -65,10 +65,10 @@ class _InfoPageState extends State<InfoPage> {
               borderRadius: BorderRadius.all(Radius.circular(20*fem)),
               boxShadow: const [
                 BoxShadow(
-                  color: const Color(0xFFA07EFF),
+                  color: Color(0xFFA07EFF),
                   spreadRadius: 0.5,
                   blurRadius: 10,
-                  offset: const Offset(0, 3), // changes position of shadow
+                  offset: Offset(0, 3), // changes position of shadow
                 ),
               ],
             ),
