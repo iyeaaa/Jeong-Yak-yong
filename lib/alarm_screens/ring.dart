@@ -151,9 +151,9 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                         }
                       }
                       mediList.update();
+                      await Alarm.stop(widget.alarmSettings.id);
 
                       if (haveToMake) {
-                        await Alarm.stop(widget.alarmSettings.id);
                         final now = DateTime.now();
                         await Alarm.set(
                           alarmSettings: widget.alarmSettings.copyWith(
