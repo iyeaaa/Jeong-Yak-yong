@@ -1,7 +1,4 @@
-import 'dart:async';
 import 'dart:math';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
@@ -27,7 +24,6 @@ class MedicineSettingPage extends StatefulWidget {
 
 class _MedicineSettingPageState extends State<MedicineSettingPage> {
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late Medicine medicine;
   late String userEmail;
   MediList mediList = MediList();
@@ -243,37 +239,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     );
   }
 
-  // firestore에 저장된 약 목록 불러옴
-  Future<List<Medicine>> getMediData() async {
-    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
-    List<Medicine> mediList = [];
-    for (var v in list.data()!['medicine']) {
-      try {
-        mediList.add(
-          Medicine(
-            itemName: v['itemName'],
-            entpName: v['entpName'],
-            effect: v['effect'],
-            itemCode: v['itemCode'],
-            useMethod: v['useMethod'],
-            warmBeforeHave: v['warmBeforeHave'],
-            warmHave: v['warmHave'],
-            interaction: v['interaction'],
-            sideEffect: v['sideEffect'],
-            depositMethod: v['depositMethod'],
-            imageUrl: v['imageUrl'],
-            count: v['count'],
-          ),
-        );
-      } catch (e) {
-        if (context.mounted) {
-          debugPrint("medi load ERROR");
-        }
-      }
-    }
-    return mediList;
-  }
-
   Widget mediInfoCard(int index, double fem) {
     var titleList = ["다음과 같은 효능이 있어요", "다음과 같이 사용해야 해요"];
     var contentList = [medicine.effect, medicine.useMethod];
@@ -447,7 +412,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             child: IconButton(
               onPressed: () async {
                 widget.creating
-                    ? await mediList.appendToArray(medicine, medicine.count)
+                    ? await mediList.appendToArray(medicine, mediCount)
                     : await mediList.removeToArray(medicine);
                 if (!widget.creating) {
                   await mediList.appendToArray(medicine, mediCount);
