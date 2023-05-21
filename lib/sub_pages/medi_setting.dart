@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
 import '../util/medicine_list.dart';
 import '../util/utils.dart';
@@ -224,6 +225,29 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
           ),
         ), // 배경 위 위젯
       ],
+    );
+  }
+
+  Widget profile2(double fem) {
+    return Container(
+      height: 95*fem,
+      padding: EdgeInsets.only(top: 10 * fem),
+      child: MedicineCard(
+        fem: fem,
+        name: medicine.itemName,
+        company: medicine.entpName,
+        ontap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CautionPage(
+              medicine: medicine,
+            ),
+          ),
+        ),
+        buttonName: "주의사항",
+        isChecked: false,
+        existEmage: medicine.imageUrl != "No Image",
+      ),
     );
   }
 
@@ -457,7 +481,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                profile(fem),
+                profile2(fem),
                 SizedBox(height: 30 * fem),
                 mediInfoCard(0, fem),
                 mediInfoCard(1, fem),

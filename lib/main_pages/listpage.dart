@@ -224,6 +224,7 @@ class _ListPageState extends State<ListPage> {
                   ),
                 ),
                 SizedBox(height: 50 * fem),
+                SizedBox(height: 50 * fem),
               ],
             ), // My Medicine
             Expanded(

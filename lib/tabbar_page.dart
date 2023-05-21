@@ -4,6 +4,7 @@ import 'package:bottom_bar_with_sheet/bottom_bar_with_sheet.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/main_pages/calendarpage.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/homepage.dart';
@@ -61,50 +62,18 @@ class _TabBarPageState extends State<TabBarPage>
     );
   }
 
-  Widget bottomPage(double fem) => SingleChildScrollView(
-        child: Container(
-          padding: EdgeInsets.fromLTRB(
-            30 * fem,
-            20 * fem,
-            30 * fem,
-            20 * fem,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 130 * fem,
-                    height: 130 * fem,
-                    decoration: const BoxDecoration(color: Colors.purpleAccent),
+  Widget bottomPage(double fem) => ElevatedButton(
+        onPressed: () {
+          FirebaseAuth.instance.signOut().then(
+                (value) => Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LoginPage(),
                   ),
-                  Container(
-                    width: 130 * fem,
-                    height: 130 * fem,
-                    decoration: const BoxDecoration(color: Colors.purpleAccent),
-                  )
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    width: 130 * fem,
-                    height: 130 * fem,
-                    decoration: const BoxDecoration(color: Colors.purpleAccent),
-                  ),
-                  Container(
-                    width: 130 * fem,
-                    height: 130 * fem,
-                    decoration: const BoxDecoration(color: Colors.purpleAccent),
-                  )
-                ],
-              ),
-            ],
-          ),
-        ),
+                ),
+              );
+        },
+        child: const Text("logout"),
       );
 
   @override
@@ -120,7 +89,9 @@ class _TabBarPageState extends State<TabBarPage>
         },
         children: [
           HomePage(futureUserName: futureUserName),
-          const SearchPage(mediList: [],),
+          const SearchPage(
+            mediList: [],
+          ),
           const ListPage(),
           const WeekViewDemo(),
         ],
