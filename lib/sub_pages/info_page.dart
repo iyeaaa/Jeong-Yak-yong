@@ -49,43 +49,43 @@ class _InfoPageState extends State<InfoPage> {
         elevation: 0,
         toolbarHeight: 80 * fem,
       ),
-      body: Center(
-        child: Container(
-          margin: EdgeInsets.fromLTRB(
-            8 * fem,
-            20 * fem,
-            8 * fem,
-            20 * fem,
-          ),
-          child: Stack(
-            children: [
-              Image.asset('image/group-842.png'),
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Container(
-                    padding: EdgeInsets.fromLTRB(
-                      16 * fem,
-                      20 * fem,
-                      16 * fem,
-                      20 * fem,
-                    ),
-                    child: AutoSizeText(
-                      content,
-                      maxLines: 18,
-                      overflow: TextOverflow.ellipsis,
-                      style: SafeGoogleFont(
-                        'Poppins',
-                        fontSize: 16 * fem,
-                        fontWeight: FontWeight.w500,
-                        height: 2,
-                        color: const Color(0xFFFFFFFF),
-                      ),
-                    ),
-                  ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(20 * fem, 20 * fem, 20 * fem, 20 * fem),
+          child: Container(
+            width: double.infinity,
+            padding: EdgeInsets.fromLTRB(
+              20 * fem,
+              20 * fem,
+              20 * fem,
+              20 * fem,
+            ),
+            decoration: BoxDecoration(
+              color: const Color(0xFFA07EFF),
+              borderRadius: BorderRadius.all(Radius.circular(20*fem)),
+              boxShadow: const [
+                BoxShadow(
+                  color: const Color(0xFFA07EFF),
+                  spreadRadius: 0.5,
+                  blurRadius: 10,
+                  offset: const Offset(0, 3), // changes position of shadow
+                ),
+              ],
+            ),
+            child: Center(
+              child: AutoSizeText(
+                content,
+                maxLines: 18,
+                overflow: TextOverflow.ellipsis,
+                style: SafeGoogleFont(
+                  'Poppins',
+                  fontSize: 16 * fem,
+                  fontWeight: FontWeight.w500,
+                  height: 2,
+                  color: const Color(0xFFFFFFFF),
                 ),
               ),
-            ],
+            ),
           ),
         ),
       ),
