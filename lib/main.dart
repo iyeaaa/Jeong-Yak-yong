@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
       controller: EventController<Event>()..addAll(_events),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(scaffoldBackgroundColor: const Color(0xFFA07EFF)),
+        theme: ThemeData(scaffoldBackgroundColor: const Color(0xffffffff)),
         scrollBehavior: const ScrollBehavior().copyWith(
           dragDevices: {
             PointerDeviceKind.trackpad,
