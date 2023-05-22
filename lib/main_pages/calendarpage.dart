@@ -1,7 +1,6 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
-import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
@@ -64,7 +63,6 @@ class CalenderPageState extends State<CalenderPage> {
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
     }
-    print(selectedDay);
   }
 
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
@@ -211,7 +209,8 @@ class CalenderPageState extends State<CalenderPage> {
                       ),
                       child: ListTile(
                         onTap: () => debugPrint('${value[index]}'),
-                        title: Text('${value[index]}'),
+                        title: Text(value[index].title),
+                        subtitle: Text(value[index].time.toString()),
                       ),
                     );
                   },
@@ -220,13 +219,6 @@ class CalenderPageState extends State<CalenderPage> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            kEvents[DateTime.now()] = [Event("dd")];
-          });
-        },
       ),
     );
   }

@@ -151,11 +151,15 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
           if (kEvents[key] == null) {
             kEvents[key] = [];
           }
-          kEvents[key]!.add(Event(medicine.itemName));
+          kEvents[key]!.add(Event(title: medicine.itemName, time: key));
           iter++;
         }
         delay++;
       }
+    }
+
+    for (DateTime dateTime in kEvents.keys) {
+      kEvents[dateTime]!.sort((a, b) => a.time.compareTo(b.time));
     }
 
     print("캘린더 초기화 완료");

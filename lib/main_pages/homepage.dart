@@ -3,11 +3,14 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
+import 'package:medicine_app/util/event.dart';
 import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
 import '../medicine_data/network.dart';
+import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -21,7 +24,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-  GlobalKey<RefreshIndicatorState>();
+      GlobalKey<RefreshIndicatorState>();
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediList = [];
   late final Future<String> _futureUserName;
@@ -206,6 +209,25 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  // Future<void> refreshEvents(int idx) async {
+  //   List<Medicine> medicines = await MediList().getMediList();
+  //   List<int> idxList = [];
+  //
+  //   var splitedList = alarms[idx].notificationBody!.split(',');
+  //   splitedList.removeLast();
+  //   for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
+  //     idxList.add(idx);
+  //   }
+  //
+  //   for (int idx in idxList) {
+  //     for (int delay = 0; delay < medicines[idx].count; delay) {
+  //       DateTime dateTime = alarms[idx].dateTime.add(Duration(days: delay));
+  //       alarmsOfMedi[medicines[idx]]!.remove(dateTime);
+  //       kEvents[dateTime]?.remove(Event(title: medicines[idx].itemName, time: dateTime));
+  //     }
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -226,7 +248,7 @@ class _HomePageState extends State<HomePage> {
           child: SafeArea(
             child: Container(
               padding:
-              EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
+                  EdgeInsets.fromLTRB(30 * fem, 30 * fem, 30 * fem, 30 * fem),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -268,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                               borderRadius: BorderRadius.circular(20),
                               color: Colors.white,
                               border:
-                              Border.all(color: const Color(0xff8a60ff)),
+                                  Border.all(color: const Color(0xff8a60ff)),
                             ),
                             width: 230 * fem,
                             height: double.infinity,
@@ -351,7 +373,7 @@ class _HomePageState extends State<HomePage> {
                                     height: 50 * fem,
                                     decoration: BoxDecoration(
                                       borderRadius:
-                                      BorderRadius.circular(18 * fem),
+                                          BorderRadius.circular(18 * fem),
                                       color: const Color(0xffffffff),
                                     ),
                                     child: Center(
@@ -400,10 +422,21 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(height: 13 * fem),
                                   alarms.isNotEmpty
                                       ? TimerBuilder.periodic(
-                                      const Duration(seconds: 1),
-                                      builder: (context) {
-                                        return Text(
-                                          differTime(),
+                                          const Duration(seconds: 1),
+                                          builder: (context) {
+                                          return Text(
+                                            differTime(),
+                                            style: SafeGoogleFont(
+                                              'Poppins',
+                                              fontSize: 14 * fem,
+                                              fontWeight: FontWeight.w600,
+                                              height: 1.5,
+                                              color: const Color(0xffffffff),
+                                            ),
+                                          );
+                                        })
+                                      : Text(
+                                          "No Alarm",
                                           style: SafeGoogleFont(
                                             'Poppins',
                                             fontSize: 14 * fem,
@@ -411,18 +444,7 @@ class _HomePageState extends State<HomePage> {
                                             height: 1.5,
                                             color: const Color(0xffffffff),
                                           ),
-                                        );
-                                      })
-                                      : Text(
-                                    "No Alarm",
-                                    style: SafeGoogleFont(
-                                      'Poppins',
-                                      fontSize: 14 * fem,
-                                      fontWeight: FontWeight.w600,
-                                      height: 1.5,
-                                      color: const Color(0xffffffff),
-                                    ),
-                                  ),
+                                        ),
                                   Container(
                                     margin: EdgeInsets.only(top: 5 * fem),
                                     width: 289 * fem,
@@ -430,7 +452,7 @@ class _HomePageState extends State<HomePage> {
                                     decoration: BoxDecoration(
                                       color: const Color(0x7fffffff),
                                       borderRadius:
-                                      BorderRadius.circular(99 * fem),
+                                          BorderRadius.circular(99 * fem),
                                     ),
                                     child: Align(
                                       alignment: Alignment.topLeft,
@@ -440,7 +462,7 @@ class _HomePageState extends State<HomePage> {
                                         height: 10 * fem,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(99 * fem),
+                                              BorderRadius.circular(99 * fem),
                                           color: const Color(0xc6ffffff),
                                         ),
                                       ),
@@ -469,42 +491,44 @@ class _HomePageState extends State<HomePage> {
                   ), // My Alarm
                   alarms.isEmpty
                       ? Padding(
-                    padding: EdgeInsets.only(top: 80 * fem),
-                    child: const Text("설정된 알람이 없어요."),
-                  )
+                          padding: EdgeInsets.only(top: 80 * fem),
+                          child: const Text("설정된 알람이 없어요."),
+                        )
                       : AnimationLimiter(
-                    child: ListView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: alarms.length,
-                      itemBuilder: (context, idx) =>
-                          AnimationConfiguration.staggeredList(
-                            position: idx,
-                            duration: const Duration(milliseconds: 375),
-                            child: SlideAnimation(
-                              verticalOffset: 50.0,
-                              child: FadeInAnimation(
-                                child: Container(
-                                  padding: EdgeInsets.only(top: 10 * fem),
-                                  height: 97 * fem,
-                                  child: AlarmTile(
-                                    key: Key(alarms[idx].id.toString()),
-                                    onDismissed: () {
-                                      Alarm.stop(alarms[idx].id)
-                                          .then((_) => loadAlarms());
-                                    },
-                                    ontap: () =>
-                                        navigateToAlarmScreen(alarms[idx]),
-                                    onPressed: () {},
-                                    name: toTimeForm(idx),
-                                    company: alarms[idx].notificationBody ?? "NULL",
+                          child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: alarms.length,
+                            itemBuilder: (context, idx) =>
+                                AnimationConfiguration.staggeredList(
+                              position: idx,
+                              duration: const Duration(milliseconds: 375),
+                              child: SlideAnimation(
+                                verticalOffset: 50.0,
+                                child: FadeInAnimation(
+                                  child: Container(
+                                    padding: EdgeInsets.only(top: 10 * fem),
+                                    height: 97 * fem,
+                                    child: AlarmTile(
+                                      key: Key(alarms[idx].id.toString()),
+                                      onDismissed: () {
+                                        Alarm.stop(alarms[idx].id)
+                                            .then((_) => loadAlarms());
+                                        // refreshEvents(idx);
+                                      },
+                                      ontap: () =>
+                                          navigateToAlarmScreen(alarms[idx]),
+                                      onPressed: () {},
+                                      name: toTimeForm(idx),
+                                      company: alarms[idx].notificationBody ??
+                                          "NULL",
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                    ),
-                  ), // 알람 리스트
+                        ), // 알람 리스트
                 ],
               ),
             ),
@@ -514,4 +538,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
