@@ -58,27 +58,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 
   Widget profile(double fem) {
-    void showCustomDialog(BuildContext context) {
-      showGeneralDialog(
-        context: context,
-        barrierLabel: "Barrier",
-        barrierDismissible: true,
-        barrierColor: Colors.black.withOpacity(0.5),
-        transitionDuration: const Duration(milliseconds: 300),
-        pageBuilder: (_, __, ___) {
-          return Center(
-            child: SizedBox(width: 300 * fem, child: loadImageExample()),
-          );
-        },
-        transitionBuilder: (_, anim, __, child) {
-          return FadeTransition(
-            opacity: anim,
-            child: child,
-          );
-        },
-      );
-    }
-
     return Stack(
       children: [
         SizedBox(
@@ -128,7 +107,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                                 ),
                               );
                             } else {
-                              showCustomDialog(context);
+                              // showCustomDialog(context);
                             }
                           },
                           child: Center(
@@ -229,6 +208,27 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 
   Widget profile2(double fem) {
+    void showCustomDialog(BuildContext context) {
+      showGeneralDialog(
+        context: context,
+        barrierLabel: "Barrier",
+        barrierDismissible: true,
+        barrierColor: Colors.black.withOpacity(0.5),
+        transitionDuration: const Duration(milliseconds: 300),
+        pageBuilder: (_, __, ___) {
+          return Center(
+            child: SizedBox(width: 300 * fem, child: loadImageExample()),
+          );
+        },
+        transitionBuilder: (_, anim, __, child) {
+          return FadeTransition(
+            opacity: anim,
+            child: child,
+          );
+        },
+      );
+    }
+
     return Container(
       height: 95*fem,
       padding: EdgeInsets.only(top: 10 * fem),
@@ -244,6 +244,29 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             ),
           ),
         ),
+        imageOntap: () {
+          if (medicine.imageUrl == "No Image") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                duration: const Duration(milliseconds: 800),
+                content: Text(
+                  "이미지가 없어요",
+                  textAlign: TextAlign.center,
+                  style: SafeGoogleFont(
+                    'Nunito',
+                    fontSize: 15 * fem,
+                    fontWeight: FontWeight.w400,
+                    height: 1.3625 * fem / fem,
+                    color: const Color(0xffffffff),
+                  ),
+                ),
+                backgroundColor: const Color(0xff8a60ff),
+              ),
+            );
+          } else {
+            showCustomDialog(context);
+          }
+        },
         buttonName: "주의사항",
         isChecked: false,
         existEmage: medicine.imageUrl != "No Image",
