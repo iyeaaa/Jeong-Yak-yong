@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/util/medicine_card.dart';
@@ -82,8 +84,8 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                   SizedBox(height: 20 * fem),
                   Text(
                     "${toWeekDay[widget.alarmSettings.dateTime.weekday]},"
-                        " ${widget.alarmSettings.dateTime.day}"
-                        " ${toMonth[widget.alarmSettings.dateTime.month]}",
+                    " ${widget.alarmSettings.dateTime.day}"
+                    " ${toMonth[widget.alarmSettings.dateTime.month]}",
                     style: SafeGoogleFont(
                       'DM Sans',
                       fontSize: 16 * fem,
@@ -96,35 +98,38 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
             ), // 시간, 날짜
             FutureBuilder(
                 future: _futureMediList,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  if (snapshot.hasError) {
+                builder: (BuildContext context, AsyncSnapshot snap) {
+                  if (snap.hasError) {
                     debugPrint("MediList ERROR from Ring Page");
                     return const Icon(Icons.error);
-                  } else if (!snapshot.hasData) {
+                  } else if (!snap.hasData) {
                     return const Text("loading");
                   } else {
                     return Expanded(
                       flex: 2,
                       child: ListView.builder(
                         itemCount: idxList.length,
-                        itemBuilder: (context, i) => Container(
-                          padding: EdgeInsets.fromLTRB(
-                              20 * fem, 7 * fem, 20 * fem, 7 * fem),
-                          child: SizedBox(
-                            height: 85 * fem,
-                            child: MedicineCard(
-                              isAlarm: true,
-                              existEmage: true,
-                              fem: fem,
-                              name: snapshot.data[idxList[i]].itemName,
-                              company: snapshot.data[idxList[i]].entpName,
-                              ontap: () {},
-                              buttonName:
-                              "${snapshot.data[idxList[i]].count}회",
-                              isChecked: false,
-                            ),
-                          ),
-                        ),
+                        itemBuilder: (context, i) =>
+                            snap.data[idxList[i]].count > 0
+                                ? Container(
+                                    padding: EdgeInsets.fromLTRB(
+                                        20 * fem, 7 * fem, 20 * fem, 7 * fem),
+                                    child: SizedBox(
+                                      height: 85 * fem,
+                                      child: MedicineCard(
+                                        isAlarm: true,
+                                        existEmage: true,
+                                        fem: fem,
+                                        name: snap.data[idxList[i]].itemName,
+                                        company: snap.data[idxList[i]].entpName,
+                                        ontap: () {},
+                                        buttonName:
+                                            "${snap.data[idxList[i]].count}회",
+                                        isChecked: false,
+                                      ),
+                                    ),
+                                  )
+                                : const SizedBox.shrink(),
                       ),
                     );
                   }
@@ -144,11 +149,10 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                         int newMediCnt = medicine.count - 1;
 
                         await mediList.removeToArray(medicine);
-                        if (newMediCnt > 0) {
-                          await mediList.appendToArray(medicine, newMediCnt);
-                          newNotication += "$idx,";
-                          haveToMake = true;
-                        }
+                        await mediList.appendToArray(
+                            medicine, max(newMediCnt, 0));
+                        newNotication += "$idx,";
+                        haveToMake = true;
                       }
                       mediList.update();
                       await Alarm.stop(widget.alarmSettings.id);
@@ -205,13 +209,13 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius:
-                          BorderRadius.all(Radius.circular(30 * fem)),
+                              BorderRadius.all(Radius.circular(30 * fem)),
                         ),
                       ),
                       backgroundColor:
-                      const MaterialStatePropertyAll(Color(0xffA07EFF)),
+                          const MaterialStatePropertyAll(Color(0xffA07EFF)),
                       minimumSize:
-                      MaterialStatePropertyAll(Size(150 * fem, 30 * fem)),
+                          MaterialStatePropertyAll(Size(150 * fem, 30 * fem)),
                     ),
                     child: Text(
                       "+30분",

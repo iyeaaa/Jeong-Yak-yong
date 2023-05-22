@@ -1,5 +1,11 @@
+import 'dart:collection';
+
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
+import '../medicine_data/medicine.dart';
+import '../util/event.dart';
+import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
 class AlarmEditScreen extends StatefulWidget {
@@ -23,9 +29,16 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   late bool vibrate;
   late bool showNotification;
   late String assetAudio;
+  List<int> idxList = [];
 
   @override
   void initState() {
+    var splitedList = widget.mediIndex.split(',');
+    splitedList.removeLast();
+    for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
+      idxList.add(idx);
+    }
+
     super.initState();
     creating = widget.alarmSettings == null;
 
@@ -111,26 +124,61 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
   } // 알람 세팅 제작 후 반환
 
   // 세이브 버튼의 세이브버튼
-  void saveAlarm() {
-    Alarm.set(alarmSettings: buildAlarmSettings())
+  Future<void> saveAlarm() async {
+    var buildAlarmSetting = buildAlarmSettings();
+    Alarm.set(alarmSettings: buildAlarmSetting)
         .then((_) => Navigator.pop(context, true));
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          '알람이 추가되었습니다.',
-          textAlign: TextAlign.center,
-          style: SafeGoogleFont(
-            'Nunito',
-            fontSize: 15,
-            fontWeight: FontWeight.w400,
-            height: 1.3625,
-            color: const Color(0xffffffff),
+    // 추가하는 알람의 약들의 알람 정보를 저장해준다.
+    var mediList = await MediList().getMediList();
+    for (int idx in idxList) {
+      Medicine medicine = mediList[idx];
+      debugPrint("${medicine.itemName}: ${medicine.count}");
+      if (!alarmsOfMedi.containsKey(medicine)) {
+        alarmsOfMedi[medicine] = SplayTreeSet();
+      }
+      alarmsOfMedi[medicine]!.add(buildAlarmSetting.dateTime);
+    }
+
+    kEvents.clear();
+    // 모든 약을 순회하면서 캘린더에 약의 정보를 업데이트한다.
+    for (Medicine medicine in mediList) {
+      int iter = 0, delay = 0;
+      first: while (alarmsOfMedi[medicine] != null) {
+        for (DateTime dateTime in (alarmsOfMedi[medicine]!)) {
+          if (iter >= medicine.count) break first;
+          DateTime key = dateTime.add(Duration(days: delay));
+          if (kEvents[key] == null) {
+            kEvents[key] = [];
+          }
+          kEvents[key]!.add(Event(medicine.itemName));
+          iter++;
+        }
+        delay++;
+      }
+    }
+
+    print("캘린더 초기화 완료");
+    print(kEvents);
+
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            '알람이 추가되었습니다.',
+            textAlign: TextAlign.center,
+            style: SafeGoogleFont(
+              'Nunito',
+              fontSize: 15,
+              fontWeight: FontWeight.w400,
+              height: 1.3625,
+              color: const Color(0xffffffff),
+            ),
           ),
+          backgroundColor: const Color(0xff8a60ff),
         ),
-        backgroundColor: const Color(0xff8a60ff),
-      ),
-    );
+      );
+    }
   }
 
   // 삭제버튼의 삭제기능

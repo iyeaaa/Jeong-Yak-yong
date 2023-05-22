@@ -1,19 +1,20 @@
 // Copyright 2019 Aleksander Woźniak
 // SPDX-License-Identifier: Apache-2.0
 
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
 import '../util/utils.dart';
 
-class CelanderPage extends StatefulWidget {
-  const CelanderPage({super.key});
+class CalenderPage extends StatefulWidget {
+  const CalenderPage({super.key});
 
   @override
-  CelanderPageState createState() => CelanderPageState();
+  CalenderPageState createState() => CalenderPageState();
 }
 
-class CelanderPageState extends State<CelanderPage> {
+class CalenderPageState extends State<CalenderPage> {
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
@@ -63,6 +64,7 @@ class CelanderPageState extends State<CelanderPage> {
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
     }
+    print(selectedDay);
   }
 
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
@@ -103,25 +105,25 @@ class CelanderPageState extends State<CelanderPage> {
           ),
         ),
         elevation: 0,
-        toolbarHeight: 80*fem,
+        toolbarHeight: 80 * fem,
       ),
       body: Column(
         children: [
           TableCalendar<Event>(
             firstDay: kFirstDay,
+            // kFirstDay 부터만 접근가능
             lastDay: kLastDay,
+            // kLastDay 까지만 접근가능
             focusedDay: _focusedDay,
+            // _focusedDay 오늘로 선택되어있음
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            rangeStartDay: _rangeStart,
-            rangeEndDay: _rangeEnd,
+            // rangeStartDay: _rangeStart,
+            // rangeEndDay: _rangeEnd,
             calendarFormat: _calendarFormat,
-            rangeSelectionMode: _rangeSelectionMode,
+            // 1주일, 2주일 단위로 볼수 있게함
+            // rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
-            startingDayOfWeek: StartingDayOfWeek.monday,
-            calendarStyle: const CalendarStyle(
-              // Use `CalendarStyle` to customize the UI
-              outsideDaysVisible: false,
-            ),
+            // 불러와서 점 찍어줌
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
             onFormatChanged: (format) {
@@ -134,8 +136,63 @@ class CelanderPageState extends State<CelanderPage> {
             onPageChanged: (focusedDay) {
               _focusedDay = focusedDay;
             },
+            calendarStyle: CalendarStyle(
+              markerSize: 7 * fem,
+              // 점 스타일
+              markerDecoration: const BoxDecoration(
+                color: Color(0xFF632bff),
+                shape: BoxShape.circle,
+              ),
+              todayDecoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border:
+                    Border.all(color: const Color(0xFFA07EFF), width: 3 * fem),
+              ),
+              todayTextStyle: SafeGoogleFont(
+                'Poppins',
+                fontSize: 16 * fem,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF632bff),
+              ),
+              selectedDecoration: const BoxDecoration(
+                color: Color(0xFFA07EFF),
+                shape: BoxShape.circle,
+              ),
+              selectedTextStyle: SafeGoogleFont(
+                'Poppins',
+                fontSize: 16 * fem,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xffffffff),
+              ),
+            ),
+            headerStyle: HeaderStyle(
+              formatButtonDecoration: BoxDecoration(
+                border: Border.all(color: const Color(0xFFA07EFF)),
+                borderRadius: BorderRadius.all(Radius.circular(20 * fem)),
+              ),
+              formatButtonTextStyle: SafeGoogleFont(
+                'Poppins',
+                fontSize: 15 * fem,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFA07EFF),
+              ),
+              titleTextStyle: SafeGoogleFont(
+                'Poppins',
+                fontSize: 20 * fem,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFFA07EFF),
+              ),
+              leftChevronIcon: const Icon(
+                Icons.chevron_left,
+                color: Color(0xFFA07EFF),
+              ),
+              rightChevronIcon: const Icon(
+                Icons.chevron_right,
+                color: Color(0xFFA07EFF),
+              ),
+            ),
           ),
-          const SizedBox(height: 8.0),
+          SizedBox(height: 10.0 * fem),
           Expanded(
             child: ValueListenableBuilder<List<Event>>(
               valueListenable: _selectedEvents,
@@ -153,7 +210,7 @@ class CelanderPageState extends State<CelanderPage> {
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: ListTile(
-                        onTap: () => print('${value[index]}'),
+                        onTap: () => debugPrint('${value[index]}'),
                         title: Text('${value[index]}'),
                       ),
                     );
@@ -163,6 +220,13 @@ class CelanderPageState extends State<CelanderPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          setState(() {
+            kEvents[DateTime.now()] = [Event("dd")];
+          });
+        },
       ),
     );
   }

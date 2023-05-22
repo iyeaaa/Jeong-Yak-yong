@@ -218,7 +218,7 @@ class _HomePageState extends State<HomePage> {
         color: Colors.white,
         backgroundColor: Colors.blue,
         strokeWidth: 4.0,
-        onRefresh: () {
+        onRefresh: () async {
           loadAlarms();
           return Future.delayed(const Duration(milliseconds: 300));
         },
