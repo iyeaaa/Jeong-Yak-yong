@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
-import 'package:medicine_app/main_pages/calendarpage.dart';
+import 'package:medicine_app/main_pages/celandarpage.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/homepage.dart';
 import 'main_pages/listpage.dart';
@@ -89,11 +89,9 @@ class _TabBarPageState extends State<TabBarPage>
         },
         children: [
           HomePage(futureUserName: futureUserName),
-          const SearchPage(
-            mediList: [],
-          ),
+          const SearchPage(mediList: []),
           const ListPage(),
-          const WeekViewDemo(),
+          const CelanderPage(),
         ],
       ),
       bottomNavigationBar: BottomBarWithSheet(
