@@ -10,6 +10,26 @@ import '../util/medicine_card.dart';
 import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
+// 삭제할 때 메시지 출력
+void showScaffoldMessage(String body, BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text(
+        body,
+        textAlign: TextAlign.center,
+        style: SafeGoogleFont(
+          'Nunito',
+          fontSize: 15,
+          fontWeight: FontWeight.w400,
+          height: 1.3625,
+          color: const Color(0xffffffff),
+        ),
+      ),
+      backgroundColor: const Color(0xff8a60ff),
+    ),
+  );
+}
+
 class ListPage extends StatefulWidget {
   const ListPage({
     Key? key,
@@ -23,14 +43,11 @@ class _ListPageState extends State<ListPage> {
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
   List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
-  late MediList mediList = MediList();
-  late Future<List<Medicine>> _futureMediList;
 
   @override
   void initState() {
     super.initState();
     loadAlarms();
-    _futureMediList = mediList.getMediList();
   }
 
   // 알람 배열 불러오기
@@ -45,10 +62,15 @@ class _ListPageState extends State<ListPage> {
   void rmvAlarms(int mediIdx) {
     for (AlarmSettings alarm in alarms) {
       List<int> idxList = stringToIdxList(alarm.notificationBody ?? "");
+
       // 삭제하는 약과 상관 없는 알람이면 무시하기
       if (!idxList.contains(mediIdx)) continue;
 
       String newBody = "";
+      idxList.remove(mediIdx);
+      for (int element in idxList) {
+        newBody += "$element,";
+      }
 
       // 삭제하는 약 한개로만 이루어진 알람은 그냥 삭제시키기
       if (newBody.isEmpty) {
@@ -75,17 +97,16 @@ class _ListPageState extends State<ListPage> {
   }
 
   // 알람 설정 페이지로 이동
-  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
+  void navigateToAlarmScreen(AlarmSettings? settings) {
     String itemIndex = "";
-    _futureMediList.then((list) {
-      for (int i = 0; i < list.length; i++) {
-        if (isChecked[i] && list[i].count > 0) {
-          itemIndex += "$i,";
-        }
-      }
-    });
 
-    await showModalBottomSheet<bool?>(
+    for (int i = 0; i < MediList.mediList.length; i++) {
+      if (isChecked[i] && MediList.mediList[i].count > 0) {
+        itemIndex += "$i,";
+      }
+    }
+
+    showModalBottomSheet<bool?>(
       context: context,
       isScrollControlled: true,
       shape: RoundedRectangleBorder(
@@ -104,32 +125,17 @@ class _ListPageState extends State<ListPage> {
     // if (res != null && res == true) loadAlarms();
   }
 
-  // 삭제할 때 메시지 출력
-  void showRmvMessage(double fem, String itemName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "$itemName을 삭제했어요",
-          textAlign: TextAlign.center,
-          style: SafeGoogleFont(
-            'Nunito',
-            fontSize: 15 * fem,
-            fontWeight: FontWeight.w400,
-            height: 1.3625 * fem / fem,
-            color: const Color(0xffffffff),
-          ),
-        ),
-        backgroundColor: const Color(0xff8a60ff),
-      ),
-    );
-  }
-
   // 배열에서 약 삭제
-  Future<void> removeInArray(int idx, Medicine medicine, double fem) async {
+  Future<void> removeInArray(int idx, Medicine medicine) async {
     await MediList().removeToArray(medicine);
-    showRmvMessage(fem, medicine.itemName);
-    // rmvAlarms(idx);
-    await _futureMediList.then((value) => value.removeAt(idx));
+    if (context.mounted) {
+      showScaffoldMessage("${medicine.itemName}을 삭제했어요", context);
+    }
+    rmvAlarms(idx);
+    MediList.mediList.removeAt(idx);
+    await loadAOM(MediList.mediList);
+    rmvEventsWithoutMemo();
+    updateEvents(MediList.mediList);
   }
 
   void showCustomDialog(BuildContext context, double fem, String imageUrl) {
@@ -225,164 +231,98 @@ class _ListPageState extends State<ListPage> {
               ],
             ), // My Medicine
             Expanded(
-              child: FutureBuilder(
-                future: _futureMediList,
-                builder: (BuildContext context, AsyncSnapshot snapshot) {
-                  //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
-                  if (snapshot.hasData == false) {
-                    return const Center(
-                      child: Text("Loading.."),
-                    );
-                  }
-                  //error가 발생하게 될 경우 반환하게 되는 부분
-                  else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text("ERROR!"),
-                    );
-                  }
-                  // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
-                  else {
-                    return snapshot.data.isEmpty
-                        ? Padding(
-                            padding: EdgeInsets.only(top: 230 * fem),
-                            child: const Text("저장된 약이 없어요"),
-                          )
-                        : RefreshIndicator(
-                            onRefresh: () {
-                              setState(() {
-                                MediList().update();
-                                _futureMediList = mediList.getMediList();
-                              });
-                              return Future.delayed(
-                                  const Duration(milliseconds: 200));
-                            },
-                            child: AnimationLimiter(
-                              child: ListView.builder(
-                                itemCount: snapshot.data.length,
-                                itemBuilder: (context, idx) => InkWell(
-                                  onTap: () => setState(() {
-                                    if (pressedAlarm) {
-                                      isChecked[idx] = !isChecked[idx];
+              child: RefreshIndicator(
+                onRefresh: () {
+                  setState(() {
+                    debugPrint("List 새로고침 완료");
+                  });
+                  return Future.delayed(const Duration(milliseconds: 500));
+                },
+                child: AnimationLimiter(
+                  child: ListView.builder(
+                    itemCount: MediList.mediList.length,
+                    itemBuilder: (context, idx) => InkWell(
+                      onTap: () => setState(() {
+                        if (pressedAlarm) {
+                          isChecked[idx] = !isChecked[idx];
+                        }
+                      }),
+                      child: AnimationConfiguration.staggeredList(
+                        position: idx,
+                        duration: const Duration(milliseconds: 375),
+                        child: SlideAnimation(
+                          verticalOffset: 50,
+                          child: FadeInAnimation(
+                            child: Dismissible(
+                              key: UniqueKey(),
+                              background: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(20 * fem),
+                                  color: const Color(0xffa07eff),
+                                ),
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(right: 30),
+                                child: const Icon(
+                                  Icons.delete,
+                                  size: 30,
+                                  color: Colors.white,
+                                ),
+                              ),
+                              onDismissed: (DismissDirection direction) {
+                                removeInArray(
+                                  idx,
+                                  MediList.mediList[idx],
+                                );
+                              },
+                              child: Container(
+                                margin: EdgeInsets.only(top: 10 * fem),
+                                width: double.infinity,
+                                height: 89 * fem,
+                                child: MedicineCard(
+                                  existEmage: MediList.mediList[idx].imageUrl !=
+                                      "No Image",
+                                  imageOntap: () {
+                                    if (MediList.mediList[idx].imageUrl ==
+                                        "No Image") {
+                                      showScaffoldMessage("이미지가 없어요", context);
+                                    } else {
+                                      showCustomDialog(
+                                        context,
+                                        fem,
+                                        MediList.mediList[idx].imageUrl,
+                                      );
                                     }
-                                  }),
-                                  child: AnimationConfiguration.staggeredList(
-                                    position: idx,
-                                    duration: const Duration(milliseconds: 375),
-                                    child: SlideAnimation(
-                                      verticalOffset: 50,
-                                      child: FadeInAnimation(
-                                        child: Dismissible(
-                                          key: ValueKey(snapshot.data[idx]),
-                                          background: Container(
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      20 * fem),
-                                              color: const Color(0xffa07eff),
-                                            ),
-                                            alignment: Alignment.centerRight,
-                                            padding: const EdgeInsets.only(
-                                                right: 30),
-                                            child: const Icon(
-                                              Icons.delete,
-                                              size: 30,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          onDismissed:
-                                              (DismissDirection direction) {
-                                            removeInArray(
-                                              idx,
-                                              snapshot.data[idx],
-                                              fem,
-                                            );
-                                          },
-                                          child: Container(
-                                            margin:
-                                                EdgeInsets.only(top: 10 * fem),
-                                            width: double.infinity,
-                                            height: 89 * fem,
-                                            child: MedicineCard(
-                                              existEmage:
-                                                  snapshot.data[idx].imageUrl !=
-                                                      "No Image",
-                                              imageOntap: () {
-                                                if (snapshot
-                                                        .data[idx].imageUrl ==
-                                                    "No Image") {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      duration: const Duration(
-                                                          milliseconds: 800),
-                                                      content: Text(
-                                                        "이미지가 없어요",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: SafeGoogleFont(
-                                                          'Nunito',
-                                                          fontSize: 15 * fem,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.3625 *
-                                                              fem /
-                                                              fem,
-                                                          color: const Color(
-                                                              0xffffffff),
-                                                        ),
-                                                      ),
-                                                      backgroundColor:
-                                                          const Color(
-                                                              0xff8a60ff),
-                                                    ),
-                                                  );
-                                                } else {
-                                                  showCustomDialog(
-                                                      context,
-                                                      fem,
-                                                      snapshot
-                                                          .data[idx].imageUrl);
-                                                }
-                                              },
-                                              isChecked: isChecked[idx],
-                                              fem: fem,
-                                              name: snapshot.data[idx].itemName,
-                                              company:
-                                                  snapshot.data[idx].entpName,
-                                              buttonName: 'View',
-                                              ontap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        MedicineSettingPage(
-                                                      medicine:
-                                                          snapshot.data[idx],
-                                                      creating: false,
-                                                    ),
-                                                  ),
-                                                ).then((value) => setState(() {
-                                                      _futureMediList =
-                                                          mediList
-                                                              .getMediList();
-                                                      if (context.mounted) {
-                                                        debugPrint(
-                                                            "Listview 새로고침");
-                                                      }
-                                                    }));
-                                              },
-                                            ),
-                                          ),
+                                  },
+                                  isChecked: isChecked[idx],
+                                  fem: fem,
+                                  name: MediList.mediList[idx].itemName,
+                                  company: MediList.mediList[idx].entpName,
+                                  buttonName: 'View',
+                                  ontap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            MedicineSettingPage(
+                                          medicine: MediList.mediList[idx],
+                                          creating: false,
                                         ),
                                       ),
-                                    ),
-                                  ),
+                                    ).then((value) => setState(() {
+                                          if (context.mounted) {
+                                            debugPrint("Listview 새로고침");
+                                          }
+                                        }));
+                                  },
                                 ),
                               ),
                             ),
-                          );
-                  }
-                },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

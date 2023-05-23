@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:medicine_app/main_pages/listpage.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
@@ -171,22 +172,7 @@ class _HomePageState extends State<HomePage> {
     List<dynamic> listjson = await network.fetchMediList();
 
     if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "검색결과가 없습니다.",
-            textAlign: TextAlign.center,
-            style: SafeGoogleFont(
-              'Nunito',
-              fontSize: 15 * fem,
-              fontWeight: FontWeight.w400,
-              height: 1.3625 * fem / fem,
-              color: const Color(0xffffffff),
-            ),
-          ),
-          backgroundColor: const Color(0xff8a60ff),
-        ),
-      );
+      showScaffoldMessage("검색결과가 없습니다.", context);
       setState(() {
         mediList.clear();
       });
@@ -208,9 +194,9 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  Future<void> rmvCalenderInfo(String idxStr, DateTime dateTime) async {
+  void rmvCalenderInfo(String idxStr, DateTime dateTime) {
     List<int> idxList = stringToIdxList(idxStr);
-    List<Medicine> mediList = await MediList().getMediList();
+    List<Medicine> mediList = MediList.mediList;
 
     rmvAlarmOfMedi(idxList, dateTime, mediList);
     rmvEventsWithoutMemo();
@@ -500,7 +486,7 @@ class _HomePageState extends State<HomePage> {
                                     height: 97 * fem,
                                     child: AlarmTile(
                                       key: Key(alarms[idx].id.toString()),
-                                      onDismissed: () async {
+                                      onDismissed: () {
                                         Alarm.stop(alarms[idx].id)
                                             .then((_) => loadAlarms());
                                         rmvCalenderInfo(

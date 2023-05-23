@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:medicine_app/util/medicine_card.dart';
@@ -464,6 +465,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                 if (!widget.creating) {
                   await mediList.appendToArray(medicine, mediCount);
                 }
+                MediList.mediList = await MediList().loadMediData();
+                rmvEventsWithoutMemo();
+                updateEvents(MediList.mediList);
                 showAddOrChangeMessage(fem);
               },
               icon: Icon(

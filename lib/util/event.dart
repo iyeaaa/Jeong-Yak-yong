@@ -3,6 +3,8 @@
 
 import 'dart:collection';
 
+import 'package:table_calendar/table_calendar.dart';
+
 /// Example event class.
 class Event {
   final String title;
@@ -18,7 +20,10 @@ class Event {
 /// Example events.
 ///
 /// Using a [LinkedHashMap] is highly recommended if you decide to use a map.
-late final LinkedHashMap<DateTime, List<Event>> kEvents;
+final LinkedHashMap<DateTime, List<Event>> kEvents = LinkedHashMap(
+  equals: isSameDay,
+  hashCode: getHashCode,
+);
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;

@@ -39,8 +39,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     "Dec"
   ];
   var idxList = [];
-  MediList mediList = MediList();
-  late final Future<List<Medicine>> _futureMediList = mediList.getMediList();
+  List<Medicine> mediList = MediList.mediList;
 
   @override
   void initState() {
@@ -89,65 +88,52 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                 ],
               ),
             ), // 시간, 날짜
-            FutureBuilder(
-                future: _futureMediList,
-                builder: (BuildContext context, AsyncSnapshot snap) {
-                  if (snap.hasError) {
-                    debugPrint("MediList ERROR from Ring Page");
-                    return const Icon(Icons.error);
-                  } else if (!snap.hasData) {
-                    return const Text("loading");
-                  } else {
-                    return Expanded(
-                      flex: 2,
-                      child: ListView.builder(
-                        itemCount: idxList.length,
-                        itemBuilder: (context, i) =>
-                            snap.data[idxList[i]].count > 0
-                                ? Container(
-                                    padding: EdgeInsets.fromLTRB(
-                                        20 * fem, 7 * fem, 20 * fem, 7 * fem),
-                                    child: SizedBox(
-                                      height: 85 * fem,
-                                      child: MedicineCard(
-                                        isAlarm: true,
-                                        existEmage: true,
-                                        fem: fem,
-                                        name: snap.data[idxList[i]].itemName,
-                                        company: snap.data[idxList[i]].entpName,
-                                        ontap: () {},
-                                        buttonName:
-                                            "${snap.data[idxList[i]].count}회",
-                                        isChecked: false,
-                                      ),
-                                    ),
-                                  )
-                                : const SizedBox.shrink(),
-                      ),
-                    );
-                  }
-                }), // 약 리스트
+            Expanded(
+              flex: 2,
+              child: ListView.builder(
+                itemCount: idxList.length,
+                itemBuilder: (context, i) => mediList[idxList[i]].count > 0
+                    ? Container(
+                        padding: EdgeInsets.fromLTRB(
+                            20 * fem, 7 * fem, 20 * fem, 7 * fem),
+                        child: SizedBox(
+                          height: 85 * fem,
+                          child: MedicineCard(
+                            isAlarm: true,
+                            existEmage: true,
+                            fem: fem,
+                            name: mediList[idxList[i]].itemName,
+                            company: mediList[idxList[i]].entpName,
+                            ontap: () {},
+                            buttonName: "${mediList[idxList[i]].count}회",
+                            isChecked: false,
+                          ),
+                        ),
+                      )
+                    : const SizedBox.shrink(),
+              ),
+            ), //,약 리스트
             Expanded(
               flex: 2,
               child: Column(
                 children: [
                   InkWell(
                     onTap: () async {
-                      List<Medicine> medi = await _futureMediList;
                       String newNotication = "";
                       bool haveToMake = false;
 
                       for (int idx in idxList) {
-                        Medicine medicine = medi[idx];
+                        Medicine medicine = mediList[idx];
                         int newMediCnt = medicine.count - 1;
 
-                        await mediList.removeToArray(medicine);
-                        await mediList.appendToArray(
+                        await MediList().removeToArray(medicine);
+                        await MediList().appendToArray(
                             medicine, max(newMediCnt, 0));
                         newNotication += "$idx,";
                         haveToMake = true;
                       }
-                      mediList.update();
+                      await MediList().update();
+
                       await Alarm.stop(widget.alarmSettings.id);
 
                       if (haveToMake) {

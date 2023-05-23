@@ -4,22 +4,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../medicine_data/medicine.dart';
 
-// 싱글톤 패턴
 class MediList {
   static final _firebaseAuth = FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
   static final _userEmail = _firebaseAuth.currentUser!.email!;
-  static Future<List<Medicine>>? _instance;
+  static List<Medicine> mediList = [];
 
-  Future<List<Medicine>> getMediList() {
-    if (_instance == null) {
-      return _instance = _loadMediData();
-    }
-    return _instance!;
-  }
-
-  void update() {
-    _instance = _loadMediData();
+  Future<void> update() async {
+    mediList = await loadMediData();
     debugPrint("불러온 약 업데이트 성공");
   }
 
@@ -69,7 +61,7 @@ class MediList {
     debugPrint("약 삭제 완료");
   }
 
-  Future<List<Medicine>> _loadMediData() async {
+  Future<List<Medicine>> loadMediData() async {
     var list = await _firestore.collection(_userEmail).doc('mediInfo').get();
     List<Medicine> mediList = [];
     for (var v in list.data()!['medicine']) {

@@ -123,14 +123,13 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
         .then((_) => Navigator.pop(context, true));
 
     // 추가하는 알람의 약들의 알람 정보를 저장해준다.
-    var mediList = await MediList().getMediList();
-    addAlarmOfMedi(idxList, buildAlarmSetting.dateTime, mediList);
+    addAlarmOfMedi(idxList, buildAlarmSetting.dateTime, MediList.mediList);
 
     // 약 event 모두 삭제
     rmvEventsWithoutMemo();
 
     // 모든 약을 순회하면서 캘린더에 약의 정보를 업데이트한다.
-    updateEvents(mediList);
+    updateEvents(MediList.mediList);
 
     sortEventList();
 

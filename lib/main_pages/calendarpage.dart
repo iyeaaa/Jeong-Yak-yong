@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
-import '../util/shared_save.dart';
 import '../util/utils.dart';
 
 class CalenderPage extends StatefulWidget {
@@ -37,7 +36,6 @@ class CalenderPageState extends State<CalenderPage> {
   @override
   void dispose() {
     _selectedEvents.dispose();
-    saveFromPrefs();
     super.dispose();
   }
 

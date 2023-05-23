@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:ui';
 import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,11 +6,9 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:medicine_app/login/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/tabbar_page.dart';
-import 'package:medicine_app/util/event.dart';
-import 'package:medicine_app/util/shared_save.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:table_calendar/table_calendar.dart';
+import 'package:medicine_app/util/medicine_list.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -23,22 +20,9 @@ Future<void> main() async {
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Alarm.init(showDebugLogs: true);
 
-  pref = await SharedPreferences.getInstance();
-  String json = pref.getString('Events') ?? "";
-  print(json);
-
-  if (json.isEmpty) {
-    kEvents = LinkedHashMap<DateTime, List<Event>>(
-      equals: isSameDay,
-      hashCode: getHashCode,
-    );
-  } else {
-    kEvents = LinkedHashMap<DateTime, List<Event>>(
-      equals: isSameDay,
-      hashCode: getHashCode,
-    )..addAll(decodeEvent(json));
-  }
-  debugPrint("Events 불러오기 성공");
+  MediList.mediList = await MediList().loadMediData();
+  await loadAOM(MediList.mediList);
+  updateEvents(MediList.mediList);
 
   runApp(const MyApp());
 }
