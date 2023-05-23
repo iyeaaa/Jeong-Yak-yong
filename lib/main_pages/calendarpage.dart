@@ -2,7 +2,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
-import 'package:flutter_material_symbols/flutter_material_symbols.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
 import '../util/utils.dart';
@@ -17,12 +16,14 @@ class CalenderPage extends StatefulWidget {
 class CalenderPageState extends State<CalenderPage> {
   late final ValueNotifier<List<Event>> _selectedEvents;
   CalendarFormat _calendarFormat = CalendarFormat.month;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
-      .toggledOff; // Can be toggled on/off by longpressing a date
+
+  // RangeSelectionMode _rangeSelectionMode = RangeSelectionMode
+  //     .toggledOff; // Can be toggled on/off by longpressing a date
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
+
+  // DateTime? _rangeStart;
+  // DateTime? _rangeEnd;
 
   @override
   void initState() {
@@ -57,9 +58,9 @@ class CalenderPageState extends State<CalenderPage> {
       setState(() {
         _selectedDay = selectedDay;
         _focusedDay = focusedDay;
-        _rangeStart = null; // Important to clean those
-        _rangeEnd = null;
-        _rangeSelectionMode = RangeSelectionMode.toggledOff;
+        // _rangeStart = null; // Important to clean those
+        // _rangeEnd = null;
+        // _rangeSelectionMode = RangeSelectionMode.toggledOff;
       });
 
       _selectedEvents.value = _getEventsForDay(selectedDay);
@@ -70,9 +71,9 @@ class CalenderPageState extends State<CalenderPage> {
     setState(() {
       _selectedDay = null;
       _focusedDay = focusedDay;
-      _rangeStart = start;
-      _rangeEnd = end;
-      _rangeSelectionMode = RangeSelectionMode.toggledOn;
+      // _rangeStart = start;
+      // _rangeEnd = end;
+      // _rangeSelectionMode = RangeSelectionMode.toggledOn;
     });
 
     // `start` or `end` could be null
@@ -201,55 +202,66 @@ class CalenderPageState extends State<CalenderPage> {
                       20 * fem, 0 * fem, 20 * fem, 20 * fem),
                   itemCount: value.length,
                   itemBuilder: (context, index) {
+                    DateTime dateTime1 = value[index].time;
+                    DateTime? dateTime2 =
+                        index + 1 < value.length ? value[index + 1].time : null;
                     return InkWell(
                       onTap: () => debugPrint('${value[index]}'),
-                      child: Container(
-                        margin: EdgeInsets.only(top: 10*fem),
-                        padding: EdgeInsets.all(8 * fem),
-                        width: double.infinity,
-                        height: 60 * fem,
-                        // padding: EdgeInsets.only(top: 10*fem),
-                        decoration: BoxDecoration(
-                            color: Color(0xffdfd3ff),
-                            border: Border.all(
-                              color: Color(0xFFA07EFF),
-                            ),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(13 * fem))),
-                        child: Row(
-                          children: [
-                            SizedBox(width: 15*fem),
-                            const Icon(
-                              Icons.medication_liquid,
-                              color: Color(0xFF662fff),
-                            ),
-                            SizedBox(width: 15*fem),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  value[index].title,
-                                  style: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 15 * fem,
-                                    fontWeight: FontWeight.w600,
-                                    color: const Color(0xFF662fff),
-                                  ),
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: EdgeInsets.fromLTRB(0, 5*fem, 0, 5*fem),
+                            padding: EdgeInsets.all(8 * fem),
+                            width: double.infinity,
+                            height: 65 * fem,
+                            // padding: EdgeInsets.only(top: 10*fem),
+                            decoration: BoxDecoration(
+                                color: const Color(0xffdfd3ff),
+                                border: Border.all(
+                                  color: const Color(0xFFA07EFF),
                                 ),
-                                Text(
-                                  value[index].time.toString(),
-                                  style: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 13 * fem,
-                                    fontWeight: FontWeight.w400,
-                                    color: const Color(0xFF662fff),
-                                  ),
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(13 * fem))),
+                            child: Row(
+                              children: [
+                                SizedBox(width: 15 * fem),
+                                const Icon(
+                                  Icons.medication_liquid,
+                                  color: Color(0xFF662fff),
+                                ),
+                                SizedBox(width: 15 * fem),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      value[index].title,
+                                      style: SafeGoogleFont(
+                                        'Poppins',
+                                        fontSize: 15 * fem,
+                                        fontWeight: FontWeight.w600,
+                                        color: const Color(0xFF662fff),
+                                      ),
+                                    ),
+                                    Text(
+                                      "${value[index].time.hour} : ${value[index].time.minute}",
+                                      style: SafeGoogleFont(
+                                        'Poppins',
+                                        fontSize: 13 * fem,
+                                        fontWeight: FontWeight.w400,
+                                        color: const Color(0xFF662fff),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
+                          ),
+                          if (index != value.length - 1 &&
+                              dateTime1.compareTo(dateTime2!) < 0)
+                            const Divider(
+                                color: Color(0xFF662fff), thickness: 1),
+                        ],
                       ),
                     );
                   },
