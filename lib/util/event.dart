@@ -4,13 +4,13 @@
 import 'dart:collection';
 import 'package:table_calendar/table_calendar.dart';
 
-
 /// Example event class.
 class Event {
   final String title;
   final DateTime time;
+  final bool memo;
 
-  const Event({required this.title, required this.time});
+  Event({required this.title, required this.time, this.memo = false});
 
   @override
   String toString() => title;

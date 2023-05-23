@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:collection';
-
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
-
 import '../alarm_screens/edit_alarm.dart';
 import '../util/medicine_card.dart';
 import '../util/medicine_list.dart';
@@ -43,34 +41,32 @@ class _ListPageState extends State<ListPage> {
     });
   }
 
-  // 알람 삭제 기능
-  void rmvAlarms(String itemName, String entpName) {
-    for (int i = 0; i < alarms.length; i++) {
-      // alarmName은 약이 한 개 이상 선택되어야 하므로 Null이 될 수 없음.
-      var alarmName = alarms[i].notificationBody!;
-
+  // 알람 삭제 기능( 업데이트 해야함!! )
+  void rmvAlarms(int mediIdx) {
+    for (AlarmSettings alarm in alarms) {
+      List<int> idxList = stringToIdxList(alarm.notificationBody ?? "");
       // 삭제하는 약과 상관 없는 알람이면 무시하기
-      if (!alarmName.contains(itemName)) continue;
+      if (!idxList.contains(mediIdx)) continue;
 
-      String newBody = alarmName.replaceAll('$itemName#$entpName&', '');
+      String newBody = "";
 
       // 삭제하는 약 한개로만 이루어진 알람은 그냥 삭제시키기
       if (newBody.isEmpty) {
-        Alarm.stop(alarms[i].id);
+        Alarm.stop(alarm.id);
         continue;
       }
 
       AlarmSettings alarmSettings = AlarmSettings(
-        id: alarms[i].id,
-        dateTime: alarms[i].dateTime,
-        assetAudioPath: alarms[i].assetAudioPath,
-        loopAudio: alarms[i].loopAudio,
-        vibrate: alarms[i].vibrate,
-        fadeDuration: alarms[i].fadeDuration,
-        notificationTitle: alarms[i].notificationTitle,
+        id: alarm.id,
+        dateTime: alarm.dateTime,
+        assetAudioPath: alarm.assetAudioPath,
+        loopAudio: alarm.loopAudio,
+        vibrate: alarm.vibrate,
+        fadeDuration: alarm.fadeDuration,
+        notificationTitle: alarm.notificationTitle,
         notificationBody: newBody,
-        enableNotificationOnKill: alarms[i].enableNotificationOnKill,
-        stopOnNotificationOpen: alarms[i].stopOnNotificationOpen,
+        enableNotificationOnKill: alarm.enableNotificationOnKill,
+        stopOnNotificationOpen: alarm.stopOnNotificationOpen,
       );
       Alarm.set(alarmSettings: alarmSettings).then((value) => loadAlarms());
     }
@@ -132,8 +128,8 @@ class _ListPageState extends State<ListPage> {
   Future<void> removeInArray(int idx, Medicine medicine, double fem) async {
     await MediList().removeToArray(medicine);
     showRmvMessage(fem, medicine.itemName);
+    // rmvAlarms(idx);
     await _futureMediList.then((value) => value.removeAt(idx));
-    rmvAlarms(medicine.itemName, medicine.entpName);
   }
 
   void showCustomDialog(BuildContext context, double fem, String imageUrl) {

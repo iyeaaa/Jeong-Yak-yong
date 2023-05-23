@@ -1,10 +1,7 @@
-import 'dart:collection';
 
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
-import '../medicine_data/medicine.dart';
-import '../util/event.dart';
 import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
@@ -33,11 +30,7 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
 
   @override
   void initState() {
-    var splitedList = widget.mediIndex.split(',');
-    splitedList.removeLast();
-    for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
-      idxList.add(idx);
-    }
+    idxList = stringToIdxList(widget.mediIndex);
 
     super.initState();
     creating = widget.alarmSettings == null;
@@ -131,39 +124,15 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
 
     // 추가하는 알람의 약들의 알람 정보를 저장해준다.
     var mediList = await MediList().getMediList();
-    for (int idx in idxList) {
-      Medicine medicine = mediList[idx];
-      debugPrint("${medicine.itemName}: ${medicine.count}");
-      if (!alarmsOfMedi.containsKey(medicine)) {
-        alarmsOfMedi[medicine] = SplayTreeSet();
-      }
-      alarmsOfMedi[medicine]!.add(buildAlarmSetting.dateTime);
-    }
+    addAlarmOfMedi(idxList, buildAlarmSetting.dateTime, mediList);
 
-    kEvents.clear();
+    // 약 event 모두 삭제
+    rmvEventsWithoutMemo();
+
     // 모든 약을 순회하면서 캘린더에 약의 정보를 업데이트한다.
-    for (Medicine medicine in mediList) {
-      int iter = 0, delay = 0;
-      first: while (alarmsOfMedi[medicine] != null) {
-        for (DateTime dateTime in (alarmsOfMedi[medicine]!)) {
-          if (iter >= medicine.count) break first;
-          DateTime key = dateTime.add(Duration(days: delay));
-          if (kEvents[key] == null) {
-            kEvents[key] = [];
-          }
-          kEvents[key]!.add(Event(title: medicine.itemName, time: key));
-          iter++;
-        }
-        delay++;
-      }
-    }
+    updateEvents(mediList);
 
-    for (DateTime dateTime in kEvents.keys) {
-      kEvents[dateTime]!.sort((a, b) => a.time.compareTo(b.time));
-    }
-
-    print("캘린더 초기화 완료");
-    print(kEvents);
+    sortEventList();
 
     if (context.mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -310,17 +279,17 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
               ),
             ],
           ), // Sound
-          if (!creating) // 이미 만들어졌다면
-            TextButton(
-              onPressed: deleteAlarm,
-              child: Text(
-                'Delete Alarm',
-                style: Theme.of(context)
-                    .textTheme
-                    .titleMedium!
-                    .copyWith(color: Colors.red),
-              ),
-            ),
+          // if (!creating) // 이미 만들어졌다면
+          //   TextButton(
+          //     onPressed: deleteAlarm,
+          //     child: Text(
+          //       'Delete Alarm',
+          //       style: Theme.of(context)
+          //           .textTheme
+          //           .titleMedium!
+          //           .copyWith(color: Colors.red),
+          //     ),
+          //   ),
           const SizedBox(),
         ],
       ),

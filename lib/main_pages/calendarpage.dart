@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
+import 'package:medicine_app/alarm_screens/ring.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
 import '../util/utils.dart';
@@ -146,7 +147,7 @@ class CalenderPageState extends State<CalenderPage> {
               todayDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border:
-                    Border.all(color: const Color(0xFFA07EFF), width: 3 * fem),
+                    Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
               ),
               todayTextStyle: SafeGoogleFont(
                 'Poppins',
@@ -210,7 +211,7 @@ class CalenderPageState extends State<CalenderPage> {
                       child: Column(
                         children: [
                           Container(
-                            margin: EdgeInsets.fromLTRB(0, 5*fem, 0, 5*fem),
+                            margin: EdgeInsets.fromLTRB(0, 5 * fem, 0, 5 * fem),
                             padding: EdgeInsets.all(8 * fem),
                             width: double.infinity,
                             height: 65 * fem,
@@ -230,29 +231,34 @@ class CalenderPageState extends State<CalenderPage> {
                                   color: Color(0xFF662fff),
                                 ),
                                 SizedBox(width: 15 * fem),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      value[index].title,
-                                      style: SafeGoogleFont(
-                                        'Poppins',
-                                        fontSize: 15 * fem,
-                                        fontWeight: FontWeight.w600,
-                                        color: const Color(0xFF662fff),
+                                Expanded(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        value[index].title,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 1,
+                                        style: SafeGoogleFont(
+                                          'Poppins',
+                                          fontSize: 15 * fem,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFF662fff),
+                                        ),
                                       ),
-                                    ),
-                                    Text(
-                                      "${value[index].time.hour} : ${value[index].time.minute}",
-                                      style: SafeGoogleFont(
-                                        'Poppins',
-                                        fontSize: 13 * fem,
-                                        fontWeight: FontWeight.w400,
-                                        color: const Color(0xFF662fff),
+                                      Text(
+                                        toTimeForm(value[index].time.hour,
+                                            value[index].time.minute),
+                                        style: SafeGoogleFont(
+                                          'Poppins',
+                                          fontSize: 13 * fem,
+                                          fontWeight: FontWeight.w600,
+                                          color: const Color(0xFF662fff),
+                                        ),
                                       ),
-                                    ),
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ],
                             ),

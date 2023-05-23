@@ -5,7 +5,6 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
-import 'package:medicine_app/util/event.dart';
 import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
@@ -209,24 +208,14 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  // Future<void> refreshEvents(int idx) async {
-  //   List<Medicine> medicines = await MediList().getMediList();
-  //   List<int> idxList = [];
-  //
-  //   var splitedList = alarms[idx].notificationBody!.split(',');
-  //   splitedList.removeLast();
-  //   for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
-  //     idxList.add(idx);
-  //   }
-  //
-  //   for (int idx in idxList) {
-  //     for (int delay = 0; delay < medicines[idx].count; delay) {
-  //       DateTime dateTime = alarms[idx].dateTime.add(Duration(days: delay));
-  //       alarmsOfMedi[medicines[idx]]!.remove(dateTime);
-  //       kEvents[dateTime]?.remove(Event(title: medicines[idx].itemName, time: dateTime));
-  //     }
-  //   }
-  // }
+  Future<void> rmvCalenderInfo(String idxStr, DateTime dateTime) async {
+    List<int> idxList = stringToIdxList(idxStr);
+    List<Medicine> mediList = await MediList().getMediList();
+
+    rmvAlarmOfMedi(idxList, dateTime, mediList);
+    rmvEventsWithoutMemo();
+    updateEvents(mediList);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -511,10 +500,12 @@ class _HomePageState extends State<HomePage> {
                                     height: 97 * fem,
                                     child: AlarmTile(
                                       key: Key(alarms[idx].id.toString()),
-                                      onDismissed: () {
+                                      onDismissed: () async {
                                         Alarm.stop(alarms[idx].id)
                                             .then((_) => loadAlarms());
-                                        // refreshEvents(idx);
+                                        rmvCalenderInfo(
+                                            alarms[idx].notificationBody!,
+                                            alarms[idx].dateTime);
                                       },
                                       ontap: () =>
                                           navigateToAlarmScreen(alarms[idx]),

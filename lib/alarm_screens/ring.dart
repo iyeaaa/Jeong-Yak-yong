@@ -4,6 +4,7 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
+import '../medicine_data/medicine_cnt_management.dart';
 import '../util/medicine_list.dart';
 import '../util/utils.dart';
 
@@ -44,15 +45,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
   @override
   void initState() {
     super.initState();
-    var splitedList = widget.alarmSettings.notificationBody!.split(',');
-    splitedList.removeLast();
-    for (var idx in splitedList.map((e) => int.parse(e)).toList()) {
-      idxList.add(idx);
-    }
-  }
-
-  String toTimeForm(int h, int m) {
-    return "${h > 9 ? "$h" : "0$h"} : ${m > 9 ? "$m" : "0$m"}";
+    idxList = stringToIdxList(widget.alarmSettings.notificationBody!);
   }
 
   @override
@@ -235,4 +228,8 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
       ),
     );
   }
+}
+
+String toTimeForm(int h, int m) {
+  return "${h > 9 ? "$h" : "0$h"} : ${m > 9 ? "$m" : "0$m"}";
 }
