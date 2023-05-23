@@ -2,6 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
+import 'package:flutter_material_symbols/flutter_material_symbols.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
 import '../util/utils.dart';
@@ -196,21 +197,59 @@ class CalenderPageState extends State<CalenderPage> {
               valueListenable: _selectedEvents,
               builder: (context, value, _) {
                 return ListView.builder(
+                  padding: EdgeInsets.fromLTRB(
+                      20 * fem, 0 * fem, 20 * fem, 20 * fem),
                   itemCount: value.length,
                   itemBuilder: (context, index) {
-                    return Container(
-                      margin: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: ListTile(
-                        onTap: () => debugPrint('${value[index]}'),
-                        title: Text(value[index].title),
-                        subtitle: Text(value[index].time.toString()),
+                    return InkWell(
+                      onTap: () => debugPrint('${value[index]}'),
+                      child: Container(
+                        margin: EdgeInsets.only(top: 10*fem),
+                        padding: EdgeInsets.all(8 * fem),
+                        width: double.infinity,
+                        height: 60 * fem,
+                        // padding: EdgeInsets.only(top: 10*fem),
+                        decoration: BoxDecoration(
+                            color: Color(0xffdfd3ff),
+                            border: Border.all(
+                              color: Color(0xFFA07EFF),
+                            ),
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(13 * fem))),
+                        child: Row(
+                          children: [
+                            SizedBox(width: 15*fem),
+                            const Icon(
+                              Icons.medication_liquid,
+                              color: Color(0xFF662fff),
+                            ),
+                            SizedBox(width: 15*fem),
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  value[index].title,
+                                  style: SafeGoogleFont(
+                                    'Poppins',
+                                    fontSize: 15 * fem,
+                                    fontWeight: FontWeight.w600,
+                                    color: const Color(0xFF662fff),
+                                  ),
+                                ),
+                                Text(
+                                  value[index].time.toString(),
+                                  style: SafeGoogleFont(
+                                    'Poppins',
+                                    fontSize: 13 * fem,
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color(0xFF662fff),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
