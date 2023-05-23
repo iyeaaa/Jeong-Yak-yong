@@ -2,9 +2,9 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
-import 'package:medicine_app/alarm_screens/ring.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
+import '../util/shared_save.dart';
 import '../util/utils.dart';
 
 class CalenderPage extends StatefulWidget {
@@ -37,6 +37,7 @@ class CalenderPageState extends State<CalenderPage> {
   @override
   void dispose() {
     _selectedEvents.dispose();
+    saveFromPrefs();
     super.dispose();
   }
 
@@ -203,9 +204,9 @@ class CalenderPageState extends State<CalenderPage> {
                       20 * fem, 0 * fem, 20 * fem, 20 * fem),
                   itemCount: value.length,
                   itemBuilder: (context, index) {
-                    DateTime dateTime1 = value[index].time;
-                    DateTime? dateTime2 =
-                        index + 1 < value.length ? value[index + 1].time : null;
+                    String dateTime1 = value[index].subTitle;
+                    String? dateTime2 =
+                        index + 1 < value.length ? value[index + 1].subTitle : null;
                     return InkWell(
                       onTap: () => debugPrint('${value[index]}'),
                       child: Column(
@@ -248,8 +249,7 @@ class CalenderPageState extends State<CalenderPage> {
                                         ),
                                       ),
                                       Text(
-                                        toTimeForm(value[index].time.hour,
-                                            value[index].time.minute),
+                                        value[index].subTitle,
                                         style: SafeGoogleFont(
                                           'Poppins',
                                           fontSize: 13 * fem,

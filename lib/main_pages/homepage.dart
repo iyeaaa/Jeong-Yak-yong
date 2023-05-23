@@ -504,8 +504,9 @@ class _HomePageState extends State<HomePage> {
                                         Alarm.stop(alarms[idx].id)
                                             .then((_) => loadAlarms());
                                         rmvCalenderInfo(
-                                            alarms[idx].notificationBody!,
-                                            alarms[idx].dateTime);
+                                          alarms[idx].notificationBody!,
+                                          alarms[idx].dateTime,
+                                        );
                                       },
                                       ontap: () =>
                                           navigateToAlarmScreen(alarms[idx]),

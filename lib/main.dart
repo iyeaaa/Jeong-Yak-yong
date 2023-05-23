@@ -1,5 +1,5 @@
+import 'dart:collection';
 import 'dart:ui';
-
 import 'package:alarm/alarm.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +8,10 @@ import 'package:medicine_app/login/login_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/services.dart';
 import 'package:medicine_app/tabbar_page.dart';
-
+import 'package:medicine_app/util/event.dart';
+import 'package:medicine_app/util/shared_save.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +22,23 @@ Future<void> main() async {
 
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   await Alarm.init(showDebugLogs: true);
+
+  pref = await SharedPreferences.getInstance();
+  String json = pref.getString('Events') ?? "";
+  print(json);
+
+  if (json.isEmpty) {
+    kEvents = LinkedHashMap<DateTime, List<Event>>(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    );
+  } else {
+    kEvents = LinkedHashMap<DateTime, List<Event>>(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    )..addAll(decodeEvent(json));
+  }
+  debugPrint("Events 불러오기 성공");
 
   runApp(const MyApp());
 }
@@ -44,7 +64,6 @@ class _MyAppState extends State<MyApp> {
     await Future.delayed(const Duration(seconds: 1));
     FlutterNativeSplash.remove();
   }
-
 
   // This widget is the root of your application.
   @override

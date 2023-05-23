@@ -2,27 +2,23 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'dart:collection';
-import 'package:table_calendar/table_calendar.dart';
 
 /// Example event class.
 class Event {
   final String title;
-  final DateTime time;
+  final String subTitle;
   final bool memo;
 
-  Event({required this.title, required this.time, this.memo = false});
+  Event({required this.title, required this.subTitle, this.memo = false});
 
   @override
-  String toString() => title;
+  String toString() => "$title: $subTitle}";
 }
 
 /// Example events.
 ///
 /// Using a [LinkedHashMap] is highly recommended if you decide to use a map.
-final kEvents = LinkedHashMap<DateTime, List<Event>>(
-  equals: isSameDay,
-  hashCode: getHashCode,
-);
+late final LinkedHashMap<DateTime, List<Event>> kEvents;
 
 int getHashCode(DateTime key) {
   return key.day * 1000000 + key.month * 10000 + key.year;
