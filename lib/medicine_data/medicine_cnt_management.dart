@@ -6,8 +6,7 @@ import '../util/event.dart';
 import 'medicine.dart';
 
 // 약마다 울리는 시간을 정렬시켜 기록함
-LinkedHashMap<Medicine, SplayTreeSet<DateTime>> alarmsOfMedi =
-    LinkedHashMap();
+LinkedHashMap<Medicine, SplayTreeSet<DateTime>> alarmsOfMedi = LinkedHashMap();
 
 List<int> stringToIdxList(String idx) {
   List<int> idxList = [];
@@ -63,7 +62,7 @@ void rmvEventsWithoutMemo() {
   final now = DateTime.now();
 
   for (DateTime dateTime in kEvents.keys) {
-    if (now.isBefore(dateTime)){
+    if (now.isAfter(dateTime)) {
       List<Event> events = kEvents[dateTime]!;
       for (int i = events.length - 1; i >= 0; i--) {
         if (!events[i].memo) {
@@ -79,20 +78,32 @@ void rmvEventsWithoutMemo() {
 void updateEvents(List<Medicine> mediList) {
   for (Medicine medicine in mediList) {
     int iter = 0, delay = 0;
-    first:
-    while (alarmsOfMedi[medicine] != null && alarmsOfMedi[medicine]!.isNotEmpty) {
+    print(medicine.count);
+    first: while (alarmsOfMedi[medicine] != null
+        && alarmsOfMedi[medicine]!.isNotEmpty) {
       for (DateTime dateTime in (alarmsOfMedi[medicine]!)) {
+        print(iter);
+
         if (iter >= medicine.count) break first;
+
         DateTime key = dateTime.add(Duration(days: delay));
+
         if (kEvents[key] == null) {
           kEvents[key] = [];
         }
-        kEvents[key]!.add(Event(title: medicine.itemName, subTitle: toTimeForm(key.hour, key.minute)));
+
+        kEvents[key]!.add(
+          Event(
+            title: medicine.itemName,
+            subTitle: toTimeForm(key.hour, key.minute),
+          ),
+        );
         iter++;
       }
       delay++;
     }
   }
+  print(kEvents);
 }
 
 void sortEventList() {

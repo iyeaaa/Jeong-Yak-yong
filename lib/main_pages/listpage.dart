@@ -254,7 +254,7 @@ class _ListPageState extends State<ListPage> {
                           verticalOffset: 50,
                           child: FadeInAnimation(
                             child: Dismissible(
-                              key: UniqueKey(),
+                              key: ValueKey(MediList.mediList[idx].itemName),
                               background: Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(20 * fem),
