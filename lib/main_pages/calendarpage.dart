@@ -4,7 +4,6 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
-import '../util/shared_save.dart';
 import '../util/utils.dart';
 
 class CalenderPage extends StatefulWidget {
@@ -37,7 +36,6 @@ class CalenderPageState extends State<CalenderPage> {
   @override
   void dispose() {
     _selectedEvents.dispose();
-    saveFromPrefs();
     super.dispose();
   }
 
@@ -205,8 +203,9 @@ class CalenderPageState extends State<CalenderPage> {
                   itemCount: value.length,
                   itemBuilder: (context, index) {
                     String dateTime1 = value[index].subTitle;
-                    String? dateTime2 =
-                        index + 1 < value.length ? value[index + 1].subTitle : null;
+                    String? dateTime2 = index + 1 < value.length
+                        ? value[index + 1].subTitle
+                        : null;
                     return InkWell(
                       onTap: () => debugPrint('${value[index]}'),
                       child: Column(
@@ -235,7 +234,8 @@ class CalenderPageState extends State<CalenderPage> {
                                 Expanded(
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         value[index].title,
@@ -260,6 +260,23 @@ class CalenderPageState extends State<CalenderPage> {
                                     ],
                                   ),
                                 ),
+                                Container(
+                                  margin: EdgeInsets.only(left: 8*fem, right: 8*fem),
+                                  padding: EdgeInsets.all(8*fem),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.all(Radius.circular(15*fem)),
+                                    border: Border.all(color: const Color(0xFF662fff), width: 2*fem),
+                                  ),
+                                  child: Text(
+                                    "EAT",
+                                    style: SafeGoogleFont(
+                                      'Poppins',
+                                      fontSize: 15 * fem,
+                                      fontWeight: FontWeight.w600,
+                                      color: const Color(0xFF662fff),
+                                    ),
+                                  ),
+                                )
                               ],
                             ),
                           ),

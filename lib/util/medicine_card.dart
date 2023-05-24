@@ -88,6 +88,7 @@ class _MedicineCardState extends State<MedicineCard> {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
+                      SizedBox(height: 4*widget.fem),
                       Text(
                         widget.company,
                         style: SafeGoogleFont(
