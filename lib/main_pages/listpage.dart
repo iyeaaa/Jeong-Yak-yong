@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/medicine_data/medicine.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
+import 'package:medicine_app/util/loading_bar.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../util/medicine_card.dart';
 import '../util/medicine_list.dart';
@@ -106,22 +107,7 @@ class _ListPageState extends State<ListPage> {
 
   // 삭제할 때 메시지 출력
   void showRmvMessage(double fem, String itemName) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          "$itemName을 삭제했어요",
-          textAlign: TextAlign.center,
-          style: SafeGoogleFont(
-            'Nunito',
-            fontSize: 15 * fem,
-            fontWeight: FontWeight.w400,
-            height: 1.3625 * fem / fem,
-            color: const Color(0xffffffff),
-          ),
-        ),
-        backgroundColor: const Color(0xff8a60ff),
-      ),
-    );
+    showScaffold("$itemName을 삭제했어요", context, fem);
   }
 
   // 배열에서 약 삭제
@@ -310,32 +296,8 @@ class _ListPageState extends State<ListPage> {
                                                 if (snapshot
                                                         .data[idx].imageUrl ==
                                                     "No Image") {
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                      duration: const Duration(
-                                                          milliseconds: 800),
-                                                      content: Text(
-                                                        "이미지가 없어요",
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                        style: SafeGoogleFont(
-                                                          'Nunito',
-                                                          fontSize: 15 * fem,
-                                                          fontWeight:
-                                                              FontWeight.w400,
-                                                          height: 1.3625 *
-                                                              fem /
-                                                              fem,
-                                                          color: const Color(
-                                                              0xffffffff),
-                                                        ),
-                                                      ),
-                                                      backgroundColor:
-                                                          const Color(
-                                                              0xff8a60ff),
-                                                    ),
-                                                  );
+                                                  showScaffold(
+                                                      "이미지가 없어요", context, fem);
                                                 } else {
                                                   showCustomDialog(
                                                       context,
@@ -362,9 +324,8 @@ class _ListPageState extends State<ListPage> {
                                                     ),
                                                   ),
                                                 ).then((value) => setState(() {
-                                                      _futureMediList =
-                                                          mediList
-                                                              .getMediList();
+                                                      _futureMediList = mediList
+                                                          .getMediList();
                                                       if (context.mounted) {
                                                         debugPrint(
                                                             "Listview 새로고침");

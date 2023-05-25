@@ -5,6 +5,7 @@ import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
+import 'package:medicine_app/util/loading_bar.dart';
 import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
@@ -171,22 +172,7 @@ class _HomePageState extends State<HomePage> {
     List<dynamic> listjson = await network.fetchMediList();
 
     if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "검색결과가 없습니다.",
-            textAlign: TextAlign.center,
-            style: SafeGoogleFont(
-              'Nunito',
-              fontSize: 15 * fem,
-              fontWeight: FontWeight.w400,
-              height: 1.3625 * fem / fem,
-              color: const Color(0xffffffff),
-            ),
-          ),
-          backgroundColor: const Color(0xff8a60ff),
-        ),
-      );
+      showScaffold("검색결과가 없습니다.", context, fem);
       setState(() {
         mediList.clear();
       });
