@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/network.dart';
 import 'package:medicine_app/sub_pages/making_medi.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
+import 'package:medicine_app/util/loading_bar.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
 import '../util/utils.dart';
@@ -66,58 +67,14 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void readMedicineFromApi(double fem) async {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(
-              Radius.circular(15),
-            ),
-          ),
-          content: Row(
-            children: [
-              const CircularProgressIndicator(color: Color(0xffa07eff)),
-              SizedBox(width: 15 * fem),
-              Container(
-                margin: const EdgeInsets.only(left: 7),
-                child: Text(
-                  "Loading...",
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 17 * fem,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    showLoadingBar(context);
 
     List<Medicine> tempMediList = [];
     Network network = Network(itemName: itemName);
     List<dynamic> listjson = await network.fetchMediList();
 
     if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            "검색결과가 없습니다.",
-            textAlign: TextAlign.center,
-            style: SafeGoogleFont(
-              'Nunito',
-              fontSize: 15 * fem,
-              fontWeight: FontWeight.w400,
-              height: 1.3625 * fem / fem,
-              color: const Color(0xffffffff),
-            ),
-          ),
-          backgroundColor: const Color(0xff8a60ff),
-        ),
-      );
+      showScaffold("검색결과가 없습니다.", context, fem);
 
       Navigator.pop(context);
       return;

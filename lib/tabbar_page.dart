@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/main_pages/calendarpage.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/homepage.dart';
 import 'main_pages/listpage.dart';
@@ -40,6 +41,9 @@ class _TabBarPageState extends State<TabBarPage>
     );
     _pageController = PageController(initialPage: widget.selectedIndex);
     userEmail = FirebaseAuth.instance.currentUser!.email!;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      loadAOM(context);
+    });
     super.initState();
   }
 

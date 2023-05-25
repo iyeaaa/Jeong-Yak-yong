@@ -268,7 +268,7 @@ class CalenderPageState extends State<CalenderPage> {
                                     border: Border.all(color: const Color(0xFF662fff), width: 2*fem),
                                   ),
                                   child: Text(
-                                    "EAT",
+                                    "TAKE",
                                     style: SafeGoogleFont(
                                       'Poppins',
                                       fontSize: 15 * fem,

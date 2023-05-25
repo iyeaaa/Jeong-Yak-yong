@@ -1,13 +1,41 @@
 import 'dart:collection';
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/alarm_screens/ring.dart';
+import 'package:medicine_app/util/loading_bar.dart';
 
 import '../util/event.dart';
+import '../util/medicine_list.dart';
 import 'medicine.dart';
 
 // 약마다 울리는 시간을 정렬시켜 기록함
 final LinkedHashMap<Medicine, SplayTreeSet<DateTime>> alarmsOfMedi =
     LinkedHashMap();
+
+Future<void> loadAOM(BuildContext context) async {
+  showLoadingBar(context);
+  List<Medicine> mediList = await MediList().getMediList();
+  List<AlarmSettings> alarms = Alarm.getAlarms();
+
+  for (AlarmSettings alarm in alarms) {
+    List<int> idxList = stringToIdxList(alarm.notificationBody!);
+    for (int idx in idxList) {
+      if (idx >= mediList.length) continue;
+      Medicine medicine = mediList[idx];
+      if (alarmsOfMedi[medicine] == null) {
+        SplayTreeSet<DateTime> sts = SplayTreeSet();
+        sts.add(alarm.dateTime);
+        alarmsOfMedi[medicine] = sts;
+      } else {
+        alarmsOfMedi[medicine]!.add(alarm.dateTime);
+      }
+    }
+  }
+  debugPrint("캘린더 데이터 불러오기 성공");
+  updateEvents(mediList);
+
+  if (context.mounted) Navigator.pop(context);
+}
 
 List<int> stringToIdxList(String idx) {
   List<int> idxList = [];
@@ -41,10 +69,7 @@ void rmvAlarmOfMedi(List<int> idxList, DateTime dateTime, List<Medicine> mL) {
 // 사용자가 설정한 메모를 제외하고 약과 관련된 event 모두 삭제
 // 전날까지는 변경x
 void rmvEventsWithoutMemo() {
-  final now = DateTime.now().day;
-
   for (DateTime dateTime in kEvents.keys) {
-    if (now > dateTime.day) continue;
     List<Event> events = kEvents[dateTime]!;
     for (int i = events.length - 1; i >= 0; i--) {
       if (!events[i].memo) {
