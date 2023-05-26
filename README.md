@@ -42,7 +42,7 @@ GIF Images
 <img src="readmeImage/ListPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/MediSetting.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/Causion.png" width="200">
 
 ### CalenderPage
-<img src="readmeImage/CalenderPage.png" width="200">
+<img src="readmeImage/CalendarPage.png" width="200">
 
 <br>
 

@@ -97,7 +97,7 @@ class CalenderPageState extends State<CalenderPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          'My Calender',
+          'My Calendar',
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 26 * fem,
