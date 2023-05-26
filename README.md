@@ -39,7 +39,7 @@ GIF Images
 
 ### 기능 3
 
-<img src="introImage/ListPage.png" width="200">
+<img src="introImage/ListPage.png" width="200">&nbsp;&nbsp;<img src="introImage/MediSetting.png" width="200">&nbsp;&nbsp;<img src="introImage/Causion.png" width="200">&nbsp;&nbsp;
 
 ### 기능 4
 <img src="introImage/CelanderPage.png" width="200">
