@@ -5,16 +5,24 @@ import 'dart:collection';
 
 import 'package:table_calendar/table_calendar.dart';
 
+import '../medicine_data/medicine.dart';
+
 /// Example event class.
 class Event {
-  final String title;
-  final String subTitle;
+  final Medicine medicine;
+  final String dateTime;
   final bool memo;
+  bool take;
 
-  Event({required this.title, required this.subTitle, this.memo = false});
+  Event({
+    required this.medicine,
+    required this.dateTime,
+    this.memo = false,
+    this.take = false,
+  });
 
   @override
-  String toString() => "$title: $subTitle}";
+  String toString() => "${medicine.itemName}: $dateTime}";
 }
 
 /// Example events.

@@ -133,41 +133,26 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
-                      List<Medicine> medi = await _futureMediList;
-                      String newNotication = "";
-                      bool haveToMake = false;
-
-                      for (int idx in idxList) {
-                        Medicine medicine = medi[idx];
-                        int newMediCnt = medicine.count - 1;
-
-                        await mediList.removeToArray(medicine);
-                        await mediList.appendToArray(
-                            medicine, max(newMediCnt, 0));
-                        newNotication += "$idx,";
-                        haveToMake = true;
-                      }
-                      mediList.update();
                       await Alarm.stop(widget.alarmSettings.id);
 
-                      if (haveToMake) {
-                        final now = DateTime.now();
-                        await Alarm.set(
-                          alarmSettings: widget.alarmSettings.copyWith(
-                            notificationTitle: newNotication,
-                            notificationBody: newNotication,
-                            dateTime: DateTime(
-                              now.year,
-                              now.month,
-                              now.day,
-                              now.hour,
-                              now.minute,
-                              0,
-                              0,
-                            ).add(const Duration(days: 1)),
-                          ),
-                        );
-                      }
+                      final now = DateTime.now();
+                      await Alarm.set(
+                        alarmSettings: widget.alarmSettings.copyWith(
+                          notificationTitle:
+                              widget.alarmSettings.notificationTitle,
+                          notificationBody:
+                              widget.alarmSettings.notificationBody,
+                          dateTime: DateTime(
+                            now.year,
+                            now.month,
+                            now.day,
+                            now.hour,
+                            now.minute,
+                            0,
+                            0,
+                          ).add(const Duration(days: 1)),
+                        ),
+                      );
 
                       if (context.mounted) {
                         Navigator.pop(context);

@@ -164,16 +164,19 @@ class _SearchPageState extends State<SearchPage> {
                       },
                       child: Container(
                         padding: EdgeInsets.fromLTRB(
-                            27 * fem, 20 * fem, 27 * fem, 20 * fem),
+                            20 * fem, 20 * fem, 20 * fem, 20 * fem),
+                        width: 75*fem,
                         height: double.infinity,
                         decoration: BoxDecoration(
                           color: const Color(0xff8a60ff),
                           borderRadius: BorderRadius.circular(20 * fem),
                         ),
-                        child: Image.asset(
-                          'image/fe-search-kxN.png',
-                          width: 20 * fem,
-                          height: 20 * fem,
+                        child: Center(
+                          child: Icon(
+                            Icons.search,
+                            size: 30 * fem,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ), // Search Button

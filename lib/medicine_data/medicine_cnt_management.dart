@@ -3,7 +3,6 @@ import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/alarm_screens/ring.dart';
 import 'package:medicine_app/util/loading_bar.dart';
-
 import '../util/event.dart';
 import '../util/medicine_list.dart';
 import 'medicine.dart';
@@ -84,14 +83,23 @@ void updateEvents(List<Medicine> mediList) {
   for (Medicine medicine in mediList) {
     int iter = 0, delay = 0;
     first:
-    while (alarmsOfMedi[medicine] != null && alarmsOfMedi[medicine]!.isNotEmpty) {
+    while (
+        alarmsOfMedi[medicine] != null && alarmsOfMedi[medicine]!.isNotEmpty) {
       for (DateTime dateTime in (alarmsOfMedi[medicine]!)) {
         if (iter >= medicine.count) break first;
         DateTime key = dateTime.add(Duration(days: delay));
         if (kEvents[key] == null) {
           kEvents[key] = [];
         }
-        kEvents[key]!.add(Event(title: medicine.itemName, subTitle: toTimeForm(key.hour, key.minute)));
+        kEvents[key]!.add(
+          Event(
+            medicine: medicine,
+            dateTime: toTimeForm(
+              key.hour,
+              key.minute,
+            ),
+          ),
+        );
         iter++;
       }
       delay++;
@@ -101,6 +109,6 @@ void updateEvents(List<Medicine> mediList) {
 
 void sortEventList() {
   for (DateTime dateTime in kEvents.keys) {
-    kEvents[dateTime]!.sort((a, b) => a.subTitle.compareTo(b.subTitle));
+    kEvents[dateTime]!.sort((a, b) => a.dateTime.compareTo(b.dateTime));
   }
 }

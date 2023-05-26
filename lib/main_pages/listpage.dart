@@ -42,7 +42,6 @@ class _ListPageState extends State<ListPage> {
     });
   }
 
-  // 알람 삭제 기능( 업데이트 해야함!! )
   void rmvAlarms(int mediIdx) {
     for (AlarmSettings alarm in alarms) {
       List<int> idxList = stringToIdxList(alarm.notificationBody ?? "");
