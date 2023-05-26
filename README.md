@@ -32,10 +32,10 @@ GIF Images
 ### Pages
 
 <img src="introImage/HomePage.png" width="200"><br>
-<img src="introImage/SearchPage.png" width="200">&nbsp;&nbsp;
-<img src="introImage/ListPage.png" width="200">&nbsp;&nbsp;
-<img src="introImage/CelanderPage.png" width="200">&nbsp;&nbsp;
-<img src="introImage/User.png" width="200">
+<img src="introImage/SearchPage.png" width="170">&nbsp;&nbsp;
+<img src="introImage/ListPage.png" width="170">&nbsp;&nbsp;
+<img src="introImage/CelanderPage.png" width="170">&nbsp;&nbsp;
+<img src="introImage/User.png" width="170">
 
 ### 기능 2
 
