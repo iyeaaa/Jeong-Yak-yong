@@ -20,9 +20,9 @@ GIF Images
 
 ## 기술 스택
 
-|   Flutter  | AWS lambda |  Firebase  |
-| :--------: | :--------: |  :------:  |
-|   ![js]    |   ![ts]    |  ![react]  |
+|   Flutter  |    AWS lambda  |  Firebase  |
+| :--------: | :--------:     |  :------:   |
+| ![flutter] |   ![aws]       | ![firebase] |
 
 <br>
 
@@ -44,7 +44,6 @@ MIT &copy; [NoHack](mailto:lbjp114@gmail.com)
 
 <!-- Stack Icon Refernces -->
 
-[js]: /images/stack/javascript.svg
-[ts]: /images/stack/typescript.svg
-[react]: /images/stack/react.svg
-[node]: /images/stack/node.svg
+[flutter]: /image/flutter.svg
+[aws]: /image/amazon-aws.svg
+[firebase]: /image/firebase.svg
