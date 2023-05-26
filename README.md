@@ -35,8 +35,7 @@ GIF Images
 
 ### 기능 2
 
-<img src="introImage/SearchPage.png" width="200">
-<img src="introImage/User.png" width="200">
+<img src="introImage/SearchPage.png" width="200"><img src="introImage/User.png" width="200">
 
 ### 기능 3
 
