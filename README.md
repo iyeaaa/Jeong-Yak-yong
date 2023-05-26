@@ -27,22 +27,22 @@ GIF Images
 
 <br>
 
-## 구현 기능
+## PAGES
 
 ### HomePages
 
 <img src="introImage/HomePage.png" width="200">
 
-### 기능 2
+### Search or Register
 
 <img src="introImage/SearchPage.png" width="200">&nbsp;&nbsp;<img src="introImage/User.png" width="200">
 
-### 기능 3
+### ListPage, Medicines Information
 
 <img src="introImage/ListPage.png" width="200">&nbsp;&nbsp;<img src="introImage/MediSetting.png" width="200">&nbsp;&nbsp;<img src="introImage/Causion.png" width="200">&nbsp;&nbsp;
 
-### 기능 4
-<img src="introImage/CelanderPage.png" width="200">
+### CalenderPage
+<img src="introImage/CalenderPage.png" width="200">
 
 <br>
 
