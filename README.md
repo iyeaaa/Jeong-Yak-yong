@@ -29,7 +29,9 @@ GIF Images
 
 ## 구현 기능
 
-### 기능 1
+### HomePage
+
+<img src="introImage/HomePage.png">
 
 ### 기능 2
 
