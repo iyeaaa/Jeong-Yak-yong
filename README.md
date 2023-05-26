@@ -35,7 +35,7 @@ GIF Images
 
 ### Search or Register
 
-<img src="introImage/SearchPage.png" width="200">&nbsp;&nbsp;<img src="introImage/User.png" width="200">
+<img src="introImage/SearchPage.png" width="200">&nbsp;&nbsp;<img src="introImage/Register.png" width="200">
 
 ### ListPage, Medicines Information
 

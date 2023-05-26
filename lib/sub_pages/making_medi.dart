@@ -225,7 +225,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          "약 추가",
+          "Register",
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 23 * fem,
