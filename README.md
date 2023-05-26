@@ -20,9 +20,9 @@ GIF Images
 
 ## 기술 스택
 
-| JavaScript | TypeScript |  React   |  Node   |
-| :--------: | :--------: | :------: | :-----: |
-|   ![js]    |   ![ts]    | ![react] | ![node] |
+|   Flutter  | AWS lambda |  Firebase  |
+| :--------: | :--------: |  :------:  |
+|   ![js]    |   ![ts]    |  ![react]  |
 
 <br>
 
