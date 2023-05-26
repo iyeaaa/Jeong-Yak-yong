@@ -29,9 +29,13 @@ GIF Images
 
 ## 구현 기능
 
-### HomePage
+### Pages
 
-<img src="introImage/HomePage.png" width="200">
+<img src="introImage/HomePage.png" width="200"><br>
+<img src="introImage/SearchPage.png" width="200">&nbsp;&nbsp;
+<img src="introImage/ListPage.png" width="200">&nbsp;&nbsp;
+<img src="introImage/CelanderPage.png" width="200">&nbsp;&nbsp;
+<img src="introImage/User.png" width="200">
 
 ### 기능 2
 
