@@ -31,7 +31,7 @@ GIF Images
 
 ### HomePage
 
-<img src="introImage/HomePage.png">
+<img src="introImage/HomePage.png" width="200">
 
 ### 기능 2
 
