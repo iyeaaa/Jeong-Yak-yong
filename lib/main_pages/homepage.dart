@@ -26,7 +26,8 @@ class _HomePageState extends State<HomePage> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
       GlobalKey<RefreshIndicatorState>();
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
-  late List<Medicine> mediList = [];
+  late List<Medicine> mediListForSearch = [];
+  List<Medicine> mediList = [];
   late final Future<String> _futureUserName;
   int count = 289;
   String itemName = ""; // 검색을 위한
@@ -39,6 +40,11 @@ class _HomePageState extends State<HomePage> {
       differTime();
     }
     _futureUserName = widget.futureUserName;
+    MediList().getMediList().then((value) {
+      for (Medicine medicine in value) {
+        mediList.add(medicine);
+      }
+    });
   }
 
   void loadAlarms() {
@@ -174,7 +180,7 @@ class _HomePageState extends State<HomePage> {
     if (context.mounted && (itemName.isEmpty || listjson.isEmpty)) {
       showScaffold("검색결과가 없습니다.", context, fem);
       setState(() {
-        mediList.clear();
+        mediListForSearch.clear();
       });
       Navigator.pop(context);
       return;
@@ -190,13 +196,12 @@ class _HomePageState extends State<HomePage> {
 
     setState(() {
       tempMediList.sort(((a, b) => a.itemName.compareTo(b.itemName)));
-      mediList = tempMediList;
+      mediListForSearch = tempMediList;
     });
   }
 
   Future<void> rmvCalenderInfo(String idxStr, DateTime dateTime) async {
     List<int> idxList = stringToIdxList(idxStr);
-    List<Medicine> mediList = await MediList().getMediList();
 
     rmvAlarmOfMedi(idxList, dateTime, mediList);
     rmvEventsWithoutMemo();
@@ -288,14 +293,14 @@ class _HomePageState extends State<HomePage> {
                           ), // Search Bar
                           InkWell(
                             onTap: () async {
-                              mediList.clear();
+                              mediListForSearch.clear();
                               await readMedicineFromApi(fem);
                               if (context.mounted) {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) => SearchPage(
-                                      mediList: mediList,
+                                      mediList: mediListForSearch,
                                     ),
                                   ),
                                 );
