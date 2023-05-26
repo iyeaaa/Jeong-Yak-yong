@@ -31,18 +31,18 @@ GIF Images
 
 ### HomePages
 
-<img src="introImage/HomePage.png" width="200">
+<img src="readmeImage/HomePage.png" width="200">
 
 ### Search or Register
 
-<img src="introImage/SearchPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="introImage/Register.png" width="200">
+<img src="readmeImage/SearchPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/Register.png" width="200">
 
 ### ListPage, Medicines Information
 
-<img src="introImage/ListPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="introImage/MediSetting.png" width="200">&nbsp;&nbsp;&nbsp;<img src="introImage/Causion.png" width="200">
+<img src="readmeImage/ListPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/MediSetting.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/Causion.png" width="200">
 
 ### CalenderPage
-<img src="introImage/CalenderPage.png" width="200">
+<img src="readmeImage/CalenderPage.png" width="200">
 
 <br>
 
