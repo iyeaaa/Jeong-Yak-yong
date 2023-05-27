@@ -30,7 +30,7 @@ GIF Images
 
 ## PAGES
 
-### HomePages
+### HomePage
 
 <img src="readmeImage/HomePage.png" width="200">
 
