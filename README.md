@@ -1,4 +1,4 @@
-# 정약용[Prototype]
+# 정약용[Prototype] - 정확한 약 복용
 
 <p align="center">
   <br>
