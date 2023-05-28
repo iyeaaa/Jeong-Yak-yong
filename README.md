@@ -11,10 +11,10 @@
 <p align="justify">
 </p>
 
-프로토타입 시연영상
+
 [![프로토타입 시연영상](http://img.youtube.com/vi/e-SODyj4cbM/0.jpg)](https://youtu.be/e-SODyj4cbM?t=0s)
 <p align="center">
-
+프로토타입 시연영상
 </p>
 
 <br>
