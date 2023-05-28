@@ -72,6 +72,7 @@ class MediList {
   Future<List<Medicine>> _loadMediData() async {
     var list = await _firestore.collection(_userEmail).doc('mediInfo').get();
     List<Medicine> mediList = [];
+
     for (var v in list.data()!['medicine']) {
       try {
         mediList.add(

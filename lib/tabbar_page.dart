@@ -27,7 +27,6 @@ class _TabBarPageState extends State<TabBarPage>
   late BottomBarWithSheetController _bottomBarController;
   late PageController _pageController;
   late String userEmail;
-  late Future<String> futureUserName = getUserName();
 
   @override
   void initState() {
@@ -92,7 +91,7 @@ class _TabBarPageState extends State<TabBarPage>
           _bottomBarController.selectItem(value);
         },
         children: [
-          HomePage(futureUserName: futureUserName),
+          HomePage(futureUserName: getUserName()),
           const SearchPage(mediList: []),
           const ListPage(),
           const CalenderPage(),

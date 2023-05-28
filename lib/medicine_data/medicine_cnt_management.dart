@@ -2,7 +2,6 @@ import 'dart:collection';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/alarm_screens/ring.dart';
-import 'package:medicine_app/util/loading_bar.dart';
 import '../util/event.dart';
 import '../util/medicine_list.dart';
 import 'medicine.dart';
@@ -12,7 +11,6 @@ final LinkedHashMap<Medicine, SplayTreeSet<DateTime>> alarmsOfMedi =
     LinkedHashMap();
 
 Future<void> loadAOM(BuildContext context) async {
-  showLoadingBar(context);
   List<Medicine> mediList = await MediList().getMediList();
   List<AlarmSettings> alarms = Alarm.getAlarms();
 
@@ -32,8 +30,6 @@ Future<void> loadAOM(BuildContext context) async {
   }
   debugPrint("캘린더 데이터 불러오기 성공");
   updateEvents(mediList);
-
-  if (context.mounted) Navigator.pop(context);
 }
 
 List<int> stringToIdxList(String idx) {
