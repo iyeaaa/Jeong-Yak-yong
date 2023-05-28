@@ -45,9 +45,3 @@
 <img src="readmeImage/CalendarPage.png" width="200">
 
 <br>
-
-<!-- Stack Icon Refernces -->
-
-[flutter]: /image/flutter.svg
-[aws]: /image/amazon-aws.svg
-[firebase]: /image/firebase.svg
