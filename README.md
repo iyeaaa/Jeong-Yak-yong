@@ -9,7 +9,7 @@
 ## 프로젝트 소개
 
 <p align="justify">
-</p>/
+</p>
 
 [![IU(아이유) _ Into the I-LAND](http://img.youtube.com/vi/e-SODyj4cbM/0.jpg)](https://youtu.be/e-SODyj4cbM?t=0s)
 <p align="center">
