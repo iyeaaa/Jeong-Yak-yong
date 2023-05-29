@@ -29,20 +29,10 @@
 
 ## PAGES
 
-### HomePage
+|                                                     홈페이지                                                      |                                                    검색페이지                                                     |                                                    약 리스트                                                     |                                                      캘린더                                                       |
+|:-------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------------------------------:|
+| ![HomePage](https://github.com/iyeaaa/Jeong-Yak-yong/assets/102817453/98de16b4-2dc0-4085-b619-f9b60fc648b2) | ![SearchPage](https://github.com/iyeaaa/Jeong-Yak-yong/assets/102817453/45492f30-021d-49b9-81b7-9912af044924) | ![ListPage](https://github.com/iyeaaa/Jeong-Yak-yong/assets/102817453/e3c3e7e4-fcd0-4635-bb4c-78b15d985b11) | ![CalendarPage](https://github.com/iyeaaa/Jeong-Yak-yong/assets/102817453/13ae1ae0-5b6d-4bc6-a74d-f36e6e18f72b) |
 
-<img src="readmeImage/HomePage.png" width="200">
-
-### Search or Register
-
-<img src="readmeImage/SearchPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/Register.png" width="200">
-
-### ListPage, Medicines Information
-
-<img src="readmeImage/ListPage.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/MediSetting.png" width="200">&nbsp;&nbsp;&nbsp;<img src="readmeImage/Causion.png" width="200">
-
-### CalendarPage
-<img src="readmeImage/CalendarPage.png" width="200">
 
 <br>
 
