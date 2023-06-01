@@ -467,7 +467,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                 showAddOrChangeMessage(fem);
               },
               icon: Icon(
-                widget.creating ? Icons.add : Icons.save_outlined,
+                widget.creating ? Icons.playlist_add : Icons.save_outlined,
                 size: 35 * fem,
               ),
             ),

@@ -250,8 +250,8 @@ class _MakingMediPageState extends State<MakingMediPage> {
                 }
               },
               child: Icon(
-                MaterialSymbols.save_filled,
-                size: 30 * fem,
+                Icons.playlist_add,
+                size: 40 * fem,
               ),
             ),
           ),

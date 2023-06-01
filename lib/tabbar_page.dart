@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
+import 'package:medicine_app/util/utils.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/calendarpage.dart';
 import 'main_pages/homepage.dart';
@@ -25,11 +26,13 @@ class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
   late BottomBarWithSheetController _bottomBarController;
-  late PageController _pageController;
   late String userEmail;
+  late int _selectedIndex = 0;
+  late Future<String> futureUserName = getUserName();
 
   @override
   void initState() {
+    _selectedIndex = widget.selectedIndex;
     _bottomBarController =
         BottomBarWithSheetController(initialIndex: widget.selectedIndex);
     _bottomBarController.stream.listen((opened) {
@@ -38,7 +41,6 @@ class _TabBarPageState extends State<TabBarPage>
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
-    _pageController = PageController(initialPage: widget.selectedIndex);
     userEmail = FirebaseAuth.instance.currentUser!.email!;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       loadAOM(context);
@@ -79,63 +81,62 @@ class _TabBarPageState extends State<TabBarPage>
         child: const Text("logout"),
       );
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
     double fem = MediaQuery.of(context).size.width / baseWidth;
 
     return Scaffold(
-      body: PageView(
-        controller: _pageController,
-        onPageChanged: (value) {
-          _bottomBarController.selectItem(value);
-        },
-        children: [
-          HomePage(futureUserName: getUserName()),
+      body: Center(
+        child: [
+          HomePage(futureUserName: futureUserName),
           const SearchPage(mediList: []),
           const ListPage(),
           const CalenderPage(),
-        ],
+        ].elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomBarWithSheet(
-        autoClose: false,
-        duration: const Duration(milliseconds: 700),
-        bottomBarTheme: const BottomBarTheme(
-          mainButtonPosition: MainButtonPosition.middle,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            // borderRadius: BorderRadius.vertical(top: Radius.circular(25)),
-          ),
-          itemIconColor: Colors.grey,
-          itemTextStyle: TextStyle(
-            color: Colors.grey,
-            fontSize: 10.0,
-          ),
-          selectedItemIconColor: Color(0xffA07EFF),
-          selectedItemTextStyle: TextStyle(
-              color: Color(0xffA07EFF),
-              fontSize: 10.0,
-              fontWeight: FontWeight.bold),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.white,
+        type: BottomNavigationBarType.fixed,
+        selectedLabelStyle: SafeGoogleFont(
+          'Poppins',
+          fontSize: 10  * fem,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xFFA07EFF),
         ),
-        mainActionButtonTheme: const MainActionButtonTheme(
-          size: 50,
-          color: Color(0xffA07EFF),
-          splash: Colors.purple,
-          icon: Icon(
-            Icons.settings,
-            color: Colors.white,
-            size: 30,
-          ),
+        unselectedLabelStyle: SafeGoogleFont(
+          'Poppins',
+          fontSize: 10 * fem,
+          fontWeight: FontWeight.w600,
+          color: const Color(0xffffffff),
         ),
-        items: const [
-          BottomBarWithSheetItem(icon: Icons.home_filled),
-          BottomBarWithSheetItem(icon: Icons.search),
-          BottomBarWithSheetItem(icon: Icons.view_list_rounded),
-          BottomBarWithSheetItem(icon: Icons.calendar_month),
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home_filled, size: 23),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, size: 23),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt, size: 23),
+            label: 'List',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle, size: 23),
+            label: 'Calendar',
+          ),
         ],
-        sheetChild: bottomPage(fem),
-        controller: _bottomBarController,
-        onSelectItem: (index) => _pageController.jumpToPage(index),
+        currentIndex: _selectedIndex,
+        selectedItemColor: const Color(0xffa07eff),
+        onTap: _onItemTapped,
       ),
     );
   }
