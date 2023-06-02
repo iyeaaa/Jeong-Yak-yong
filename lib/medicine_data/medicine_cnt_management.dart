@@ -1,9 +1,8 @@
 import 'dart:collection';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
-import 'package:medicine_app/alarm_screens/ring.dart';
 import '../util/event.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import 'medicine.dart';
 
 // 약마다 울리는 시간을 정렬시켜 기록함
@@ -11,7 +10,7 @@ final LinkedHashMap<Medicine, SplayTreeSet<DateTime>> alarmsOfMedi =
     LinkedHashMap();
 
 Future<void> loadAOM(BuildContext context) async {
-  List<Medicine> mediList = await MediList().getMediList();
+  List<Medicine> mediList = await Collections().getMediList();
   List<AlarmSettings> alarms = Alarm.getAlarms();
 
   for (AlarmSettings alarm in alarms) {
@@ -29,7 +28,7 @@ Future<void> loadAOM(BuildContext context) async {
     }
   }
   debugPrint("캘린더 데이터 불러오기 성공");
-  updateEvents(mediList);
+  await updateEvents(mediList);
 }
 
 List<int> stringToIdxList(String idx) {
@@ -75,7 +74,27 @@ void rmvEventsWithoutMemo() {
   debugPrint("kEvents에서 메모를 제외한 이벤트를 모두 삭제했어요: $kEvents");
 }
 
-void updateEvents(List<Medicine> mediList) {
+Future<void> updateEvents(List<Medicine> mediList) async {
+  (await Collections.firestore
+          .collection(Collections.userEmail)
+          .doc('mediInfo')
+          .get())
+      .data()!['schedule']
+      .forEach((value) {
+    DateTime key = DateTime.parse(value['dateTime'].toDate().toString());
+    if (kEvents[key] == null) {
+      kEvents[key] = [];
+    }
+    kEvents[key]!.add(
+      Event(
+        medicine: mediList
+            .firstWhere((element) => element.itemName == value['itemName']),
+        dateTime: key,
+        take: value['take'],
+      ),
+    );
+  });
+
   for (Medicine medicine in mediList) {
     int iter = 0, delay = 0;
     first:
@@ -90,10 +109,7 @@ void updateEvents(List<Medicine> mediList) {
         kEvents[key]!.add(
           Event(
             medicine: medicine,
-            dateTime: toTimeForm(
-              key.hour,
-              key.minute,
-            ),
+            dateTime: key,
           ),
         );
         iter++;
@@ -101,6 +117,8 @@ void updateEvents(List<Medicine> mediList) {
       delay++;
     }
   }
+
+  debugPrint("KEvents: $kEvents");
 }
 
 void sortEventList() {

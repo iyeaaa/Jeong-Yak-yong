@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
+import 'package:medicine_app/login/accountpage.dart';
 import 'package:medicine_app/main_pages/searchpage.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/util/alarm_tile.dart';
@@ -10,7 +11,7 @@ import 'package:timer_builder/timer_builder.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../medicine_data/medicine.dart';
 import '../medicine_data/network.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import '../util/utils.dart';
 
 class HomePage extends StatefulWidget {
@@ -23,8 +24,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-      GlobalKey<RefreshIndicatorState>();
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediListForSearch = [];
   List<Medicine> mediList = [];
@@ -36,11 +35,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     loadAlarms();
-    if (alarms.isNotEmpty) {
-      differTime();
-    }
+    if (alarms.isNotEmpty) differTime();
     _futureUserName = widget.futureUserName;
-    MediList().getMediList().then((value) {
+    Collections().getMediList().then((value) {
       for (Medicine medicine in value) {
         mediList.add(medicine);
       }
@@ -50,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   void loadAlarms() {
     setState(() {
       alarms = Alarm.getAlarms();
-      alarms.sort((a, b) => a.dateTime.isBefore(b.dateTime) ? 0 : 1);
+      alarms.sort();
     });
   }
 
@@ -82,6 +79,32 @@ class _HomePageState extends State<HomePage> {
     if (res != null && res == true) loadAlarms();
   }
 
+  Widget moveToAccountPage(double fem) {
+    return InkWell(
+      onTap: () => Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => AccountPage(futureUserName: _futureUserName),
+        ),
+      ),
+      child: Container(
+        width: 65,
+        height: 65,
+        decoration: BoxDecoration(
+          color: Colors.deepPurple[50],
+          borderRadius: BorderRadius.circular(28),
+        ),
+        child: Center(
+          child: Icon(
+            Icons.account_box,
+            color: const Color(0xff8a60ff),
+            size: 30 * fem,
+          ),
+        ),
+      ),
+    );
+  }
+
   String differTime() {
     var duration = alarms.first.dateTime.difference(DateTime.now());
     int h = duration.inHours;
@@ -92,27 +115,6 @@ class _HomePageState extends State<HomePage> {
 
     return "${h < 10 ? "0$h" : h} : "
         "${m < 10 ? "0$m" : m} : ${s < 10 ? "0$s" : s}";
-  }
-
-  Widget refreshButton(double fem) {
-    return InkWell(
-      onTap: () => _refreshIndicatorKey.currentState?.show(),
-      child: Container(
-        width: 65,
-        height: 65,
-        decoration: BoxDecoration(
-          color: Colors.deepPurple[50],
-          borderRadius: BorderRadius.circular(28),
-        ),
-        child: Center(
-          child: Icon(
-            Icons.refresh,
-            color: const Color(0xff8a60ff),
-            size: 35 * fem,
-          ),
-        ),
-      ),
-    );
   }
 
   Widget introduceText(String userName) {
@@ -205,7 +207,7 @@ class _HomePageState extends State<HomePage> {
 
     rmvAlarmOfMedi(idxList, dateTime, mediList);
     rmvEventsWithoutMemo();
-    updateEvents(mediList);
+    await updateEvents(mediList);
   }
 
   @override
@@ -216,15 +218,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       backgroundColor: const Color(0xFFFCFCFC),
       body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        color: Colors.white,
-        backgroundColor: Colors.blue,
-        strokeWidth: 4.0,
-        onRefresh: () async {
+        onRefresh: () {
           loadAlarms();
           return Future.delayed(const Duration(milliseconds: 300));
         },
         child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           child: SafeArea(
             child: Container(
               padding:
@@ -254,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                           }
                         },
                       ),
-                      refreshButton(fem), // 알림 버튼
+                      moveToAccountPage(fem), // 알림 버튼
                     ],
                   ), // 인사말과 알림버튼 위젯
                   Form(
@@ -309,7 +308,7 @@ class _HomePageState extends State<HomePage> {
                             child: Container(
                               padding: EdgeInsets.fromLTRB(
                                   20 * fem, 20 * fem, 20 * fem, 20 * fem),
-                              width: 75*fem,
+                              width: 75 * fem,
                               height: double.infinity,
                               decoration: BoxDecoration(
                                 color: const Color(0xff8a60ff),

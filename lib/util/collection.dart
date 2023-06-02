@@ -1,14 +1,13 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../medicine_data/medicine.dart';
 
 // 싱글톤 패턴
-class MediList {
-  static final _firebaseAuth = FirebaseAuth.instance;
-  static final _firestore = FirebaseFirestore.instance;
-  static final userEmail = _firebaseAuth.currentUser!.email!;
+class Collections {
+  static final firebaseAuth = FirebaseAuth.instance;
+  static final firestore = FirebaseFirestore.instance;
+  static final userEmail = firebaseAuth.currentUser!.email!;
   static Future<List<Medicine>>? _instance;
 
   Future<List<Medicine>> getMediList() {
@@ -23,8 +22,8 @@ class MediList {
     debugPrint("불러온 약 업데이트 성공");
   }
 
-  Future<void> appendToArray(Medicine medicine, int mediCount) async {
-    await _firestore.collection(userEmail).doc('mediInfo').update({
+  Future<void> medicineAdd(Medicine medicine, int mediCount) async {
+    await firestore.collection(userEmail).doc('mediInfo').update({
       'medicine': FieldValue.arrayUnion([
         {
           'itemName': medicine.itemName,
@@ -46,7 +45,7 @@ class MediList {
     update();
   }
 
-  Future<void> removeToArray(Medicine medicine) async {
+  Future<void> medicineRmv(Medicine medicine) async {
     var element = {
       'itemName': medicine.itemName,
       'entpName': medicine.entpName,
@@ -62,15 +61,57 @@ class MediList {
       'count': medicine.count,
     };
 
-    await _firestore.collection(userEmail).doc('mediInfo').update({
+    await firestore.collection(userEmail).doc('mediInfo').update({
       'medicine': FieldValue.arrayRemove([element])
     });
     update();
     debugPrint("약 삭제 완료");
   }
 
+  Future<void> scheduleAdd(
+      String itemName, DateTime dateTime, bool take) async {
+    try {
+      Collections.firestore
+          .collection(Collections.userEmail)
+          .doc('mediInfo')
+          .update({
+        'schedule': FieldValue.arrayUnion([
+          {
+            'itemName': itemName,
+            'dateTime': dateTime,
+            'take': take,
+          }
+        ])
+      });
+    } catch (e) {
+      debugPrint("일정 추가 실패");
+      debugPrint(e.toString());
+    }
+  }
+
+  Future<void> scheduleRmv(
+      String itemName, DateTime dateTime, bool take) async {
+    try {
+      Collections.firestore
+          .collection(Collections.userEmail)
+          .doc('mediInfo')
+          .update({
+        'schedule': FieldValue.arrayRemove([
+          {
+            'itemName': itemName,
+            'dateTime': dateTime,
+            'take': take,
+          }
+        ])
+      });
+    } catch (e) {
+      debugPrint("일정 삭제 실패");
+      debugPrint(e.toString());
+    }
+  }
+
   Future<List<Medicine>> _loadMediData() async {
-    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
+    var list = await firestore.collection(userEmail).doc('mediInfo').get();
     List<Medicine> mediList = [];
 
     for (var v in list.data()!['medicine']) {

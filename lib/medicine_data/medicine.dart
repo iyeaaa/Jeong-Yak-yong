@@ -27,6 +27,13 @@ class Medicine {
     required this.count,
   });
 
+  @override
+  bool operator==(Object other) =>
+      other is Medicine && itemName == other.itemName;
+
+  @override
+  int get hashCode => Object.hash(itemName, entpName);
+
   factory Medicine.fromJson(Map<String, dynamic> json) {
     String removeTag(String x) {
       return x
@@ -68,4 +75,7 @@ class Medicine {
       );
     }
   }
+
+
+
 }

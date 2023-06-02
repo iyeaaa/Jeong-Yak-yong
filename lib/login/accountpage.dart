@@ -5,7 +5,7 @@ import 'package:medicine_app/util/loading_bar.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import 'package:medicine_app/util/utils.dart';
 
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 
 class AccountPage extends StatefulWidget {
   final Future<String> futureUserName;
@@ -137,7 +137,7 @@ class _AccountPageState extends State<AccountPage> {
                       child: MedicineCard(
                         fem: fem,
                         name: snapshot.data,
-                        company: MediList.userEmail,
+                        company: Collections.userEmail,
                         ontap: () {},
                         buttonName: "dd",
                         isChecked: false,

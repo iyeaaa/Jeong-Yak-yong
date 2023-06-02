@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
 import '../medicine_data/medicine_cnt_management.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import '../util/utils.dart';
 
 // 알림 울릴 때 페이지
@@ -37,7 +37,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
     "Dec"
   ];
   var idxList = [];
-  MediList mediList = MediList();
+  Collections mediList = Collections();
   late final Future<List<Medicine>> _futureMediList = mediList.getMediList();
 
   @override
@@ -130,8 +130,33 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                 children: [
                   InkWell(
                     onTap: () async {
+                      // 기존 알람 정지
                       await Alarm.stop(widget.alarmSettings.id);
 
+                      // 약들의 초기 DateTime 하루 뒤로 업데이트
+                      await _futureMediList.then((medilist) {
+                        for (int idx in idxList) {
+                          // 기존에 존재하던 약의 알람정보를 삭제
+                          alarmsOfMedi[medilist[idx]]
+                              ?.remove(widget.alarmSettings.dateTime);
+
+                          Collections().scheduleAdd(
+                            medilist[idx].itemName,
+                            widget.alarmSettings.dateTime,
+                            false,
+                          );
+
+                          // 약의 알람정보를 하루 뒤로 업데이트
+                          alarmsOfMedi[medilist[idx]]?.add(widget
+                              .alarmSettings.dateTime
+                              .add(const Duration(days: 1)));
+                        }
+                      });
+
+                      rmvEventsWithoutMemo();
+                      await updateEvents(await _futureMediList);
+
+                      // 하루 뒤로 알람 설정
                       final now = DateTime.now();
                       await Alarm.set(
                         alarmSettings: widget.alarmSettings.copyWith(

@@ -45,10 +45,10 @@ dependencies:
   flare_flutter: ^3.0.2
   styled_widget: ^0.4.1
   unicons: ^2.1.1
-  flutter_material_symbols: ^0.0.4
   flutter_native_splash: ^2.3.0
   table_calendar: ^3.0.9
   shared_preferences: ^2.1.1
+  syncfusion_flutter_charts: ^21.2.8
 
 dev_dependencies:
   flutter_test:

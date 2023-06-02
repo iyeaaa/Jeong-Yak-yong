@@ -2,8 +2,8 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
-import '../util/medicine_list.dart';
-import '../util/utils.dart';
+import 'package:medicine_app/util/loading_bar.dart';
+import '../util/collection.dart';
 
 class AlarmEditScreen extends StatefulWidget {
   final AlarmSettings? alarmSettings;
@@ -123,35 +123,18 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
         .then((_) => Navigator.pop(context, true));
 
     // 추가하는 알람의 약들의 알람 정보를 저장해준다.
-    var mediList = await MediList().getMediList();
+    var mediList = await Collections().getMediList();
     addAlarmOfMedi(idxList, buildAlarmSetting.dateTime, mediList);
 
     // 약 event 모두 삭제
     rmvEventsWithoutMemo();
 
     // 모든 약을 순회하면서 캘린더에 약의 정보를 업데이트한다.
-    updateEvents(mediList);
+    await updateEvents(mediList);
 
     sortEventList();
 
-    if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            '알람이 추가되었습니다.',
-            textAlign: TextAlign.center,
-            style: SafeGoogleFont(
-              'Nunito',
-              fontSize: 15,
-              fontWeight: FontWeight.w400,
-              height: 1.3625,
-              color: const Color(0xffffffff),
-            ),
-          ),
-          backgroundColor: const Color(0xff8a60ff),
-        ),
-      );
-    }
+    if (context.mounted) showScaffold("알람이 추가되었어요", context, 1);
   }
 
   // 삭제버튼의 삭제기능

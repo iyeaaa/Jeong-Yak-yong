@@ -10,7 +10,7 @@ import '../medicine_data/medicine.dart';
 /// Example event class.
 class Event {
   final Medicine medicine;
-  final String dateTime;
+  final DateTime dateTime;
   final bool memo;
   bool take;
 
@@ -22,7 +22,7 @@ class Event {
   });
 
   @override
-  String toString() => "${medicine.itemName}: $dateTime}";
+  String toString() => "${medicine.itemName}: $dateTime";
 }
 
 /// Example events.

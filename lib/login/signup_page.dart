@@ -168,6 +168,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         _firestore.collection(userEmail).doc('mediInfo').set({
                           "name": userName,
                           "medicine": [],
+                          'schedule': [],
                         });
                       }
                     } catch (e) {

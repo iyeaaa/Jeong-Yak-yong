@@ -2,9 +2,12 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import 'package:flutter/material.dart';
+import 'package:medicine_app/alarm_screens/ring.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
+import 'package:medicine_app/util/loading_bar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import '../util/utils.dart';
 
 class CalenderPage extends StatefulWidget {
@@ -87,6 +90,14 @@ class CalenderPageState extends State<CalenderPage> {
     }
   }
 
+  Future<void> refreshSchedule() async {
+    showLoadingBar(context);
+    rmvEventsWithoutMemo();
+    await updateEvents(await Collections().getMediList());
+    if (context.mounted) Navigator.pop(context);
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -97,7 +108,7 @@ class CalenderPageState extends State<CalenderPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          'My Calendar',
+          'Calendar',
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 26 * fem,
@@ -105,6 +116,20 @@ class CalenderPageState extends State<CalenderPage> {
             color: const Color(0xffffffff),
           ),
         ),
+        actions: [
+          InkWell(
+            onTap: () async {
+              await refreshSchedule();
+              setState(() {});
+              return Future.delayed(const Duration(milliseconds: 200));
+            },
+            child: const Icon(
+              Icons.refresh,
+              size: 35,
+            ),
+          ),
+          SizedBox(width: 25 * fem),
+        ],
         elevation: 0,
         toolbarHeight: 80 * fem,
       ),
@@ -147,7 +172,7 @@ class CalenderPageState extends State<CalenderPage> {
               todayDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border:
-                Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
+                    Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
               ),
               todayTextStyle: SafeGoogleFont(
                 'Poppins',
@@ -203,9 +228,10 @@ class CalenderPageState extends State<CalenderPage> {
                       20 * fem, 0 * fem, 20 * fem, 20 * fem),
                   itemCount: value.length,
                   itemBuilder: (context, i) {
-                    String dateTime1 = value[i].dateTime;
-                    String? dateTime2 =
-                    i + 1 < value.length ? value[i + 1].dateTime : null;
+                    DateTime dateTime1 = value[i].dateTime;
+                    DateTime dateTime2 = (i + 1 < value.length
+                        ? value[i + 1].dateTime
+                        : DateTime(9999));
                     return InkWell(
                       onTap: () => debugPrint('${value[i]}'),
                       child: Column(
@@ -235,7 +261,7 @@ class CalenderPageState extends State<CalenderPage> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         value[i].medicine.itemName,
@@ -249,7 +275,10 @@ class CalenderPageState extends State<CalenderPage> {
                                         ),
                                       ),
                                       Text(
-                                        value[i].dateTime,
+                                        toTimeForm(
+                                          value[i].dateTime.hour,
+                                          value[i].dateTime.minute,
+                                        ),
                                         style: SafeGoogleFont(
                                           'Poppins',
                                           fontSize: 13 * fem,
@@ -262,22 +291,43 @@ class CalenderPageState extends State<CalenderPage> {
                                 ),
                                 InkWell(
                                   onTap: () async {
-                                    if (!value[i].take) {
-                                      final mediList = MediList();
-                                      await mediList
-                                          .removeToArray(value[i].medicine);
-                                      await mediList.appendToArray(
-                                          value[i].medicine,
-                                          value[i].medicine.count - 1);
-                                      mediList.update();
-                                      setState(() {
-                                        value[i].take = true;
-                                      });
+                                    if (value[i].take) {
+                                      showScaffold('이미 약을 먹었어요', context, fem);
+                                      return;
                                     }
+                                    if (value[i]
+                                        .dateTime
+                                        .isAfter(DateTime.now())) {
+                                      showScaffold(
+                                          "아직 먹을 시간이 되지 않았어요", context, fem);
+                                      return;
+                                    }
+                                    final collection = Collections();
+                                    await collection
+                                        .medicineRmv(value[i].medicine);
+                                    await collection.medicineAdd(
+                                      value[i].medicine,
+                                      value[i].medicine.count - 1,
+                                    );
+                                    collection.update();
+                                    setState(() {
+                                      value[i].take = true;
+                                    });
+                                    await collection.scheduleRmv(
+                                      value[i].medicine.itemName,
+                                      value[i].dateTime,
+                                      false,
+                                    );
+                                    await collection.scheduleAdd(
+                                      value[i].medicine.itemName,
+                                      value[i].dateTime,
+                                      true,
+                                    );
+                                    print("dd");
                                   },
                                   child: AnimatedContainer(
-                                    width: 70*fem,
-                                    height: 50*fem,
+                                    width: 70 * fem,
+                                    height: 50 * fem,
                                     margin: EdgeInsets.only(
                                         left: 8 * fem, right: 8 * fem),
                                     padding: EdgeInsets.all(8 * fem),
@@ -310,7 +360,7 @@ class CalenderPageState extends State<CalenderPage> {
                             ),
                           ),
                           if (i != value.length - 1 &&
-                              dateTime1.compareTo(dateTime2!) < 0)
+                              dateTime1.compareTo(dateTime2) < 0)
                             const Divider(
                                 color: Color(0xFF662fff), thickness: 1),
                         ],

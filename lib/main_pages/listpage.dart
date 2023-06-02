@@ -8,7 +8,7 @@ import 'package:medicine_app/sub_pages/medi_setting.dart';
 import 'package:medicine_app/util/loading_bar.dart';
 import '../alarm_screens/edit_alarm.dart';
 import '../util/medicine_card.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import '../util/utils.dart';
 
 class ListPage extends StatefulWidget {
@@ -24,7 +24,7 @@ class _ListPageState extends State<ListPage> {
   bool pressedAlarm = false;
   List<bool> isChecked = List.filled(30, false);
   List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
-  late MediList mediList = MediList();
+  late Collections mediList = Collections();
   late Future<List<Medicine>> _futureMediList;
 
   @override
@@ -49,6 +49,9 @@ class _ListPageState extends State<ListPage> {
       if (!idxList.contains(mediIdx)) continue;
 
       String newBody = "";
+      for (int idx in idxList) {
+        if (mediIdx != idx) newBody += "$idx,";
+      }
 
       // 삭제하는 약 한개로만 이루어진 알람은 그냥 삭제시키기
       if (newBody.isEmpty) {
@@ -110,11 +113,15 @@ class _ListPageState extends State<ListPage> {
   }
 
   // 배열에서 약 삭제
+  // dismiss 하면 호출되는 첫 함수, 또한 이 함수만 호출된다.
   Future<void> removeInArray(int idx, Medicine medicine, double fem) async {
-    await MediList().removeToArray(medicine);
+    await Collections().medicineRmv(medicine);
     showRmvMessage(fem, medicine.itemName);
-    // rmvAlarms(idx);
+    rmvAlarms(idx);
     await _futureMediList.then((value) => value.removeAt(idx));
+    alarmsOfMedi.remove(medicine);
+    rmvEventsWithoutMemo();
+    updateEvents(await Collections().getMediList());
   }
 
   void showCustomDialog(BuildContext context, double fem, String imageUrl) {
@@ -161,7 +168,7 @@ class _ListPageState extends State<ListPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          'My List',
+          'List',
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 26 * fem,
@@ -235,7 +242,7 @@ class _ListPageState extends State<ListPage> {
                         : RefreshIndicator(
                             onRefresh: () {
                               setState(() {
-                                MediList().update();
+                                Collections().update();
                                 _futureMediList = mediList.getMediList();
                               });
                               return Future.delayed(

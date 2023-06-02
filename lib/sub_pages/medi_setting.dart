@@ -1,11 +1,11 @@
 import 'dart:math';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/sub_pages/caution_page.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import '../util/utils.dart';
 import 'info_page.dart';
 
@@ -24,17 +24,14 @@ class MedicineSettingPage extends StatefulWidget {
 }
 
 class _MedicineSettingPageState extends State<MedicineSettingPage> {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   late Medicine medicine;
-  late String userEmail;
-  MediList mediList = MediList();
+  Collections mediList = Collections();
   int mediCount = 0;
 
   @override
   void initState() {
     super.initState();
     medicine = widget.medicine;
-    userEmail = _firebaseAuth.currentUser!.email!;
     mediCount = medicine.count;
   }
 
@@ -461,12 +458,14 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             child: IconButton(
               onPressed: () async {
                 widget.creating
-                    ? await mediList.appendToArray(medicine, mediCount)
-                    : await mediList.removeToArray(medicine);
+                    ? await mediList.medicineAdd(medicine, mediCount)
+                    : await mediList.medicineRmv(medicine);
                 if (!widget.creating) {
-                  await mediList.appendToArray(medicine, mediCount);
+                  await mediList.medicineAdd(medicine, mediCount);
                 }
                 showAddOrChangeMessage(fem);
+                rmvEventsWithoutMemo();
+                updateEvents(await mediList.getMediList());
               },
               icon: Icon(
                 widget.creating ? Icons.playlist_add : Icons.save_outlined,

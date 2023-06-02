@@ -5,11 +5,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
-import 'package:medicine_app/main_pages/accountpage.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/util/utils.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/calendarpage.dart';
+import 'main_pages/chartpage.dart';
 import 'main_pages/homepage.dart';
 import 'main_pages/listpage.dart';
 import 'main_pages/searchpage.dart';
@@ -100,7 +100,7 @@ class _TabBarPageState extends State<TabBarPage>
           const SearchPage(mediList: []),
           const ListPage(),
           const CalenderPage(),
-          AccountPage(futureUserName: futureUserName),
+          const ChartPage(),
         ].elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
@@ -136,8 +136,8 @@ class _TabBarPageState extends State<TabBarPage>
             label: 'Calendar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle, size: 23),
-            label: 'Account',
+            icon: Icon(Icons.bar_chart, size: 23),
+            label: 'Chart',
           ),
         ],
         currentIndex: _selectedIndex,

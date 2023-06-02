@@ -1,11 +1,8 @@
 import 'dart:math';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_material_symbols/flutter_material_symbols.dart';
-
 import '../medicine_data/medicine.dart';
-import '../util/medicine_list.dart';
+import '../util/collection.dart';
 import '../util/utils.dart';
 
 class MakingMediPage extends StatefulWidget {
@@ -41,13 +38,13 @@ class _MakingMediPageState extends State<MakingMediPage> {
     "다음과같이 보관해야 해요",
   ];
   List<IconData> iconList = [
-    MaterialSymbols.stars,
-    MaterialSymbols.settings,
-    MaterialSymbols.back_hand,
+    Icons.star,
+    Icons.settings,
+    Icons.clean_hands,
     Icons.health_and_safety_outlined,
     Icons.no_food_outlined,
-    MaterialSymbols.sick,
-    MaterialSymbols.desk,
+    Icons.sick_outlined,
+    Icons.desk_outlined,
   ];
   Map<String, Object> mediInfo = {
     'imageUrl': "No Image",
@@ -243,7 +240,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                   return;
                 }
                 await appendToArray(fem);
-                MediList().update();
+                Collections().update();
                 if (context.mounted) {
                   debugPrint("약 추가 성공");
                   showMySnackBar(fem, "${mediInfo['itemName']}을 추가했습니다.");
