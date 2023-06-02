@@ -10,8 +10,7 @@ class MedicineCard extends StatefulWidget {
   final GestureTapCallback ontap;
   final bool isChecked;
   final GestureTapCallback? imageOntap;
-  final bool existEmage;
-  final bool? isAlarm;
+  final IconData iconData;
 
   const MedicineCard({
     super.key,
@@ -21,9 +20,8 @@ class MedicineCard extends StatefulWidget {
     required this.ontap,
     required this.buttonName,
     required this.isChecked,
-    required this.existEmage,
+    required this.iconData,
     this.imageOntap,
-    this.isAlarm,
   });
 
   @override
@@ -61,10 +59,7 @@ class _MedicineCardState extends State<MedicineCard> {
                     ),
                     child: Center(
                       child: Icon(
-                        (widget.isAlarm ?? false) ? Icons.alarm :
-                        (widget.existEmage
-                            ? Icons.image
-                            : Icons.image_not_supported),
+                        widget.iconData,
                         size: 40 * widget.fem,
                         color: Colors.white,
                       ),
@@ -88,7 +83,7 @@ class _MedicineCardState extends State<MedicineCard> {
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 4*widget.fem),
+                      SizedBox(height: 4 * widget.fem),
                       Text(
                         widget.company,
                         style: SafeGoogleFont(

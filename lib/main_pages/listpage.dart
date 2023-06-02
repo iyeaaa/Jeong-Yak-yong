@@ -288,9 +288,12 @@ class _ListPageState extends State<ListPage> {
                                             width: double.infinity,
                                             height: 89 * fem,
                                             child: MedicineCard(
-                                              existEmage:
-                                                  snapshot.data[idx].imageUrl !=
-                                                      "No Image",
+                                              iconData: snapshot
+                                                          .data[idx].imageUrl ==
+                                                      "No Image"
+                                                  ? Icons
+                                                      .image_not_supported_sharp
+                                                  : Icons.image,
                                               imageOntap: () {
                                                 if (snapshot
                                                         .data[idx].imageUrl ==

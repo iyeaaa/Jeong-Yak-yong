@@ -269,7 +269,9 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         },
         buttonName: "주의사항",
         isChecked: false,
-        existEmage: medicine.imageUrl != "No Image",
+        iconData: medicine.imageUrl == "No Image"
+            ? Icons.image_not_supported_sharp
+            : Icons.image,
       ),
     );
   }

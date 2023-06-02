@@ -108,8 +108,6 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                                     child: SizedBox(
                                       height: 85 * fem,
                                       child: MedicineCard(
-                                        isAlarm: true,
-                                        existEmage: true,
                                         fem: fem,
                                         name: snap.data[idxList[i]].itemName,
                                         company: snap.data[idxList[i]].entpName,
@@ -117,6 +115,7 @@ class _AlarmRingScreenState extends State<AlarmRingScreen> {
                                         buttonName:
                                             "${snap.data[idxList[i]].count}회",
                                         isChecked: false,
+                                        iconData: Icons.alarm,
                                       ),
                                     ),
                                   )

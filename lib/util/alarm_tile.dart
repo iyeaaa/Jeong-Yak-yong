@@ -45,8 +45,7 @@ class AlarmTile extends StatelessWidget {
       child: RawMaterialButton(
         onPressed: onPressed,
         child: MedicineCard(
-          isAlarm: true,
-          existEmage: false,
+          iconData: Icons.alarm,
           isChecked: false,
           fem: fem,
           name: name,

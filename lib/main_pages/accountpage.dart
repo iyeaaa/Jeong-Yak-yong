@@ -2,23 +2,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/util/loading_bar.dart';
+import 'package:medicine_app/util/medicine_card.dart';
 import 'package:medicine_app/util/utils.dart';
 
 import '../util/medicine_list.dart';
 
-class SettingPage extends StatefulWidget {
+class AccountPage extends StatefulWidget {
   final Future<String> futureUserName;
 
-  const SettingPage({
+  const AccountPage({
     Key? key,
     required this.futureUserName,
   }) : super(key: key);
 
   @override
-  State<SettingPage> createState() => _SettingPageState();
+  State<AccountPage> createState() => _AccountPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _AccountPageState extends State<AccountPage> {
   showAlertDialog(BuildContext context) {
     Widget cancelButton = TextButton(
       child: Text(
@@ -100,7 +101,7 @@ class _SettingPageState extends State<SettingPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          'Setting',
+          'Account',
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 26 * fem,
@@ -111,10 +112,10 @@ class _SettingPageState extends State<SettingPage> {
         elevation: 0,
         toolbarHeight: 80 * fem,
       ),
-      body: SafeArea(
+      body: Container(
+        padding: EdgeInsets.fromLTRB(20 * fem, 20 * fem, 20 * fem, 20 * fem),
         child: Center(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               FutureBuilder(
@@ -130,28 +131,21 @@ class _SettingPageState extends State<SettingPage> {
                   }
                   // 데이터를 정상적으로 받아오게 되면 다음 부분을 실행하게 되는 것이다.
                   else {
-                    return Text(
-                      "UserName: ${snapshot.data}",
-                      style: SafeGoogleFont(
-                        'Poppins',
-                        fontSize: 22,
-                        fontWeight: FontWeight.w400,
-                        height: 1.5,
-                        color: const Color(0xff0a0146),
+                    return Container(
+                      padding: EdgeInsets.all(8 * fem),
+                      height: 102 * fem,
+                      child: MedicineCard(
+                        fem: fem,
+                        name: snapshot.data,
+                        company: MediList.userEmail,
+                        ontap: () {},
+                        buttonName: "dd",
+                        isChecked: false,
+                        iconData: Icons.account_box,
                       ),
                     );
                   }
                 },
-              ),
-              Text(
-                "userEmail: ${MediList.userEmail}",
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 22,
-                  fontWeight: FontWeight.w400,
-                  height: 1.5,
-                  color: const Color(0xff0a0146),
-                ),
               ),
             ],
           ),
