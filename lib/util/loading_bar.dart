@@ -38,7 +38,7 @@ void showLoadingBar(BuildContext context) {
 void showScaffold(String body, BuildContext context, double fem) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 800),
       content: Text(
         body,
         textAlign: TextAlign.center,

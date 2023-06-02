@@ -8,7 +8,7 @@ import '../medicine_data/medicine.dart';
 class MediList {
   static final _firebaseAuth = FirebaseAuth.instance;
   static final _firestore = FirebaseFirestore.instance;
-  static final _userEmail = _firebaseAuth.currentUser!.email!;
+  static final userEmail = _firebaseAuth.currentUser!.email!;
   static Future<List<Medicine>>? _instance;
 
   Future<List<Medicine>> getMediList() {
@@ -24,7 +24,7 @@ class MediList {
   }
 
   Future<void> appendToArray(Medicine medicine, int mediCount) async {
-    await _firestore.collection(_userEmail).doc('mediInfo').update({
+    await _firestore.collection(userEmail).doc('mediInfo').update({
       'medicine': FieldValue.arrayUnion([
         {
           'itemName': medicine.itemName,
@@ -62,7 +62,7 @@ class MediList {
       'count': medicine.count,
     };
 
-    await _firestore.collection(_userEmail).doc('mediInfo').update({
+    await _firestore.collection(userEmail).doc('mediInfo').update({
       'medicine': FieldValue.arrayRemove([element])
     });
     update();
@@ -70,7 +70,7 @@ class MediList {
   }
 
   Future<List<Medicine>> _loadMediData() async {
-    var list = await _firestore.collection(_userEmail).doc('mediInfo').get();
+    var list = await _firestore.collection(userEmail).doc('mediInfo').get();
     List<Medicine> mediList = [];
 
     for (var v in list.data()!['medicine']) {
