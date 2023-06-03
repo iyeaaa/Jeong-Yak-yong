@@ -38,9 +38,9 @@ class _MakingMediPageState extends State<MakingMediPage> {
     "다음과같이 보관해야 해요",
   ];
   List<IconData> iconList = [
-    Icons.star,
-    Icons.settings,
-    Icons.clean_hands,
+    Icons.star_border_purple500_outlined,
+    Icons.settings_outlined,
+    Icons.back_hand_outlined,
     Icons.health_and_safety_outlined,
     Icons.no_food_outlined,
     Icons.sick_outlined,

@@ -4,8 +4,68 @@ import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/util/loading_bar.dart';
 import 'package:medicine_app/util/medicine_card.dart';
 import 'package:medicine_app/util/utils.dart';
-
 import '../util/collection.dart';
+
+showAlertDialog(BuildContext context, String title, String content,
+    void Function()? noOnTap, void Function()? yesOnTap) {
+  Widget cancelButton = TextButton(
+    onPressed: noOnTap,
+    child: Text(
+      "No",
+      style: SafeGoogleFont(
+        'Poppins',
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: const Color(0xFFA07EFF),
+      ),
+    ),
+  );
+
+  Widget continueButton = TextButton(
+    onPressed: yesOnTap,
+    child: Text(
+      "Yes",
+      style: SafeGoogleFont(
+        'Poppins',
+        fontSize: 15,
+        fontWeight: FontWeight.w600,
+        color: const Color(0xFFA07EFF),
+      ),
+    ),
+  );
+
+  AlertDialog alert = AlertDialog(
+    title: Text(
+      title,
+      style: SafeGoogleFont(
+        'Poppins',
+        fontSize: 24,
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+      ),
+    ),
+    content: Text(
+      content,
+      style: SafeGoogleFont(
+        'Poppins',
+        fontSize: 20,
+        fontWeight: FontWeight.w300,
+        color: Colors.black,
+      ),
+    ),
+    actions: [
+      cancelButton,
+      continueButton,
+    ],
+  );
+
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return alert;
+    },
+  );
+}
 
 class AccountPage extends StatefulWidget {
   final Future<String> futureUserName;
@@ -20,77 +80,6 @@ class AccountPage extends StatefulWidget {
 }
 
 class _AccountPageState extends State<AccountPage> {
-  showAlertDialog(BuildContext context) {
-    Widget cancelButton = TextButton(
-      child: Text(
-        "No",
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFFA07EFF),
-        ),
-      ),
-      onPressed: () {
-        Navigator.pop(context);
-      },
-    );
-
-    Widget continueButton = TextButton(
-      child: Text(
-        "Yes",
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 15,
-          fontWeight: FontWeight.w600,
-          color: const Color(0xFFA07EFF),
-        ),
-      ),
-      onPressed: () {
-        FirebaseAuth.instance.signOut();
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const LoginPage(),
-          ),
-        );
-        showScaffold("Logout 됐어요", context, 1);
-      },
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: Text(
-        "Logout",
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 24,
-          fontWeight: FontWeight.w500,
-          color: Colors.black,
-        ),
-      ),
-      content: Text(
-        "정말 로그아웃 하시겠어요?",
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 20,
-          fontWeight: FontWeight.w300,
-          color: Colors.black,
-        ),
-      ),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
@@ -152,7 +141,24 @@ class _AccountPageState extends State<AccountPage> {
         ),
       ),
       floatingActionButton: InkWell(
-        onTap: () => showAlertDialog(context),
+        onTap: () => showAlertDialog(
+          context,
+          "Logout",
+          "정말 로그아웃 하시겠어요?",
+          () {
+            Navigator.pop(context);
+          },
+          () {
+            FirebaseAuth.instance.signOut();
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const LoginPage(),
+              ),
+            );
+            showScaffold("로그아웃 했어요", context, 1);
+          },
+        ),
         child: Container(
           width: 65,
           height: 65,

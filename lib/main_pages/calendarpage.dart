@@ -3,6 +3,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:medicine_app/alarm_screens/ring.dart';
+import 'package:medicine_app/login/accountpage.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
 import 'package:medicine_app/sub_pages/making_schedule.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
@@ -121,6 +122,7 @@ class CalenderPageState extends State<CalenderPage> {
         actions: [
           InkWell(
             onTap: () async {
+              Collections().update();
               await refreshSchedule();
               setState(() {});
               return Future.delayed(const Duration(milliseconds: 200));
@@ -293,10 +295,33 @@ class CalenderPageState extends State<CalenderPage> {
                                 ),
                                 InkWell(
                                   onTap: () async {
-                                    if (value[i].take) {
-                                      showScaffold('이미 약을 먹었어요', context, fem);
-                                      return;
+                                    Future<void> changeTakeToggle() async {
+                                      final collection = Collections();
+                                      await collection
+                                          .medicineRmv(value[i].medicine);
+                                      await collection.medicineAdd(
+                                        value[i].medicine,
+                                        value[i].medicine.count +
+                                            (value[i].take ? 1 : -1),
+                                      );
+                                      value[i].medicine.count +=
+                                          value[i].take ? 1 : -1;
+                                      await collection.scheduleRmv(
+                                        value[i].medicine.itemName,
+                                        value[i].dateTime,
+                                        value[i].take,
+                                      );
+                                      await collection.scheduleAdd(
+                                        value[i].medicine.itemName,
+                                        value[i].dateTime,
+                                        !value[i].take,
+                                      );
+                                      setState(() {
+                                        value[i].take = !value[i].take;
+                                        refreshSchedule();
+                                      });
                                     }
+
                                     if (value[i]
                                         .dateTime
                                         .isAfter(DateTime.now())) {
@@ -304,27 +329,24 @@ class CalenderPageState extends State<CalenderPage> {
                                           "아직 먹을 시간이 되지 않았어요", context, fem);
                                       return;
                                     }
-                                    final collection = Collections();
-                                    await collection
-                                        .medicineRmv(value[i].medicine);
-                                    await collection.medicineAdd(
-                                      value[i].medicine,
-                                      value[i].medicine.count - 1,
-                                    );
-                                    collection.update();
-                                    setState(() {
-                                      value[i].take = true;
-                                    });
-                                    await collection.scheduleRmv(
-                                      value[i].medicine.itemName,
-                                      value[i].dateTime,
-                                      false,
-                                    );
-                                    await collection.scheduleAdd(
-                                      value[i].medicine.itemName,
-                                      value[i].dateTime,
-                                      true,
-                                    );
+
+                                    if (value[i].take) {
+                                      showAlertDialog(
+                                        context,
+                                        "취소",
+                                        '아직 약을 먹지 않으셨나요?',
+                                        () => Navigator.pop(context),
+                                        () async {
+                                          await changeTakeToggle();
+                                          if (context.mounted) {
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                      );
+                                      return;
+                                    }
+
+                                    changeTakeToggle();
                                   },
                                   child: AnimatedContainer(
                                     width: 70 * fem,

@@ -10,7 +10,7 @@ class Medicine {
   final String sideEffect; // 부작용
   final String depositMethod; // 보관법
   final String imageUrl;
-  final int count;
+  int count;
 
   Medicine({
     required this.itemName,

@@ -7,7 +7,6 @@ import 'package:medicine_app/util/medicine_card.dart';
 import '../medicine_data/medicine.dart';
 import '../util/collection.dart';
 import '../util/utils.dart';
-import 'info_page.dart';
 
 class MedicineSettingPage extends StatefulWidget {
   final Medicine medicine;
@@ -55,156 +54,6 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 
   Widget profile(double fem) {
-    return Stack(
-      children: [
-        SizedBox(
-          width: 324 * fem,
-          height: 200 * fem,
-          child: Image.asset(
-            'image/group-842-eqt.png',
-            width: 324 * fem,
-            height: 195 * fem,
-          ),
-        ), // 배경
-        Container(
-          margin: EdgeInsets.fromLTRB(20 * fem, 20 * fem, 20 * fem, 20 * fem),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        width: 50 * fem,
-                        height: 50 * fem,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(18 * fem),
-                          color: const Color(0xffffffff),
-                        ),
-                        child: InkWell(
-                          onTap: () {
-                            if (medicine.imageUrl == "No Image") {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  duration: const Duration(milliseconds: 800),
-                                  content: Text(
-                                    "이미지가 없어요",
-                                    textAlign: TextAlign.center,
-                                    style: SafeGoogleFont(
-                                      'Nunito',
-                                      fontSize: 15 * fem,
-                                      fontWeight: FontWeight.w400,
-                                      height: 1.3625 * fem / fem,
-                                      color: const Color(0xffffffff),
-                                    ),
-                                  ),
-                                  backgroundColor: const Color(0xff8a60ff),
-                                ),
-                              );
-                            } else {
-                              // showCustomDialog(context);
-                            }
-                          },
-                          child: Center(
-                            child: Icon(
-                              medicine.imageUrl != "No Image"
-                                  ? Icons.image_outlined
-                                  : Icons.image_not_supported_outlined,
-                              color: const Color(0xffa07eff),
-                              size: 30 * fem,
-                            ),
-                          ),
-                        ),
-                      ), // UI BOX 위젯
-                      SizedBox(width: 10 * fem),
-                      SizedBox(
-                        width: 120 * fem,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              medicine.itemName,
-                              style: SafeGoogleFont(
-                                'Poppins',
-                                fontSize: 16 * fem,
-                                fontWeight: FontWeight.w700,
-                                height: 1.5 * fem,
-                                color: const Color(0xffffffff),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            Text(
-                              medicine.entpName,
-                              style: SafeGoogleFont(
-                                'Poppins',
-                                fontSize: 12 * fem,
-                                fontWeight: FontWeight.w600,
-                                height: 1.5 * fem,
-                                color: const Color(0xffffffff),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
-                        ),
-                      ), // 약 이름, 회사
-                    ],
-                  ), // UI BOX, 약 이름, 회사
-                  InkWell(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => CautionPage(
-                          medicine: medicine,
-                        ),
-                      ),
-                    ),
-                    child: Container(
-                      width: 90 * fem,
-                      height: 30 * fem,
-                      decoration: BoxDecoration(
-                        color: const Color(0xffffffff),
-                        borderRadius: BorderRadius.circular(99 * fem),
-                      ),
-                      child: Center(
-                        child: Text(
-                          '주의사항',
-                          textAlign: TextAlign.center,
-                          style: SafeGoogleFont(
-                            'Poppins',
-                            fontSize: 14 * fem,
-                            fontWeight: FontWeight.w800,
-                            height: 1.5 * fem,
-                            color: const Color(0xffa98aff),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ), // UI BOX and 주의사항
-              SizedBox(height: 5 * fem),
-              AutoSizeText(
-                medicine.effect,
-                maxLines: 4,
-                overflow: TextOverflow.ellipsis,
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 15 * fem,
-                  fontWeight: FontWeight.w700,
-                  height: 1.5,
-                  color: const Color(0xffffffff),
-                ),
-              ), // 약 설명
-            ],
-          ),
-        ), // 배경 위 위젯
-      ],
-    );
-  }
-
-  Widget profile2(double fem) {
     void showCustomDialog(BuildContext context) {
       showGeneralDialog(
         context: context,
@@ -290,157 +139,123 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     var contentList = [medicine.effect, medicine.useMethod];
 
     return Container(
-      padding: EdgeInsets.only(bottom: 20 * fem),
-      child: Stack(
+      width: double.infinity,
+      padding: EdgeInsets.fromLTRB(
+        20 * fem,
+        20 * fem,
+        20 * fem,
+        20 * fem,
+      ),
+      decoration: BoxDecoration(
+        color: const Color(0xFFA07EFF),
+        borderRadius: BorderRadius.all(Radius.circular(20*fem)),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0xFFA07EFF),
+            spreadRadius: 0.5,
+            blurRadius: 3,
+            offset: Offset(0, 3), // changes position of shadow
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: double.infinity,
-            child: Image.asset(
-              'image/causionbox.png',
+          Text(
+            titleList[index],
+            style: SafeGoogleFont(
+              'Poppins',
+              fontSize: 16 * fem,
+              fontWeight: FontWeight.w900,
+              height: 2,
+              color: const Color(0xFFFFFFFF),
             ),
-          ), // 배경
-          Container(
-            margin: EdgeInsets.fromLTRB(20 * fem, 20 * fem, 20 * fem, 0 * fem),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      titleList[index],
-                      style: SafeGoogleFont(
-                        'Poppins',
-                        fontSize: 16 * fem,
-                        fontWeight: FontWeight.w700,
-                        height: 1.5 * fem,
-                        color: const Color(0xffffffff),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => InfoPage(
-                            title: titleList[index],
-                            content: contentList[index],
-                          ),
-                        ),
-                      ),
-                      child: Container(
-                        width: 90 * fem,
-                        height: 30 * fem,
-                        decoration: BoxDecoration(
-                          color: const Color(0xffffffff),
-                          borderRadius: BorderRadius.circular(99 * fem),
-                        ),
-                        child: Center(
-                          child: Text(
-                            "자세히보기",
-                            textAlign: TextAlign.center,
-                            style: SafeGoogleFont(
-                              'Poppins',
-                              fontSize: 14 * fem,
-                              fontWeight: FontWeight.w800,
-                              height: 1.5 * fem,
-                              color: const Color(0xffa98aff),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ), // UI BOX and 주의사항
-                SizedBox(height: 10 * fem),
-                Text(
-                  contentList[index],
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 16 * fem,
-                    fontWeight: FontWeight.w500,
-                    height: 1.5,
-                    color: const Color(0xffffffff),
-                  ),
-                ), // 약 설명
-              ],
+          ),
+          const SizedBox(height: 10),
+          AutoSizeText(
+            contentList[index],
+            maxLines: 18,
+            overflow: TextOverflow.ellipsis,
+            style: SafeGoogleFont(
+              'Poppins',
+              fontSize: 16 * fem,
+              fontWeight: FontWeight.w500,
+              height: 2,
+              color: const Color(0xFFFFFFFF),
             ),
-          ), // 배경 위 위젯
+          ),
         ],
       ),
     );
   }
 
-  Widget settingCount(double fem) => Padding(
-        padding: EdgeInsets.only(top: 10 * fem),
+  Widget settingCount(double fem) => Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      Text(
+        "먹을 약 개수 : ",
+        overflow: TextOverflow.ellipsis,
+        style: SafeGoogleFont(
+          'Poppins',
+          fontSize: 20 * fem,
+          fontWeight: FontWeight.w600,
+          height: 1.5,
+          color: const Color(0xffa98aff),
+        ),
+      ),
+      Container(
+        width: 120 * fem,
+        height: 50 * fem,
+        padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
+        decoration: BoxDecoration(
+          border: Border.all(color: Colors.deepPurple),
+          borderRadius: BorderRadius.all(Radius.circular(10*fem)),
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            InkWell(
+              onTap: () => setState(() {
+                mediCount = max(0, mediCount - 1);
+              }),
+              child: Text(
+                "-",
+                style: SafeGoogleFont(
+                  'Poppins',
+                  fontSize: 20 * fem,
+                  fontWeight: FontWeight.w700,
+                  height: 1.5,
+                ),
+              ),
+            ),
             Text(
-              "남은 약 개수: ",
-              overflow: TextOverflow.ellipsis,
+              mediCount.toString(),
               style: SafeGoogleFont(
                 'Poppins',
                 fontSize: 22 * fem,
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w500,
                 height: 1.5,
-                color: const Color(0xffa98aff),
               ),
             ),
-            Container(
-              width: 120 * fem,
-              height: 50 * fem,
-              padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.deepPurple),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  InkWell(
-                    onTap: () => setState(() {
-                      mediCount = max(0, mediCount - 1);
-                    }),
-                    child: Text(
-                      "-",
-                      style: SafeGoogleFont(
-                        'Poppins',
-                        fontSize: 20 * fem,
-                        fontWeight: FontWeight.w700,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    mediCount.toString(),
-                    style: SafeGoogleFont(
-                      'Poppins',
-                      fontSize: 22 * fem,
-                      fontWeight: FontWeight.w500,
-                      height: 1.5,
-                    ),
-                  ),
-                  InkWell(
-                    onTap: () => setState(() {
-                      mediCount = max(0, mediCount + 1);
-                    }),
-                    child: Text(
-                      "+",
-                      style: SafeGoogleFont(
-                        'Poppins',
-                        fontSize: 20 * fem,
-                        fontWeight: FontWeight.w700,
-                        height: 1.5,
-                      ),
-                    ),
-                  ),
-                ],
+            InkWell(
+              onTap: () => setState(() {
+                mediCount = max(0, mediCount + 1);
+              }),
+              child: Text(
+                "+",
+                style: SafeGoogleFont(
+                  'Poppins',
+                  fontSize: 20 * fem,
+                  fontWeight: FontWeight.w700,
+                  height: 1.5,
+                ),
               ),
             ),
           ],
         ),
-      );
+      ),
+    ],
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -505,10 +320,12 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                profile2(fem),
+                profile(fem),
                 SizedBox(height: 30 * fem),
                 mediInfoCard(0, fem),
+                SizedBox(height: 30 * fem),
                 mediInfoCard(1, fem),
+                SizedBox(height: 30 * fem),
                 settingCount(fem),
               ],
             ),

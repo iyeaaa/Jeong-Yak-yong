@@ -19,53 +19,61 @@ class Collections {
 
   void update() {
     _instance = _loadMediData();
-    debugPrint("불러온 약 업데이트 성공");
+    debugPrint("데이터베이스에서 약 불러옴");
   }
 
   Future<void> medicineAdd(Medicine medicine, int mediCount) async {
-    await firestore.collection(userEmail).doc('mediInfo').update({
-      'medicine': FieldValue.arrayUnion([
-        {
-          'itemName': medicine.itemName,
-          'entpName': medicine.entpName,
-          'effect': medicine.effect,
-          'itemCode': medicine.itemCode,
-          'useMethod': medicine.useMethod,
-          'warmBeforeHave': medicine.warmBeforeHave,
-          'warmHave': medicine.warmHave,
-          'interaction': medicine.interaction,
-          'sideEffect': medicine.sideEffect,
-          'depositMethod': medicine.depositMethod,
-          'imageUrl': medicine.imageUrl,
-          'count': mediCount,
-        }
-      ])
-    });
-    debugPrint("약 추가 완료");
-    update();
+    try {
+      await firestore.collection(userEmail).doc('mediInfo').update({
+        'medicine': FieldValue.arrayUnion([
+          {
+            'itemName': medicine.itemName,
+            'entpName': medicine.entpName,
+            'effect': medicine.effect,
+            'itemCode': medicine.itemCode,
+            'useMethod': medicine.useMethod,
+            'warmBeforeHave': medicine.warmBeforeHave,
+            'warmHave': medicine.warmHave,
+            'interaction': medicine.interaction,
+            'sideEffect': medicine.sideEffect,
+            'depositMethod': medicine.depositMethod,
+            'imageUrl': medicine.imageUrl,
+            'count': mediCount,
+          }
+        ])
+      });
+      debugPrint("약 추가 완료 : ${medicine.itemName}");
+      update();
+    } catch (e) {
+      debugPrint("약 추가 실패 : ${medicine.itemName}");
+    }
   }
 
   Future<void> medicineRmv(Medicine medicine) async {
-    var element = {
-      'itemName': medicine.itemName,
-      'entpName': medicine.entpName,
-      'effect': medicine.effect,
-      'itemCode': medicine.itemCode,
-      'useMethod': medicine.useMethod,
-      'warmBeforeHave': medicine.warmBeforeHave,
-      'warmHave': medicine.warmHave,
-      'interaction': medicine.interaction,
-      'sideEffect': medicine.sideEffect,
-      'depositMethod': medicine.depositMethod,
-      'imageUrl': medicine.imageUrl,
-      'count': medicine.count,
-    };
+    try {
+      var element = {
+        'itemName': medicine.itemName,
+        'entpName': medicine.entpName,
+        'effect': medicine.effect,
+        'itemCode': medicine.itemCode,
+        'useMethod': medicine.useMethod,
+        'warmBeforeHave': medicine.warmBeforeHave,
+        'warmHave': medicine.warmHave,
+        'interaction': medicine.interaction,
+        'sideEffect': medicine.sideEffect,
+        'depositMethod': medicine.depositMethod,
+        'imageUrl': medicine.imageUrl,
+        'count': medicine.count,
+      };
 
-    await firestore.collection(userEmail).doc('mediInfo').update({
-      'medicine': FieldValue.arrayRemove([element])
-    });
-    update();
-    debugPrint("약 삭제 완료");
+      await firestore.collection(userEmail).doc('mediInfo').update({
+        'medicine': FieldValue.arrayRemove([element])
+      });
+      update();
+      debugPrint("약 삭제 완료 : ${medicine.itemName}");
+    } catch (e) {
+      debugPrint("약 삭제 실패 : ${medicine.itemName}");
+    }
   }
 
   Future<void> scheduleAdd(
@@ -83,6 +91,7 @@ class Collections {
           }
         ])
       });
+      debugPrint("일정 추가 완료 : $itemName $dateTime $take");
     } catch (e) {
       debugPrint("일정 추가 실패");
       debugPrint(e.toString());
@@ -104,6 +113,7 @@ class Collections {
           }
         ])
       });
+      debugPrint("일정 삭제 완료 : $itemName $dateTime $take");
     } catch (e) {
       debugPrint("일정 삭제 실패");
       debugPrint(e.toString());
