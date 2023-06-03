@@ -4,6 +4,8 @@
 import 'package:flutter/material.dart';
 import 'package:medicine_app/alarm_screens/ring.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
+import 'package:medicine_app/sub_pages/making_schedule.dart';
+import 'package:medicine_app/sub_pages/medi_setting.dart';
 import 'package:medicine_app/util/loading_bar.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../util/event.dart';
@@ -125,7 +127,7 @@ class CalenderPageState extends State<CalenderPage> {
             },
             child: const Icon(
               Icons.refresh,
-              size: 35,
+              size: 37,
             ),
           ),
           SizedBox(width: 25 * fem),
@@ -137,19 +139,11 @@ class CalenderPageState extends State<CalenderPage> {
         children: [
           TableCalendar<Event>(
             firstDay: kFirstDay,
-            // kFirstDay 부터만 접근가능
             lastDay: kLastDay,
-            // kLastDay 까지만 접근가능
             focusedDay: _focusedDay,
-            // _focusedDay 오늘로 선택되어있음
             selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            // rangeStartDay: _rangeStart,
-            // rangeEndDay: _rangeEnd,
             calendarFormat: _calendarFormat,
-            // 1주일, 2주일 단위로 볼수 있게함
-            // rangeSelectionMode: _rangeSelectionMode,
             eventLoader: _getEventsForDay,
-            // 불러와서 점 찍어줌
             onDaySelected: _onDaySelected,
             onRangeSelected: _onRangeSelected,
             onFormatChanged: (format) {
@@ -164,7 +158,6 @@ class CalenderPageState extends State<CalenderPage> {
             },
             calendarStyle: CalendarStyle(
               markerSize: 7 * fem,
-              // 점 스타일
               markerDecoration: const BoxDecoration(
                 color: Color(0xFF632bff),
                 shape: BoxShape.circle,
@@ -233,7 +226,15 @@ class CalenderPageState extends State<CalenderPage> {
                         ? value[i + 1].dateTime
                         : DateTime(9999));
                     return InkWell(
-                      onTap: () => debugPrint('${value[i]}'),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MedicineSettingPage(
+                            medicine: value[i].medicine,
+                            creating: false,
+                          ),
+                        ),
+                      ),
                       child: Column(
                         children: [
                           Container(
@@ -251,10 +252,11 @@ class CalenderPageState extends State<CalenderPage> {
                                     Radius.circular(13 * fem))),
                             child: Row(
                               children: [
-                                SizedBox(width: 15 * fem),
+                                SizedBox(width: 10 * fem),
                                 const Icon(
-                                  Icons.medication_liquid,
+                                  Icons.medical_information,
                                   color: Color(0xFF662fff),
+                                  size: 30,
                                 ),
                                 SizedBox(width: 15 * fem),
                                 Expanded(
@@ -323,7 +325,6 @@ class CalenderPageState extends State<CalenderPage> {
                                       value[i].dateTime,
                                       true,
                                     );
-                                    print("dd");
                                   },
                                   child: AnimatedContainer(
                                     width: 70 * fem,
@@ -372,6 +373,20 @@ class CalenderPageState extends State<CalenderPage> {
             ),
           ),
         ],
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.all(10),
+        child: FloatingActionButton(
+          backgroundColor: const Color(0xffa07eff),
+          onPressed: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => const MakingSchedulePage(),
+            ),
+          ),
+          child: const Icon(Icons.edit_calendar, size: 30),
+        ),
       ),
     );
   }

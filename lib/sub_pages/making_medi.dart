@@ -222,7 +222,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         title: Text(
-          "Register",
+          "Register Medicine",
           style: SafeGoogleFont(
             'Poppins',
             fontSize: 23 * fem,
@@ -248,7 +248,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
               },
               child: Icon(
                 Icons.playlist_add,
-                size: 40 * fem,
+                size: 33 * fem,
               ),
             ),
           ),
