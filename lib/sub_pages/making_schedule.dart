@@ -104,34 +104,19 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          "시간",
-                          style: SafeGoogleFont(
-                            'Poppins',
-                            fontSize: 23 * fem,
-                            fontWeight: FontWeight.w700,
-                            color: const Color(0xFFA07EFF),
-                          ),
-                        ), // TimePick Text
-                        SizedBox(height: 10*fem,),
-                        RawMaterialButton(
-                          onPressed: pickTime,
-                          fillColor: Colors.grey[50],
-                          child: Container(
-                            margin: const EdgeInsets.all(20),
-                            child: Text(
-                              selectTime.format(context),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .displayMedium!
-                                  .copyWith(color: const Color(0xFFA07EFF)),
-                            ),
-                          ),
+                    child: RawMaterialButton(
+                      onPressed: pickTime,
+                      fillColor: Colors.grey[50],
+                      child: Container(
+                        margin: const EdgeInsets.all(20),
+                        child: Text(
+                          selectTime.format(context),
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayMedium!
+                              .copyWith(color: const Color(0xFFA07EFF)),
                         ),
-                      ],
+                      ),
                     ),
                   ), // Time pick Widget
                   Padding(
@@ -151,33 +136,17 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                           secondary: const Icon(Icons.face),
                         ),
                         visibleWidget(
-                            Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 10 * fem),
-                                  child: Text(
-                                    "컨디션",
-                                    style: SafeGoogleFont(
-                                      'Poppins',
-                                      fontSize: 23 * fem,
-                                      fontWeight: FontWeight.w700,
-                                      color: const Color(0xFFA07EFF),
-                                    ),
-                                  ),
-                                ),
-                                ReviewSlider(
-                                  onChange: (int value) {
-                                    feelValue = value;
-                                    debugPrint("feel Value: $feelValue");
-                                  },
-                                  optionStyle: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 10 * fem,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFFA07EFF),
-                                  ),
-                                ),
-                              ],
+                            ReviewSlider(
+                              onChange: (int value) {
+                                feelValue = value;
+                                debugPrint("feel Value: $feelValue");
+                              },
+                              optionStyle: SafeGoogleFont(
+                                'Poppins',
+                                fontSize: 10 * fem,
+                                fontWeight: FontWeight.w700,
+                                color: const Color(0xFFA07EFF),
+                              ),
                             ),
                             conditionVisible),
                       ],
@@ -203,32 +172,30 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Padding(
-                                  padding: EdgeInsets.only(bottom: 10 * fem),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      // Checkbox(value: false, onChanged: (value) {}),
-                                      Text(
-                                        "혈압",
-                                        style: SafeGoogleFont(
-                                          'Poppins',
-                                          fontSize: 23 * fem,
-                                          fontWeight: FontWeight.w700,
-                                          color: const Color(0xFFA07EFF),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                                 // https://pub.dev/packages/numberpicker
                                 NumberPicker(
                                   axis: Axis.horizontal,
                                   value: _currentValue,
                                   minValue: 50,
                                   maxValue: 300,
-                                  onChanged: (value) =>
-                                      setState(() => _currentValue = value),
+                                  onChanged: (value) => setState(
+                                    () {
+                                      _currentValue = value;
+                                      debugPrint("혈압: $value");
+                                    },
+                                  ),
+                                  textStyle: SafeGoogleFont(
+                                    'Poppins',
+                                    fontSize: 15 * fem,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.grey[600],
+                                  ),
+                                  selectedTextStyle: SafeGoogleFont(
+                                    'Poppins',
+                                    fontSize: 20 * fem,
+                                    fontWeight: FontWeight.w700,
+                                    color: const Color(0xFFA07EFF),
+                                  ),
                                 ),
                               ],
                             ),
