@@ -246,12 +246,14 @@ class CalenderPageState extends State<CalenderPage> {
                             height: 65 * fem,
                             // padding: EdgeInsets.only(top: 10*fem),
                             decoration: BoxDecoration(
-                                color: const Color(0xffdfd3ff),
-                                border: Border.all(
-                                  color: const Color(0xFFA07EFF),
-                                ),
-                                borderRadius: BorderRadius.all(
-                                    Radius.circular(13 * fem))),
+                              color: const Color(0xffdfd3ff),
+                              border: Border.all(
+                                color: const Color(0xFFA07EFF),
+                              ),
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(13 * fem),
+                              ),
+                            ),
                             child: Row(
                               children: [
                                 SizedBox(width: 10 * fem),
@@ -318,7 +320,6 @@ class CalenderPageState extends State<CalenderPage> {
                                       );
                                       setState(() {
                                         value[i].take = !value[i].take;
-                                        refreshSchedule();
                                       });
                                     }
 
@@ -404,7 +405,9 @@ class CalenderPageState extends State<CalenderPage> {
           onPressed: () => Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const MakingSchedulePage(),
+              builder: (context) => MakingSchedulePage(
+                dateTime: _selectedDay!,
+              ),
             ),
           ),
           child: const Icon(Icons.edit_calendar, size: 30),

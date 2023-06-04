@@ -197,7 +197,7 @@ class _ListPageState extends State<ListPage> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.fromLTRB(20 * fem, 20 * fem, 20 * fem, 20 * fem),
+        padding: EdgeInsets.all(20*fem),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

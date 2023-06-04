@@ -19,23 +19,24 @@ class AlarmRingScreen extends StatefulWidget {
   State<AlarmRingScreen> createState() => _AlarmRingScreenState();
 }
 
+var toWeekDay = ["", "Mon", "Tue", "Web", "Thu", "Fri", "Sat", "Sun"];
+var toMonth = [
+  "",
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sep",
+  "Oct",
+  "Nov",
+  "Dec"
+];
+
 class _AlarmRingScreenState extends State<AlarmRingScreen> {
-  var toWeekDay = ["", "Mon", "Tue", "Web", "Thu", "Fri", "Sat", "Sun"];
-  var toMonth = [
-    "",
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec"
-  ];
   var idxList = [];
   Collections mediList = Collections();
   late final Future<List<Medicine>> _futureMediList = mediList.getMediList();

@@ -44,11 +44,12 @@ dependencies:
   flutter_staggered_animations: ^1.1.1
   flare_flutter: ^3.0.2
   styled_widget: ^0.4.1
-  unicons: ^2.1.1
   flutter_native_splash: ^2.3.0
   table_calendar: ^3.0.9
   shared_preferences: ^2.1.1
   syncfusion_flutter_charts: ^21.2.8
+  reviews_slider: ^2.0.0
+  numberpicker: ^2.1.2
 
 dev_dependencies:
   flutter_test:
