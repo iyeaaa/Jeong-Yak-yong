@@ -104,7 +104,10 @@ class CalenderPageState extends State<CalenderPage> {
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
-    double fem = MediaQuery.of(context).size.width / baseWidth;
+    double fem = MediaQuery
+        .of(context)
+        .size
+        .width / baseWidth;
 
     return Scaffold(
       appBar: AppBar(
@@ -167,7 +170,7 @@ class CalenderPageState extends State<CalenderPage> {
               todayDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border:
-                    Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
+                Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
               ),
               todayTextStyle: SafeGoogleFont(
                 'Poppins',
@@ -228,15 +231,17 @@ class CalenderPageState extends State<CalenderPage> {
                         ? value[i + 1].dateTime
                         : DateTime(9999));
                     return InkWell(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MedicineSettingPage(
-                            medicine: value[i].medicine,
-                            creating: false,
+                      onTap: () =>
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) =>
+                                  MedicineSettingPage(
+                                    medicine: value[i].medicine,
+                                    creating: false,
+                                  ),
+                            ),
                           ),
-                        ),
-                      ),
                       child: Column(
                         children: [
                           Container(
@@ -267,7 +272,7 @@ class CalenderPageState extends State<CalenderPage> {
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Text(
                                         value[i].medicine.itemName,
@@ -307,7 +312,7 @@ class CalenderPageState extends State<CalenderPage> {
                                             (value[i].take ? 1 : -1),
                                       );
                                       value[i].medicine.count +=
-                                          value[i].take ? 1 : -1;
+                                      value[i].take ? 1 : -1;
                                       await collection.scheduleRmv(
                                         value[i].medicine.itemName,
                                         value[i].dateTime,
@@ -323,31 +328,39 @@ class CalenderPageState extends State<CalenderPage> {
                                       });
                                     }
 
+                                    if (value[i].medicine.entpName.isEmpty) {
+                                      showScaffold(
+                                          "약을 리스트에 추가해주세요", context, fem);
+                                      return;
+                                    }
+
                                     if (value[i]
                                         .dateTime
                                         .isAfter(DateTime.now())) {
-                                      showScaffold(
-                                          "아직 먹을 시간이 되지 않았어요", context, fem);
-                                      return;
+                                    showScaffold(
+                                    "아직 먹을 시간이 되지 않았어요", context, fem);
+                                    return;
                                     }
 
                                     if (value[i].take) {
-                                      showAlertDialog(
-                                        context,
-                                        "취소",
-                                        '아직 약을 먹지 않으셨나요?',
-                                        () => Navigator.pop(context),
-                                        () async {
-                                          await changeTakeToggle();
-                                          if (context.mounted) {
-                                            Navigator.pop(context);
-                                          }
-                                        },
-                                      );
-                                      return;
+                                    showAlertDialog(
+                                    context,
+                                    "취소",
+                                    '아직 약을 먹지 않으셨나요?',
+                                    () => Navigator.pop(context),
+                                    () async {
+                                    await changeTakeToggle();
+                                    if (context.mounted) {
+                                    Navigator.pop(context);
+                                    }
+                                    },
+                                    );
+                                    return;
                                     }
 
-                                    changeTakeToggle();
+                                    changeTakeToggle
+                                    (
+                                    );
                                   },
                                   child: AnimatedContainer(
                                     width: 70 * fem,
@@ -402,14 +415,16 @@ class CalenderPageState extends State<CalenderPage> {
         padding: const EdgeInsets.all(10),
         child: FloatingActionButton(
           backgroundColor: const Color(0xffa07eff),
-          onPressed: () => Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => MakingSchedulePage(
-                dateTime: _selectedDay!,
+          onPressed: () =>
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      MakingSchedulePage(
+                        dateTime: _selectedDay!,
+                      ),
+                ),
               ),
-            ),
-          ),
           child: const Icon(Icons.edit_calendar, size: 30),
         ),
       ),

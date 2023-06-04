@@ -119,6 +119,7 @@ class _ListPageState extends State<ListPage> {
     showRmvMessage(fem, medicine.itemName);
     rmvAlarms(idx);
     await _futureMediList.then((value) => value.removeAt(idx));
+
     alarmsOfMedi.remove(medicine);
     rmvEventsWithoutMemo();
     updateEvents(await Collections().getMediList());
@@ -197,7 +198,7 @@ class _ListPageState extends State<ListPage> {
         ],
       ),
       body: Container(
-        padding: EdgeInsets.all(20*fem),
+        padding: EdgeInsets.all(20 * fem),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

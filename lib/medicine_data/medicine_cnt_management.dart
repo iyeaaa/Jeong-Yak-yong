@@ -1,5 +1,6 @@
 import 'dart:collection';
 import 'package:alarm/alarm.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import '../util/event.dart';
 import '../util/collection.dart';
@@ -87,8 +88,22 @@ Future<void> updateEvents(List<Medicine> mediList) async {
     }
     kEvents[key]!.add(
       Event(
-        medicine: mediList
-            .firstWhere((element) => element.itemName == value['itemName']),
+        medicine: mediList.firstWhereOrNull(
+                (element) => element.itemName == value['itemName']) ??
+            Medicine(
+              itemName: value['itemName'],
+              entpName: '',
+              effect: '약을 리스트에 추가해주세요',
+              itemCode: '약을 리스트에 추가해주세요',
+              useMethod: '약을 리스트에 추가해주세요',
+              warmBeforeHave: '약을 리스트에 추가해주세요',
+              warmHave: '약을 리스트에 추가해주세요',
+              interaction: '약을 리스트에 추가해주세요',
+              sideEffect: '약을 리스트에 추가해주세요',
+              depositMethod: '약을 리스트에 추가해주세요',
+              imageUrl: 'No Image',
+              count: 0,
+            ),
         dateTime: key,
         take: value['take'],
       ),

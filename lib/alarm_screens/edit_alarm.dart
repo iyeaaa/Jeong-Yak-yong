@@ -2,7 +2,6 @@
 import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
-import 'package:medicine_app/util/loading_bar.dart';
 import '../util/collection.dart';
 
 class AlarmEditScreen extends StatefulWidget {
@@ -134,7 +133,6 @@ class _AlarmEditScreenState extends State<AlarmEditScreen> {
 
     sortEventList();
 
-    if (context.mounted) showScaffold("알람이 추가되었어요", context, 1);
   }
 
   // 삭제버튼의 삭제기능
