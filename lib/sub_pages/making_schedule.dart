@@ -23,8 +23,8 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
   int _currentValue = 100;
   bool conditionVisible = false;
   bool hypertensionVisible = false;
-
-  // bool
+  bool glucoseVisible = false;
+  bool memoVisible = false;
 
   @override
   void initState() {
@@ -102,6 +102,7 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
             child: Center(
               child: Column(
                 children: [
+                  SizedBox(height: 15*fem),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30.0),
                     child: RawMaterialButton(
@@ -126,29 +127,45 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CheckboxListTile(
-                          title: const Text("컨디션"),
+                          title: Text(
+                            "컨디션",
+                            style: SafeGoogleFont(
+                              'Poppins',
+                              fontSize: 17 * fem,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFA07EFF),
+                            ),
+                          ),
                           value: conditionVisible,
                           onChanged: (value) {
                             setState(() {
                               conditionVisible = !conditionVisible;
                             });
                           },
-                          secondary: const Icon(Icons.face),
+                          secondary: Icon(
+                            Icons.face,
+                            size: 22 * fem,
+                            color: const Color(0xFFA07EFF),
+                          ),
+                          fillColor: const MaterialStatePropertyAll(
+                            Color(0xFFA07EFF),
+                          ),
                         ),
                         visibleWidget(
-                            ReviewSlider(
-                              onChange: (int value) {
-                                feelValue = value;
-                                debugPrint("feel Value: $feelValue");
-                              },
-                              optionStyle: SafeGoogleFont(
-                                'Poppins',
-                                fontSize: 10 * fem,
-                                fontWeight: FontWeight.w700,
-                                color: const Color(0xFFA07EFF),
-                              ),
+                          ReviewSlider(
+                            onChange: (int value) {
+                              feelValue = value;
+                              debugPrint("feel Value: $feelValue");
+                            },
+                            optionStyle: SafeGoogleFont(
+                              'Poppins',
+                              fontSize: 10 * fem,
+                              fontWeight: FontWeight.w700,
+                              color: const Color(0xFFA07EFF),
                             ),
-                            conditionVisible),
+                          ),
+                          conditionVisible,
+                        ),
                       ],
                     ),
                   ), // Feel pick Widget
@@ -159,50 +176,174 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         CheckboxListTile(
-                          title: const Text("혈압"),
+                          title: Text(
+                            "혈압",
+                            style: SafeGoogleFont(
+                              'Poppins',
+                              fontSize: 17 * fem,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFA07EFF),
+                            ),
+                          ),
                           value: hypertensionVisible,
                           onChanged: (value) {
                             setState(() {
                               hypertensionVisible = !hypertensionVisible;
                             });
                           },
-                          secondary: const Icon(Icons.bloodtype_rounded),
+                          secondary: Icon(
+                            Icons.bloodtype_rounded,
+                            size: 22 * fem,
+                            color: const Color(0xFFA07EFF),
+                          ),
+                          fillColor: const MaterialStatePropertyAll(
+                            Color(0xFFA07EFF),
+                          ),
                         ),
                         visibleWidget(
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                // https://pub.dev/packages/numberpicker
-                                NumberPicker(
-                                  axis: Axis.horizontal,
-                                  value: _currentValue,
-                                  minValue: 50,
-                                  maxValue: 300,
-                                  onChanged: (value) => setState(
-                                    () {
-                                      _currentValue = value;
-                                      debugPrint("혈압: $value");
-                                    },
-                                  ),
-                                  textStyle: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 15 * fem,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.grey[600],
-                                  ),
-                                  selectedTextStyle: SafeGoogleFont(
-                                    'Poppins',
-                                    fontSize: 20 * fem,
-                                    fontWeight: FontWeight.w700,
-                                    color: const Color(0xFFA07EFF),
-                                  ),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // https://pub.dev/packages/numberpicker
+                              NumberPicker(
+                                axis: Axis.horizontal,
+                                value: _currentValue,
+                                minValue: 50,
+                                maxValue: 300,
+                                onChanged: (value) => setState(
+                                  () {
+                                    _currentValue = value;
+                                    debugPrint("혈압: $value");
+                                  },
                                 ),
-                              ],
-                            ),
-                            hypertensionVisible),
+                                textStyle: SafeGoogleFont(
+                                  'Poppins',
+                                  fontSize: 15 * fem,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey[600],
+                                ),
+                                selectedTextStyle: SafeGoogleFont(
+                                  'Poppins',
+                                  fontSize: 20 * fem,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFFA07EFF),
+                                ),
+                              ),
+                            ],
+                          ),
+                          hypertensionVisible,
+                        ),
                       ],
                     ),
-                  ), //
+                  ), // 혈압수치 기록
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 20 * fem),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CheckboxListTile(
+                          title: Text(
+                            "당 수치",
+                            style: SafeGoogleFont(
+                              'Poppins',
+                              fontSize: 17 * fem,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFA07EFF),
+                            ),
+                          ),
+                          value: glucoseVisible,
+                          onChanged: (value) {
+                            setState(() {
+                              glucoseVisible = !glucoseVisible;
+                            });
+                          },
+                          secondary: Icon(
+                            Icons.add_circle_outline,
+                            size: 22 * fem,
+                            color: const Color(0xFFA07EFF),
+                          ),
+                          fillColor: const MaterialStatePropertyAll(
+                            Color(0xFFA07EFF),
+                          ),
+                        ),
+                        visibleWidget(
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              // https://pub.dev/packages/numberpicker
+                              NumberPicker(
+                                axis: Axis.horizontal,
+                                value: _currentValue,
+                                minValue: 50,
+                                maxValue: 300,
+                                onChanged: (value) => setState(
+                                  () {
+                                    _currentValue = value;
+                                    debugPrint("당 수치: $value");
+                                  },
+                                ),
+                                textStyle: SafeGoogleFont(
+                                  'Poppins',
+                                  fontSize: 15 * fem,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.grey[600],
+                                ),
+                                selectedTextStyle: SafeGoogleFont(
+                                  'Poppins',
+                                  fontSize: 20 * fem,
+                                  fontWeight: FontWeight.w700,
+                                  color: const Color(0xFFA07EFF),
+                                ),
+                              ),
+                            ],
+                          ),
+                          glucoseVisible,
+                        ),
+                      ],
+                    ),
+                  ), // 당수치 기록
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 20 * fem),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CheckboxListTile(
+                          title: Text(
+                            "메모",
+                            style: SafeGoogleFont(
+                              'Poppins',
+                              fontSize: 17 * fem,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFA07EFF),
+                            ),
+                          ),
+                          value: memoVisible,
+                          onChanged: (value) {
+                            setState(() {
+                              memoVisible = !memoVisible;
+                            });
+                          },
+                          secondary: Icon(
+                            Icons.note_alt_outlined,
+                            size: 22 * fem,
+                            color: const Color(0xFFA07EFF),
+                          ),
+                          fillColor: const MaterialStatePropertyAll(
+                            Color(0xFFA07EFF),
+                          ),
+                        ),
+                        visibleWidget(
+                          const Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [],
+                          ),
+                          memoVisible,
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
