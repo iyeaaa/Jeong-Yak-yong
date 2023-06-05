@@ -38,8 +38,8 @@ class _HomePageState extends State<HomePage> {
 
   void loadAlarms() {
     setState(() {
-      alarms = Alarm.getAlarms();
-      alarms.sort();
+      alarms = Alarm.getAlarms()
+        ..sort((a, b) => a.dateTime.compareTo(b.dateTime));
     });
   }
 
@@ -76,7 +76,8 @@ class _HomePageState extends State<HomePage> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AccountPage(futureUserName: widget.futureUserName),
+          builder: (context) =>
+              AccountPage(futureUserName: widget.futureUserName),
         ),
       ),
       child: Container(
@@ -206,7 +207,7 @@ class _HomePageState extends State<HomePage> {
   String listToName(List<Medicine> mediList, String idxstr) {
     String rtn = "";
     stringToIdxList(idxstr).forEach((element) {
-      rtn += "${mediList[element].itemName}\n";
+      rtn += "• ${mediList[element].itemName}\n";
     });
     return rtn;
   }
@@ -492,42 +493,42 @@ class _HomePageState extends State<HomePage> {
                                 width: 500,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
-                                  physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   itemCount: alarms.length,
                                   itemBuilder: (context, idx) =>
                                       AnimationConfiguration.staggeredList(
-                                        position: idx,
-                                        duration: const Duration(milliseconds: 375),
-                                        child: SlideAnimation(
-                                          verticalOffset: 50.0,
-                                          child: FadeInAnimation(
-                                            child: Container(
-                                              padding: EdgeInsets.only(top: 10 * fem),
-                                              height: 97 * fem,
-                                              child: AlarmTile(
-                                                key: Key(alarms[idx].id.toString()),
-                                                onDismissed: () async {
-                                                  rmvCalenderInfo(
-                                                    alarms[idx].notificationBody!,
-                                                    alarms[idx].dateTime,
-                                                  );
-                                                  Alarm.stop(alarms[idx].id)
-                                                      .then((_) => loadAlarms());
-                                                },
-                                                ontap: () => navigateToAlarmScreen(
-                                                    alarms[idx]),
-                                                onPressed: () {},
-                                                title: toTimeForm(idx),
-                                                content: listToName(
-                                                  snapshot.data ?? [],
-                                                  alarms[idx].notificationBody!,
-                                                ),
-                                              ),
+                                    position: idx,
+                                    duration: const Duration(milliseconds: 375),
+                                    child: SlideAnimation(
+                                      verticalOffset: 50.0,
+                                      child: FadeInAnimation(
+                                        child: Container(
+                                          padding: EdgeInsets.fromLTRB(
+                                              0, 10 * fem, 10 * fem, 0),
+                                          height: 97 * fem,
+                                          child: AlarmTile(
+                                            key: Key(alarms[idx].id.toString()),
+                                            onDismissed: () async {
+                                              rmvCalenderInfo(
+                                                alarms[idx].notificationBody!,
+                                                alarms[idx].dateTime,
+                                              );
+                                              Alarm.stop(alarms[idx].id)
+                                                  .then((_) => loadAlarms());
+                                            },
+                                            ontap: () => navigateToAlarmScreen(
+                                                alarms[idx]),
+                                            onPressed: () {},
+                                            title: toTimeForm(idx),
+                                            content: listToName(
+                                              snapshot.data ?? [],
+                                              alarms[idx].notificationBody!,
                                             ),
                                           ),
                                         ),
                                       ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             );

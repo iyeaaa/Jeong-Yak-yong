@@ -19,63 +19,66 @@ class AlarmTile extends StatelessWidget {
   }) : super(key: key);
 
   Widget alarmTile(String title, String content, double fem) {
-    return Container(
-      width: 200 * fem,
-      height: 300 * fem,
-      padding: EdgeInsets.all(10 * fem),
-      decoration: BoxDecoration(
-        color: const Color(0xffffffff),
-        borderRadius: BorderRadius.circular(23 * fem),
-        border: Border.all(color: const Color(0xffa07eff)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                child: Container(
-                  width: 68 * fem,
-                  height: 68 * fem,
-                  decoration: BoxDecoration(
-                    color: const Color(0xffa07eff),
-                    borderRadius: BorderRadius.circular(20 * fem),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.alarm,
-                      size: 40 * fem,
-                      color: Colors.white,
+    return InkWell(
+      onTap: ontap,
+      child: Container(
+        width: 200 * fem,
+        height: 300 * fem,
+        padding: EdgeInsets.all(10 * fem),
+        decoration: BoxDecoration(
+          color: const Color(0xffffffff),
+          borderRadius: BorderRadius.circular(23 * fem),
+          border: Border.all(color: const Color(0xffa07eff)),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  child: Container(
+                    width: 68 * fem,
+                    height: 68 * fem,
+                    decoration: BoxDecoration(
+                      color: const Color(0xffa07eff),
+                      borderRadius: BorderRadius.circular(20 * fem),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.alarm,
+                        size: 40 * fem,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Text(
-                title,
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 26 * fem,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.black,
+                Text(
+                  title,
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 26 * fem,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.black,
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 0.01 * fem,
-              ),
-            ],
-          ),
-          SizedBox(height: 20 * fem),
-          AutoSizeText(
-            content,
-            style: SafeGoogleFont(
-              'Poppins',
-              // fontSize: 17 * fem,
-              fontWeight: FontWeight.w500,
-              color: Colors.black,
+                SizedBox(
+                  width: 0.01 * fem,
+                ),
+              ],
             ),
-          ),
-        ],
+            SizedBox(height: 20 * fem),
+            AutoSizeText(
+              content,
+              style: SafeGoogleFont(
+                'Poppins',
+                // fontSize: 17 * fem,
+                fontWeight: FontWeight.w500,
+                color: Colors.black,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

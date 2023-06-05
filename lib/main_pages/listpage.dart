@@ -367,25 +367,12 @@ class _ListPageState extends State<ListPage> {
           child: FloatingActionButton(
             backgroundColor: const Color(0xffa07eff),
             onPressed: () {
-              if (isChecked.contains(true)) {
-                navigateToAlarmScreen(null);
+              if (!isChecked.contains(true)) {
+                showScaffold("한 개 이상의 약을 추가해주세요", context, fem);
+              } else if (isChecked.where((element) => element).length > 5) {
+                showScaffold("최대 5개 까지의 약을 설정할 수 있어요", context, fem);
               } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      '한 개 이상의 약을 추가해 주세요.',
-                      textAlign: TextAlign.center,
-                      style: SafeGoogleFont(
-                        'Nunito',
-                        fontSize: 15,
-                        fontWeight: FontWeight.w400,
-                        height: 1.3625,
-                        color: const Color(0xffffffff),
-                      ),
-                    ),
-                    backgroundColor: const Color(0xff8a60ff),
-                  ),
-                );
+                navigateToAlarmScreen(null);
               }
             },
             child: const Icon(Icons.alarm_add_rounded, size: 30),
