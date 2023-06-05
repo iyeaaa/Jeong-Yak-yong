@@ -99,6 +99,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
   }
 
   Widget myTextField(int idx) => TextFormField(
+        cursorColor: const Color(0xff6B35FF),
         onChanged: (value) => mediInfo[variName[idx]] = value,
         style: const TextStyle(color: Color(0xff3600CA)),
         decoration: InputDecoration(
@@ -143,74 +144,76 @@ class _MakingMediPageState extends State<MakingMediPage> {
   }
 
   Widget settingCount(double fem) => Padding(
-    padding: EdgeInsets.only(top: 10 * fem),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        Text(
-          "남은 약 개수: ",
-          overflow: TextOverflow.ellipsis,
-          style: SafeGoogleFont(
-            'Poppins',
-            fontSize: 22 * fem,
-            fontWeight: FontWeight.w700,
-            height: 1.5,
-            color: const Color(0xffa98aff),
-          ),
-        ),
-        Container(
-          width: 120 * fem,
-          height: 50 * fem,
-          padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.deepPurple),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              InkWell(
-                onTap: () => setState(() {
-                  mediInfo['count'] = max(0, (mediInfo['count'] as int) - 1);
-                }),
-                child: Text(
-                  "-",
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 20 * fem,
-                    fontWeight: FontWeight.w700,
-                    height: 1.5,
+        padding: EdgeInsets.only(top: 10 * fem),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            Text(
+              "남은 약 개수: ",
+              overflow: TextOverflow.ellipsis,
+              style: SafeGoogleFont(
+                'Poppins',
+                fontSize: 22 * fem,
+                fontWeight: FontWeight.w700,
+                height: 1.5,
+                color: const Color(0xffa98aff),
+              ),
+            ),
+            Container(
+              width: 120 * fem,
+              height: 50 * fem,
+              padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.deepPurple),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  InkWell(
+                    onTap: () => setState(() {
+                      mediInfo['count'] =
+                          max(0, (mediInfo['count'] as int) - 1);
+                    }),
+                    child: Text(
+                      "-",
+                      style: SafeGoogleFont(
+                        'Poppins',
+                        fontSize: 20 * fem,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Text(
-                mediInfo['count'].toString(),
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 22 * fem,
-                  fontWeight: FontWeight.w500,
-                  height: 1.5,
-                ),
-              ),
-              InkWell(
-                onTap: () => setState(() {
-                  mediInfo['count'] = max(0, (mediInfo['count'] as int) + 1);
-                }),
-                child: Text(
-                  "+",
-                  style: SafeGoogleFont(
-                    'Poppins',
-                    fontSize: 20 * fem,
-                    fontWeight: FontWeight.w700,
-                    height: 1.5,
+                  Text(
+                    mediInfo['count'].toString(),
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 22 * fem,
+                      fontWeight: FontWeight.w500,
+                      height: 1.5,
+                    ),
                   ),
-                ),
+                  InkWell(
+                    onTap: () => setState(() {
+                      mediInfo['count'] =
+                          max(0, (mediInfo['count'] as int) + 1);
+                    }),
+                    child: Text(
+                      "+",
+                      style: SafeGoogleFont(
+                        'Poppins',
+                        fontSize: 20 * fem,
+                        fontWeight: FontWeight.w700,
+                        height: 1.5,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    ),
-  );
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -341,7 +344,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
                           ),
                         ],
                       ),
-                    ),// name// , company
+                    ), // name// , company
                   ],
                 ),
               ),
@@ -357,7 +360,7 @@ class _MakingMediPageState extends State<MakingMediPage> {
               ),
             ),
             settingCount(fem),
-            SizedBox(height: 10*fem),
+            SizedBox(height: 10 * fem),
           ],
         ),
       ),

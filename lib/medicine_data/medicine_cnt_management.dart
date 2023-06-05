@@ -67,9 +67,7 @@ void rmvEventsWithoutMemo() {
   for (DateTime dateTime in kEvents.keys) {
     List<Event> events = kEvents[dateTime]!;
     for (int i = events.length - 1; i >= 0; i--) {
-      if (!events[i].memo) {
-        events.removeAt(i);
-      }
+      events.removeAt(i);
     }
   }
   debugPrint("kEvents에서 메모를 제외한 이벤트를 모두 삭제했어요: $kEvents");
@@ -86,28 +84,48 @@ Future<void> updateEvents(List<Medicine> mediList) async {
     if (kEvents[key] == null) {
       kEvents[key] = [];
     }
-    kEvents[key]!.add(
-      Event(
-        medicine: mediList.firstWhereOrNull(
-                (element) => element.itemName == value['itemName']) ??
-            Medicine(
-              itemName: value['itemName'],
-              entpName: '',
-              effect: '약을 리스트에 추가해주세요',
-              itemCode: '약을 리스트에 추가해주세요',
-              useMethod: '약을 리스트에 추가해주세요',
-              warmBeforeHave: '약을 리스트에 추가해주세요',
-              warmHave: '약을 리스트에 추가해주세요',
-              interaction: '약을 리스트에 추가해주세요',
-              sideEffect: '약을 리스트에 추가해주세요',
-              depositMethod: '약을 리스트에 추가해주세요',
-              imageUrl: 'No Image',
-              count: 0,
-            ),
-        dateTime: key,
-        take: value['take'],
-      ),
-    );
+    if (!value['memo']) {
+      kEvents[key]!.add(
+        Event(
+          medicine: mediList.firstWhereOrNull(
+                  (element) => element.itemName == value['itemName']) ??
+              Medicine(
+                itemName: value['itemName'],
+                entpName: '',
+                effect: '약을 리스트에 추가해주세요',
+                itemCode: '약을 리스트에 추가해주세요',
+                useMethod: '약을 리스트에 추가해주세요',
+                warmBeforeHave: '약을 리스트에 추가해주세요',
+                warmHave: '약을 리스트에 추가해주세요',
+                interaction: '약을 리스트에 추가해주세요',
+                sideEffect: '약을 리스트에 추가해주세요',
+                depositMethod: '약을 리스트에 추가해주세요',
+                imageUrl: 'No Image',
+                count: 0,
+              ),
+          dateTime: key,
+          memo: false,
+          take: value['take'],
+        ),
+      );
+    } else {
+      // 메모인경우
+      kEvents[key]!.add(
+        Event(
+          memo: true,
+          medicine: Medicine.notExist(value['title']),
+          dateTime: key,
+          conditionState: value['condiState'],
+          condition: value['condi'],
+          hypertensionState: value['hyState'],
+          hypertension: value['hy'],
+          glucoseState: value['gluState'],
+          glucose: value['glu'],
+          noteState: value['noteState'],
+          note: value['note'],
+        ),
+      );
+    }
   });
 
   for (Medicine medicine in mediList) {

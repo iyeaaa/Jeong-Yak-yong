@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:medicine_app/util/event.dart';
 import '../medicine_data/medicine.dart';
 
 // 싱글톤 패턴
@@ -76,8 +77,8 @@ class Collections {
     }
   }
 
-  Future<void> scheduleAdd(
-      String itemName, DateTime dateTime, bool take) async {
+  Future<void> scheduleAdd(String itemName, DateTime dateTime,
+      bool take) async {
     try {
       Collections.firestore
           .collection(Collections.userEmail)
@@ -88,6 +89,7 @@ class Collections {
             'itemName': itemName,
             'dateTime': dateTime,
             'take': take,
+            'memo': false,
           }
         ])
       });
@@ -98,8 +100,8 @@ class Collections {
     }
   }
 
-  Future<void> scheduleRmv(
-      String itemName, DateTime dateTime, bool take) async {
+  Future<void> scheduleRmv(String itemName, DateTime dateTime,
+      bool take) async {
     try {
       Collections.firestore
           .collection(Collections.userEmail)
@@ -110,6 +112,7 @@ class Collections {
             'itemName': itemName,
             'dateTime': dateTime,
             'take': take,
+            'memo': false,
           }
         ])
       });
@@ -118,6 +121,46 @@ class Collections {
       debugPrint("일정 삭제 실패");
       debugPrint(e.toString());
     }
+  }
+
+  Future<void> memoAdd(Event event) async {
+    await firestore.collection(userEmail).doc('mediInfo').update({
+      'schedule': FieldValue.arrayUnion([
+        {
+          'dateTime': event.dateTime,
+          'title': event.medicine.itemName,
+          'memo': true,
+          'condiState': event.conditionState,
+          'condi': event.condition,
+          'noteState': event.noteState,
+          'note': event.note,
+          'hyState': event.hypertensionState,
+          'hy': event.hypertension,
+          'gluState': event.glucoseState,
+          'glu': event.glucose,
+        }
+      ])
+    });
+  }
+
+  Future<void> memoRmv(Event event) async {
+    await firestore.collection(userEmail).doc('mediInfo').update({
+      'schedule': FieldValue.arrayRemove([
+        {
+          'dateTime': event.dateTime,
+          'title': event.medicine.itemName,
+          'memo': true,
+          'condiState': event.conditionState,
+          'condi': event.condition,
+          'noteState': event.noteState,
+          'note': event.note,
+          'hyState': event.hypertensionState,
+          'hy': event.hypertension,
+          'gluState': event.glucoseState,
+          'glu': event.glucose,
+        }
+      ])
+    });
   }
 
   Future<List<Medicine>> _loadMediData() async {

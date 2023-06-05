@@ -9,6 +9,7 @@ import 'package:medicine_app/sub_pages/making_schedule.dart';
 import 'package:medicine_app/sub_pages/medi_setting.dart';
 import 'package:medicine_app/util/loading_bar.dart';
 import 'package:table_calendar/table_calendar.dart';
+import '../medicine_data/medicine.dart';
 import '../util/event.dart';
 import '../util/collection.dart';
 import '../util/utils.dart';
@@ -104,10 +105,7 @@ class CalenderPageState extends State<CalenderPage> {
   @override
   Widget build(BuildContext context) {
     double baseWidth = 380;
-    double fem = MediaQuery
-        .of(context)
-        .size
-        .width / baseWidth;
+    double fem = MediaQuery.of(context).size.width / baseWidth;
 
     return Scaffold(
       appBar: AppBar(
@@ -170,7 +168,7 @@ class CalenderPageState extends State<CalenderPage> {
               todayDecoration: BoxDecoration(
                 shape: BoxShape.circle,
                 border:
-                Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
+                    Border.all(color: const Color(0xFFA07EFF), width: 2 * fem),
               ),
               todayTextStyle: SafeGoogleFont(
                 'Poppins',
@@ -230,177 +228,247 @@ class CalenderPageState extends State<CalenderPage> {
                     DateTime dateTime2 = (i + 1 < value.length
                         ? value[i + 1].dateTime
                         : DateTime(9999));
-                    return InkWell(
-                      onTap: () =>
+                    return Dismissible(
+                      key: ValueKey(value[i].medicine.itemName +
+                          value[i].dateTime.toString()),
+                      background: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20 * fem),
+                          color: const Color(0xffa07eff),
+                        ),
+                        alignment: Alignment.centerRight,
+                        padding: const EdgeInsets.only(right: 30),
+                        child: const Icon(
+                          Icons.delete,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                      ),
+                      onDismissed: (_) async {
+                        if (value[i].memo) {
+                          await Collections().memoRmv(value[i]);
+                        } else {
+                          await Collections().scheduleRmv(
+                            value[i].medicine.itemName,
+                            value[i].dateTime,
+                            value[i].take,
+                          );
+                        }
+                        if (context.mounted) {
+                          showScaffold('일정을 삭제했어요', context, fem);
+                        }
+                        setState(() => refreshSchedule());
+                      },
+                      child: InkWell(
+                        onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  MedicineSettingPage(
-                                    medicine: value[i].medicine,
-                                    creating: false,
-                                  ),
-                            ),
-                          ),
-                      child: Column(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.fromLTRB(0, 5 * fem, 0, 5 * fem),
-                            padding: EdgeInsets.all(8 * fem),
-                            width: double.infinity,
-                            height: 65 * fem,
-                            // padding: EdgeInsets.only(top: 10*fem),
-                            decoration: BoxDecoration(
-                              color: const Color(0xffdfd3ff),
-                              border: Border.all(
-                                color: const Color(0xFFA07EFF),
-                              ),
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(13 * fem),
-                              ),
-                            ),
-                            child: Row(
-                              children: [
-                                SizedBox(width: 10 * fem),
-                                const Icon(
-                                  Icons.medical_information,
-                                  color: Color(0xFF662fff),
-                                  size: 30,
-                                ),
-                                SizedBox(width: 15 * fem),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        value[i].medicine.itemName,
-                                        overflow: TextOverflow.ellipsis,
-                                        maxLines: 1,
-                                        style: SafeGoogleFont(
-                                          'Poppins',
-                                          fontSize: 15 * fem,
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0xFF662fff),
-                                        ),
+                              builder: (context) => value[i].memo
+                                  ? MakingSchedulePage(
+                                      dateTime: value[i].dateTime,
+                                      creating: false,
+                                      event: Event(
+                                        medicine: value[i].medicine,
+                                        dateTime: value[i].dateTime,
+                                        noteState: value[i].noteState,
+                                        note: value[i].note,
+                                        conditionState: value[i].conditionState,
+                                        condition: value[i].condition,
+                                        hypertensionState:
+                                            value[i].hypertensionState,
+                                        hypertension: value[i].hypertension,
+                                        glucoseState: value[i].glucoseState,
+                                        glucose: value[i].glucose,
                                       ),
-                                      Text(
-                                        toTimeForm(
-                                          value[i].dateTime.hour,
-                                          value[i].dateTime.minute,
-                                        ),
-                                        style: SafeGoogleFont(
-                                          'Poppins',
-                                          fontSize: 13 * fem,
-                                          fontWeight: FontWeight.w600,
-                                          color: const Color(0xFF662fff),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                    )
+                                  : MedicineSettingPage(
+                                      medicine: value[i].medicine,
+                                      creating: false,
+                                    ),
+                            ),
+                          ).then((value) {
+                            setState(() {
+                              refreshSchedule();
+                            });
+                          });
+                        },
+                        child: Column(
+                          children: [
+                            Container(
+                              margin:
+                                  EdgeInsets.fromLTRB(0, 5 * fem, 0, 5 * fem),
+                              padding: EdgeInsets.all(8 * fem),
+                              width: double.infinity,
+                              height: 65 * fem,
+                              // padding: EdgeInsets.only(top: 10*fem),
+                              decoration: BoxDecoration(
+                                color: const Color(0xffdfd3ff),
+                                border: Border.all(
+                                  color: const Color(0xFFA07EFF),
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    Future<void> changeTakeToggle() async {
-                                      final collection = Collections();
-                                      await collection
-                                          .medicineRmv(value[i].medicine);
-                                      await collection.medicineAdd(
-                                        value[i].medicine,
-                                        value[i].medicine.count +
-                                            (value[i].take ? 1 : -1),
-                                      );
-                                      value[i].medicine.count +=
-                                      value[i].take ? 1 : -1;
-                                      await collection.scheduleRmv(
-                                        value[i].medicine.itemName,
-                                        value[i].dateTime,
-                                        value[i].take,
-                                      );
-                                      await collection.scheduleAdd(
-                                        value[i].medicine.itemName,
-                                        value[i].dateTime,
-                                        !value[i].take,
-                                      );
-                                      setState(() {
-                                        value[i].take = !value[i].take;
-                                      });
-                                    }
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(13 * fem),
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 10 * fem),
+                                  Icon(
+                                    value[i].memo
+                                        ? Icons.note_alt_outlined
+                                        : Icons.medical_information,
+                                    color: const Color(0xFF662fff),
+                                    size: 30,
+                                  ),
+                                  SizedBox(width: 15 * fem),
+                                  Expanded(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          value[i].medicine.itemName,
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 1,
+                                          style: SafeGoogleFont(
+                                            'Poppins',
+                                            fontSize: 15 * fem,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFF662fff),
+                                          ),
+                                        ),
+                                        Text(
+                                          toTimeForm(
+                                            value[i].dateTime.hour,
+                                            value[i].dateTime.minute,
+                                          ),
+                                          style: SafeGoogleFont(
+                                            'Poppins',
+                                            fontSize: 13 * fem,
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color(0xFF662fff),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: () async {
+                                      Future<void> changeTakeToggle() async {
+                                        final collection = Collections();
+                                        await collection
+                                            .medicineRmv(value[i].medicine);
+                                        await collection.medicineAdd(
+                                          value[i].medicine,
+                                          value[i].medicine.count +
+                                              (value[i].take ? 1 : -1),
+                                        );
+                                        value[i].medicine.count +=
+                                            value[i].take ? 1 : -1;
+                                        await collection.scheduleRmv(
+                                          value[i].medicine.itemName,
+                                          value[i].dateTime,
+                                          value[i].take,
+                                        );
+                                        await collection.scheduleAdd(
+                                          value[i].medicine.itemName,
+                                          value[i].dateTime,
+                                          !value[i].take,
+                                        );
+                                        setState(() {
+                                          value[i].take = !value[i].take;
+                                        });
+                                      }
 
-                                    if (value[i].medicine.entpName.isEmpty) {
-                                      showScaffold(
-                                          "약을 리스트에 추가해주세요", context, fem);
-                                      return;
-                                    }
+                                      if (value[i].memo) {
+                                        showScaffold('약을 선택해주세요', context, fem);
+                                        return;
+                                      }
 
-                                    if (value[i]
-                                        .dateTime
-                                        .isAfter(DateTime.now())) {
-                                    showScaffold(
-                                    "아직 먹을 시간이 되지 않았어요", context, fem);
-                                    return;
-                                    }
+                                      if (value[i].medicine.entpName.isEmpty) {
+                                        showScaffold(
+                                            "약을 리스트에 추가해주세요", context, fem);
+                                        return;
+                                      }
 
-                                    if (value[i].take) {
-                                    showAlertDialog(
-                                    context,
-                                    "취소",
-                                    '아직 약을 먹지 않으셨나요?',
-                                    () => Navigator.pop(context),
-                                    () async {
-                                    await changeTakeToggle();
-                                    if (context.mounted) {
-                                    Navigator.pop(context);
-                                    }
+                                      if (value[i]
+                                          .dateTime
+                                          .isAfter(DateTime.now())) {
+                                        showScaffold(
+                                            "아직 먹을 시간이 되지 않았어요", context, fem);
+                                        return;
+                                      }
+
+                                      if (value[i].take) {
+                                        showAlertDialog(
+                                          context,
+                                          "취소",
+                                          '아직 약을 먹지 않으셨나요?',
+                                          () => Navigator.pop(context),
+                                          () async {
+                                            await changeTakeToggle();
+                                            if (context.mounted) {
+                                              Navigator.pop(context);
+                                            }
+                                          },
+                                        );
+                                        return;
+                                      }
+
+                                      changeTakeToggle();
                                     },
-                                    );
-                                    return;
-                                    }
-
-                                    changeTakeToggle
-                                    (
-                                    );
-                                  },
-                                  child: AnimatedContainer(
-                                    width: 70 * fem,
-                                    height: 50 * fem,
-                                    margin: EdgeInsets.only(
-                                        left: 8 * fem, right: 8 * fem),
-                                    padding: EdgeInsets.all(8 * fem),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15 * fem)),
-                                      border: Border.all(
-                                          color: !value[i].take
-                                              ? const Color(0xFF662fff)
-                                              : const Color(0xffff5788),
-                                          width: 2 * fem),
-                                    ),
-                                    duration: const Duration(milliseconds: 500),
-                                    child: Center(
-                                      child: Text(
-                                        value[i].take ? "TOOK" : "TAKE",
-                                        style: SafeGoogleFont(
-                                          'Poppins',
-                                          fontSize: 15 * fem,
-                                          fontWeight: FontWeight.w600,
-                                          color: !value[i].take
-                                              ? const Color(0xFF662fff)
-                                              : const Color(0xffff5788),
+                                    child: AnimatedContainer(
+                                      width: 70 * fem,
+                                      height: 50 * fem,
+                                      margin: EdgeInsets.only(
+                                          left: 8 * fem, right: 8 * fem),
+                                      padding: EdgeInsets.all(8 * fem),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(15 * fem)),
+                                        border: Border.all(
+                                            color: value[i].memo
+                                                ? const Color(0xff0012fa)
+                                                : !value[i].take
+                                                    ? const Color(0xFF662fff)
+                                                    : const Color(0xffff5788),
+                                            width: 2 * fem),
+                                      ),
+                                      duration:
+                                          const Duration(milliseconds: 500),
+                                      child: Center(
+                                        child: Text(
+                                          value[i].memo
+                                              ? "MEMO"
+                                              : value[i].take
+                                                  ? "TOOK"
+                                                  : "TAKE",
+                                          style: SafeGoogleFont(
+                                            'Poppins',
+                                            fontSize: 15 * fem,
+                                            fontWeight: FontWeight.w600,
+                                            color: value[i].memo
+                                                ? const Color(0xff0012fa)
+                                                : !value[i].take
+                                                    ? const Color(0xFF662fff)
+                                                    : const Color(0xffff5788),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                )
-                              ],
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          if (i != value.length - 1 &&
-                              dateTime1.compareTo(dateTime2) < 0)
-                            const Divider(
-                                color: Color(0xFF662fff), thickness: 1),
-                        ],
+                            if (i != value.length - 1 &&
+                                dateTime1.compareTo(dateTime2) < 0)
+                              const Divider(
+                                  color: Color(0xFF662fff), thickness: 1),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -415,16 +483,22 @@ class CalenderPageState extends State<CalenderPage> {
         padding: const EdgeInsets.all(10),
         child: FloatingActionButton(
           backgroundColor: const Color(0xffa07eff),
-          onPressed: () =>
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) =>
-                      MakingSchedulePage(
-                        dateTime: _selectedDay!,
-                      ),
+          onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => MakingSchedulePage(
+                  creating: true,
+                  dateTime: _selectedDay!,
+                  event: Event(
+                    medicine: Medicine.notExist("Schedule Title"),
+                    dateTime: _selectedDay!,
+                  ),
                 ),
-              ),
+              )).then((value) {
+            setState(() {
+              refreshSchedule();
+            });
+          }),
           child: const Icon(Icons.edit_calendar, size: 30),
         ),
       ),

@@ -26,8 +26,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   late List<AlarmSettings> alarms = []; // null 이면 생성되지 않은거,
   late List<Medicine> mediListForSearch = [];
-  List<Medicine> mediList = [];
-  late final Future<String> _futureUserName;
   int count = 289;
   String itemName = ""; // 검색을 위한
 
@@ -36,12 +34,6 @@ class _HomePageState extends State<HomePage> {
     super.initState();
     loadAlarms();
     if (alarms.isNotEmpty) differTime();
-    _futureUserName = widget.futureUserName;
-    Collections().getMediList().then((value) {
-      for (Medicine medicine in value) {
-        mediList.add(medicine);
-      }
-    });
   }
 
   void loadAlarms() {
@@ -84,7 +76,7 @@ class _HomePageState extends State<HomePage> {
       onTap: () => Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => AccountPage(futureUserName: _futureUserName),
+          builder: (context) => AccountPage(futureUserName: widget.futureUserName),
         ),
       ),
       child: Container(
@@ -204,10 +196,19 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> rmvCalenderInfo(String idxStr, DateTime dateTime) async {
     List<int> idxList = stringToIdxList(idxStr);
+    List<Medicine> mediList = await Collections().getMediList();
 
     rmvAlarmOfMedi(idxList, dateTime, mediList);
     rmvEventsWithoutMemo();
     await updateEvents(mediList);
+  }
+
+  String listToName(List<Medicine> mediList, String idxstr) {
+    String rtn = "";
+    stringToIdxList(idxstr).forEach((element) {
+      rtn += "${mediList[element].itemName}\n";
+    });
+    return rtn;
   }
 
   @override
@@ -236,7 +237,7 @@ class _HomePageState extends State<HomePage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       FutureBuilder(
-                        future: _futureUserName,
+                        future: widget.futureUserName,
                         builder:
                             (BuildContext context, AsyncSnapshot snapshot) {
                           //해당 부분은 data를 아직 받아 오지 못했을때 실행되는 부분을 의미한다.
@@ -476,44 +477,62 @@ class _HomePageState extends State<HomePage> {
                           padding: EdgeInsets.only(top: 80 * fem),
                           child: const Text("설정된 알람이 없어요."),
                         )
-                      : AnimationLimiter(
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: alarms.length,
-                            itemBuilder: (context, idx) =>
-                                AnimationConfiguration.staggeredList(
-                              position: idx,
-                              duration: const Duration(milliseconds: 375),
-                              child: SlideAnimation(
-                                verticalOffset: 50.0,
-                                child: FadeInAnimation(
-                                  child: Container(
-                                    padding: EdgeInsets.only(top: 10 * fem),
-                                    height: 97 * fem,
-                                    child: AlarmTile(
-                                      key: Key(alarms[idx].id.toString()),
-                                      onDismissed: () async {
-                                        rmvCalenderInfo(
-                                          alarms[idx].notificationBody!,
-                                          alarms[idx].dateTime,
-                                        );
-                                        Alarm.stop(alarms[idx].id)
-                                            .then((_) => loadAlarms());
-                                      },
-                                      ontap: () =>
-                                          navigateToAlarmScreen(alarms[idx]),
-                                      onPressed: () {},
-                                      name: toTimeForm(idx),
-                                      company: alarms[idx].notificationBody ??
-                                          "NULL",
-                                    ),
-                                  ),
+                      : FutureBuilder(
+                          future: Collections().getMediList(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData == false) {
+                              return const Text("loading..");
+                            }
+                            if (snapshot.hasError) {
+                              return const Text("Error");
+                            }
+                            return AnimationLimiter(
+                              child: SizedBox(
+                                height: 300,
+                                width: 500,
+                                child: ListView.builder(
+                                  scrollDirection: Axis.horizontal,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  itemCount: alarms.length,
+                                  itemBuilder: (context, idx) =>
+                                      AnimationConfiguration.staggeredList(
+                                        position: idx,
+                                        duration: const Duration(milliseconds: 375),
+                                        child: SlideAnimation(
+                                          verticalOffset: 50.0,
+                                          child: FadeInAnimation(
+                                            child: Container(
+                                              padding: EdgeInsets.only(top: 10 * fem),
+                                              height: 97 * fem,
+                                              child: AlarmTile(
+                                                key: Key(alarms[idx].id.toString()),
+                                                onDismissed: () async {
+                                                  rmvCalenderInfo(
+                                                    alarms[idx].notificationBody!,
+                                                    alarms[idx].dateTime,
+                                                  );
+                                                  Alarm.stop(alarms[idx].id)
+                                                      .then((_) => loadAlarms());
+                                                },
+                                                ontap: () => navigateToAlarmScreen(
+                                                    alarms[idx]),
+                                                onPressed: () {},
+                                                title: toTimeForm(idx),
+                                                content: listToName(
+                                                  snapshot.data ?? [],
+                                                  alarms[idx].notificationBody!,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                 ),
                               ),
-                            ),
-                          ),
-                        ), // 알람 리스트
+                            );
+                          },
+                        ),
                 ],
               ),
             ),

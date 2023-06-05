@@ -1,11 +1,11 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
 import 'package:bottom_bar_with_sheet/bottom_bar_with_sheet.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
 import 'package:medicine_app/medicine_data/medicine_cnt_management.dart';
+import 'package:medicine_app/util/collection.dart';
 import 'package:medicine_app/util/utils.dart';
 import 'alarm_screens/ring.dart';
 import 'main_pages/calendarpage.dart';
@@ -27,7 +27,6 @@ class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
   late BottomBarWithSheetController _bottomBarController;
-  late String userEmail;
   late int _selectedIndex = 0;
   late Future<String> futureUserName = getUserName();
 
@@ -42,7 +41,6 @@ class _TabBarPageState extends State<TabBarPage>
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );
-    userEmail = FirebaseAuth.instance.currentUser!.email!;
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       loadAOM(context);
     });
@@ -50,11 +48,12 @@ class _TabBarPageState extends State<TabBarPage>
   }
 
   Future<String> getUserName() async {
-    var firestore = await FirebaseFirestore.instance
-        .collection(userEmail)
-        .doc('mediInfo')
-        .get();
-    return firestore['name'];
+    return (await Collections.firestore
+                .collection(Collections.userEmail)
+                .doc('mediInfo')
+                .get())
+            .data()!['name'] ??
+        "NULL";
   }
 
   Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
@@ -108,7 +107,7 @@ class _TabBarPageState extends State<TabBarPage>
         type: BottomNavigationBarType.fixed,
         selectedLabelStyle: SafeGoogleFont(
           'Poppins',
-          fontSize: 10  * fem,
+          fontSize: 10 * fem,
           fontWeight: FontWeight.w600,
           color: const Color(0xFFA07EFF),
         ),

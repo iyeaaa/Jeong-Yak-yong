@@ -24,11 +24,25 @@ class Medicine {
     required this.sideEffect,
     required this.depositMethod,
     required this.imageUrl,
-    required this.count,
+    this.count = 0,
   });
 
+  Medicine.notExist(String title, {
+    this.entpName = "",
+    this.effect = "",
+    this.itemCode = "",
+    this.useMethod = "",
+    this.warmBeforeHave = "",
+    this.warmHave = "",
+    this.interaction = "",
+    this.sideEffect = "",
+    this.depositMethod = "",
+    this.imageUrl = "",
+    this.count = 0,
+  }) : itemName = title;
+
   @override
-  bool operator==(Object other) =>
+  bool operator ==(Object other) =>
       other is Medicine && itemName == other.itemName;
 
   @override
@@ -38,10 +52,11 @@ class Medicine {
     String removeTag(String x) {
       return x
           .replaceAll(
-          RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "")
+              RegExp("<(/)?([a-zA-Z]*)(\\s[a-zA-Z]*=[^>]*)?(\\s)*(/)?>"), "")
           .replaceAll("오.", "오.\n")
           .replaceAll(" .", ".\n");
     }
+
     try {
       return Medicine(
         itemName: json['itemName'] ?? '이름이 없어요',
@@ -53,8 +68,8 @@ class Medicine {
         warmHave: removeTag(json['atpnQesitm'] ?? '알아야 할 내용이 없어요.'),
         interaction: removeTag(json['intrcQesitm'] ?? '알아야 할 내용이 없어요.'),
         sideEffect: removeTag(json['seQesitm'] ?? '알아야 할 내용이 없어요.'),
-        depositMethod: removeTag(
-            json['depositMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
+        depositMethod:
+            removeTag(json['depositMethodQesitm'] ?? '알아야 할 내용이 없어요.'),
         imageUrl: json['itemImage'] ?? 'No Image',
         count: json['count'] ?? 0,
       );
@@ -75,7 +90,4 @@ class Medicine {
       );
     }
   }
-
-
-
 }

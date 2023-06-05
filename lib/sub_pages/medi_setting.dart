@@ -76,7 +76,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
     }
 
     return Container(
-      height: 95*fem,
+      height: 95 * fem,
       padding: EdgeInsets.only(top: 10 * fem),
       child: MedicineCard(
         fem: fem,
@@ -148,7 +148,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
       ),
       decoration: BoxDecoration(
         color: const Color(0xFFA07EFF),
-        borderRadius: BorderRadius.all(Radius.circular(20*fem)),
+        borderRadius: BorderRadius.all(Radius.circular(20 * fem)),
         boxShadow: const [
           BoxShadow(
             color: Color(0xFFA07EFF),
@@ -190,72 +190,72 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
   }
 
   Widget settingCount(double fem) => Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      Text(
-        "먹을 약 개수 : ",
-        overflow: TextOverflow.ellipsis,
-        style: SafeGoogleFont(
-          'Poppins',
-          fontSize: 20 * fem,
-          fontWeight: FontWeight.w600,
-          height: 1.5,
-          color: const Color(0xffa98aff),
-        ),
-      ),
-      Container(
-        width: 120 * fem,
-        height: 50 * fem,
-        padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
-        decoration: BoxDecoration(
-          border: Border.all(color: Colors.deepPurple),
-          borderRadius: BorderRadius.all(Radius.circular(10*fem)),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              onTap: () => setState(() {
-                mediCount = max(0, mediCount - 1);
-              }),
-              child: Text(
-                "-",
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 20 * fem,
-                  fontWeight: FontWeight.w700,
-                  height: 1.5,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            "먹을 약 개수 : ",
+            overflow: TextOverflow.ellipsis,
+            style: SafeGoogleFont(
+              'Poppins',
+              fontSize: 20 * fem,
+              fontWeight: FontWeight.w600,
+              height: 1.5,
+              color: const Color(0xffa98aff),
+            ),
+          ),
+          Container(
+            width: 120 * fem,
+            height: 50 * fem,
+            padding: EdgeInsets.fromLTRB(12 * fem, 0, 12 * fem, 0),
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.deepPurple),
+              borderRadius: BorderRadius.all(Radius.circular(10 * fem)),
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                InkWell(
+                  onTap: () => setState(() {
+                    mediCount = max(0, mediCount - 1);
+                  }),
+                  child: Text(
+                    "-",
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 20 * fem,
+                      fontWeight: FontWeight.w700,
+                      height: 1.5,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            Text(
-              mediCount.toString(),
-              style: SafeGoogleFont(
-                'Poppins',
-                fontSize: 22 * fem,
-                fontWeight: FontWeight.w500,
-                height: 1.5,
-              ),
-            ),
-            InkWell(
-              onTap: () => setState(() {
-                mediCount = max(0, mediCount + 1);
-              }),
-              child: Text(
-                "+",
-                style: SafeGoogleFont(
-                  'Poppins',
-                  fontSize: 20 * fem,
-                  fontWeight: FontWeight.w700,
-                  height: 1.5,
+                Text(
+                  mediCount.toString(),
+                  style: SafeGoogleFont(
+                    'Poppins',
+                    fontSize: 22 * fem,
+                    fontWeight: FontWeight.w500,
+                    height: 1.5,
+                  ),
                 ),
-              ),
+                InkWell(
+                  onTap: () => setState(() {
+                    mediCount = max(0, mediCount + 1);
+                  }),
+                  child: Text(
+                    "+",
+                    style: SafeGoogleFont(
+                      'Poppins',
+                      fontSize: 20 * fem,
+                      fontWeight: FontWeight.w700,
+                      height: 1.5,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ],
-  );
+          ),
+        ],
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -268,26 +268,27 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
         actions: [
-          Padding(
-            padding: EdgeInsets.only(right: 30 * fem),
-            child: IconButton(
-              onPressed: () async {
-                widget.creating
-                    ? await mediList.medicineAdd(medicine, mediCount)
-                    : await mediList.medicineRmv(medicine);
-                if (!widget.creating) {
-                  await mediList.medicineAdd(medicine, mediCount);
-                }
-                showAddOrChangeMessage(fem);
-                rmvEventsWithoutMemo();
-                updateEvents(await mediList.getMediList());
-              },
-              icon: Icon(
-                widget.creating ? Icons.playlist_add : Icons.save_outlined,
-                size: 35 * fem,
+          if (medicine.entpName.isNotEmpty)
+            Padding(
+              padding: EdgeInsets.only(right: 30 * fem),
+              child: IconButton(
+                onPressed: () async {
+                  widget.creating
+                      ? await mediList.medicineAdd(medicine, mediCount)
+                      : await mediList.medicineRmv(medicine);
+                  if (!widget.creating) {
+                    await mediList.medicineAdd(medicine, mediCount);
+                  }
+                  showAddOrChangeMessage(fem);
+                  rmvEventsWithoutMemo();
+                  updateEvents(await mediList.getMediList());
+                },
+                icon: Icon(
+                  widget.creating ? Icons.playlist_add : Icons.save_outlined,
+                  size: 35 * fem,
+                ),
               ),
             ),
-          ),
         ],
         elevation: 0,
         toolbarHeight: 80 * fem,
@@ -326,7 +327,7 @@ class _MedicineSettingPageState extends State<MedicineSettingPage> {
                 SizedBox(height: 30 * fem),
                 mediInfoCard(1, fem),
                 SizedBox(height: 30 * fem),
-                settingCount(fem),
+                if (medicine.entpName.isNotEmpty) settingCount(fem),
               ],
             ),
           ),

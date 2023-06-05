@@ -14,11 +14,30 @@ class Event {
   final bool memo;
   bool take;
 
+  bool conditionState;
+  bool hypertensionState;
+  bool glucoseState;
+  bool noteState;
+
+  int condition;
+  int hypertension;
+  int glucose;
+  String note;
+
   Event({
     required this.medicine,
     required this.dateTime,
     this.memo = false,
     this.take = false,
+
+    this.conditionState = false,
+    this.hypertensionState = false,
+    this.glucoseState = false,
+    this.noteState = false,
+    this.condition = 2,
+    this.hypertension = 100,
+    this.glucose = 100,
+    this.note = "",
   });
 
   @override

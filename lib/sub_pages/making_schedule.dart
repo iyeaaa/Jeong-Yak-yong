@@ -1,15 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:medicine_app/util/loading_bar.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:reviews_slider/reviews_slider.dart';
-
+import '../medicine_data/medicine.dart';
+import '../util/collection.dart';
+import '../util/event.dart';
 import '../util/utils.dart';
 
 class MakingSchedulePage extends StatefulWidget {
   final DateTime dateTime;
+  final bool creating;
+  final Event event;
 
   const MakingSchedulePage({
     Key? key,
     required this.dateTime,
+    required this.creating,
+    required this.event,
   }) : super(key: key);
 
   @override
@@ -19,18 +26,43 @@ class MakingSchedulePage extends StatefulWidget {
 class _MakingSchedulePageState extends State<MakingSchedulePage> {
   late DateTime selectDay = widget.dateTime;
   late TimeOfDay selectTime;
-  int feelValue = 0;
-  int _currentValue = 100;
+
+  late TextEditingController title;
+  late TextEditingController note;
+  int condition = 0;
+  int hypertension = 100;
+  int glucost = 80;
   bool conditionVisible = false;
   bool hypertensionVisible = false;
   bool glucoseVisible = false;
-  bool memoVisible = false;
+  bool noteVisible = false;
 
   @override
   void initState() {
     super.initState();
-    final dt = DateTime.now().add(const Duration(minutes: 1));
-    selectTime = TimeOfDay(hour: dt.hour, minute: dt.minute);
+
+    if (!widget.creating) {
+      conditionVisible = widget.event.conditionState;
+      condition = widget.event.condition;
+      hypertensionVisible = widget.event.hypertensionState;
+      hypertension = widget.event.hypertension;
+      glucoseVisible = widget.event.glucoseState;
+      glucost = widget.event.glucose;
+      noteVisible = widget.event.noteState;
+      selectTime = TimeOfDay(
+        hour: widget.dateTime.hour,
+        minute: widget.dateTime.minute,
+      );
+      title = TextEditingController(text: widget.event.medicine.itemName);
+      note = TextEditingController(text: widget.event.note);
+    } else {
+      final dt = DateTime.now().add(const Duration(minutes: 1));
+      selectTime = TimeOfDay(hour: dt.hour, minute: dt.minute);
+      title = TextEditingController();
+      note = TextEditingController();
+    }
+
+    debugPrint(selectDay.toString());
   }
 
   Future<void> pickTime() async {
@@ -83,6 +115,48 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
       appBar: AppBar(
         backgroundColor: const Color(0xFFA07EFF),
         centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 30 * fem),
+            child: InkWell(
+              onTap: () async {
+                DateTime myDateTime = DateTime(
+                  selectDay.year,
+                  selectDay.month,
+                  selectDay.day,
+                  selectTime.hour,
+                  selectTime.minute,
+                );
+                await Collections().memoAdd(Event(
+                    medicine: Medicine.notExist(title.text),
+                    dateTime: myDateTime,
+                    conditionState: conditionVisible,
+                    condition: condition,
+                    noteState: noteVisible,
+                    note: note.text,
+                    hypertensionState: hypertensionVisible,
+                    hypertension: hypertension,
+                    glucoseState: glucoseVisible,
+                    glucose: glucost));
+                if (!widget.creating) {
+                  await Collections().memoRmv(widget.event);
+                }
+                if (context.mounted) {
+                  showScaffold(
+                    '일정을 ${widget.creating ? "추가" : "수정"}했어요',
+                    context,
+                    fem,
+                  );
+                  Navigator.pop(context);
+                }
+              },
+              child: Icon(
+                widget.creating ? Icons.playlist_add : Icons.playlist_add_check,
+                size: 33 * fem,
+              ),
+            ),
+          ),
+        ],
         title: Text(
           "${selectDay.year}.${selectDay.month}.${selectDay.day}",
           style: SafeGoogleFont(
@@ -96,13 +170,14 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
         toolbarHeight: 80 * fem,
       ),
       body: SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
         child: SafeArea(
           child: Padding(
             padding: EdgeInsets.all(20 * fem),
             child: Center(
               child: Column(
                 children: [
-                  SizedBox(height: 15*fem),
+                  SizedBox(height: 15 * fem),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 30.0),
                     child: RawMaterialButton(
@@ -120,6 +195,38 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                       ),
                     ),
                   ), // Time pick Widget
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(
+                        20 * fem, 20 * fem, 20 * fem, 40 * fem),
+                    child: TextField(
+                      controller: title,
+                      textAlign: TextAlign.start,
+                      cursorColor: const Color(0xff6B35FF),
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: const Color(0xffDFD3FF),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide:
+                              const BorderSide(color: Color(0xff3600CA)),
+                          borderRadius: BorderRadius.circular(5.5),
+                        ),
+                        enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Color(0xff8559FF),
+                          ),
+                        ),
+                        labelText: 'Schedule Title',
+                        labelStyle: TextStyle(
+                          color: const Color(0xff6B35FF),
+                          fontSize: 18 * fem,
+                        ),
+                        border: const OutlineInputBorder(),
+                      ),
+                      maxLines: 100,
+                      // <-- SEE HERE
+                      minLines: 1, // <-- SEE HERE
+                    ),
+                  ),
                   Padding(
                     padding: EdgeInsets.only(bottom: 20 * fem),
                     child: Column(
@@ -153,9 +260,10 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                         ),
                         visibleWidget(
                           ReviewSlider(
+                            initialValue: condition,
                             onChange: (int value) {
-                              feelValue = value;
-                              debugPrint("feel Value: $feelValue");
+                              condition = value;
+                              debugPrint("feel Value: $condition");
                             },
                             optionStyle: SafeGoogleFont(
                               'Poppins',
@@ -169,6 +277,72 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                       ],
                     ),
                   ), // Feel pick Widget
+                  Padding(
+                    padding: EdgeInsets.only(bottom: 20 * fem),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        CheckboxListTile(
+                          title: Text(
+                            "메모",
+                            style: SafeGoogleFont(
+                              'Poppins',
+                              fontSize: 17 * fem,
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFFA07EFF),
+                            ),
+                          ),
+                          value: noteVisible,
+                          onChanged: (value) {
+                            setState(() {
+                              noteVisible = !noteVisible;
+                            });
+                          },
+                          secondary: Icon(
+                            Icons.note_alt_outlined,
+                            size: 22 * fem,
+                            color: const Color(0xFFA07EFF),
+                          ),
+                          fillColor: const MaterialStatePropertyAll(
+                            Color(0xFFA07EFF),
+                          ),
+                        ),
+                        visibleWidget(
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(
+                                20 * fem, 20 * fem, 20 * fem, 0),
+                            child: TextField(
+                              controller: note,
+                              cursorColor: const Color(0xff6B35FF),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: const Color(0xffDFD3FF),
+                                labelStyle:
+                                    const TextStyle(color: Color(0xff6B35FF)),
+                                focusedBorder: OutlineInputBorder(
+                                  borderSide: const BorderSide(
+                                      color: Color(0xff3600CA)),
+                                  borderRadius: BorderRadius.circular(5.5),
+                                ),
+                                enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide(
+                                    color: Color(0xff8559FF),
+                                  ),
+                                ),
+                                labelText: 'MEMO',
+                                border: const OutlineInputBorder(),
+                              ),
+                              maxLines: 100,
+                              // <-- SEE HERE
+                              minLines: 1, // <-- SEE HERE
+                            ),
+                          ),
+                          noteVisible,
+                        )
+                      ],
+                    ),
+                  ), // 메모
                   Padding(
                     padding: EdgeInsets.only(bottom: 20 * fem),
                     child: Column(
@@ -207,12 +381,12 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                               // https://pub.dev/packages/numberpicker
                               NumberPicker(
                                 axis: Axis.horizontal,
-                                value: _currentValue,
+                                value: hypertension,
                                 minValue: 50,
                                 maxValue: 300,
                                 onChanged: (value) => setState(
                                   () {
-                                    _currentValue = value;
+                                    hypertension = value;
                                     debugPrint("혈압: $value");
                                   },
                                 ),
@@ -274,12 +448,12 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                               // https://pub.dev/packages/numberpicker
                               NumberPicker(
                                 axis: Axis.horizontal,
-                                value: _currentValue,
+                                value: glucost,
                                 minValue: 50,
                                 maxValue: 300,
                                 onChanged: (value) => setState(
                                   () {
-                                    _currentValue = value;
+                                    glucost = value;
                                     debugPrint("당 수치: $value");
                                   },
                                 ),
@@ -303,47 +477,6 @@ class _MakingSchedulePageState extends State<MakingSchedulePage> {
                       ],
                     ),
                   ), // 당수치 기록
-                  Padding(
-                    padding: EdgeInsets.only(bottom: 20 * fem),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        CheckboxListTile(
-                          title: Text(
-                            "메모",
-                            style: SafeGoogleFont(
-                              'Poppins',
-                              fontSize: 17 * fem,
-                              fontWeight: FontWeight.w600,
-                              color: const Color(0xFFA07EFF),
-                            ),
-                          ),
-                          value: memoVisible,
-                          onChanged: (value) {
-                            setState(() {
-                              memoVisible = !memoVisible;
-                            });
-                          },
-                          secondary: Icon(
-                            Icons.note_alt_outlined,
-                            size: 22 * fem,
-                            color: const Color(0xFFA07EFF),
-                          ),
-                          fillColor: const MaterialStatePropertyAll(
-                            Color(0xFFA07EFF),
-                          ),
-                        ),
-                        visibleWidget(
-                          const Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [],
-                          ),
-                          memoVisible,
-                        ),
-                      ],
-                    ),
-                  ),
                 ],
               ),
             ),
