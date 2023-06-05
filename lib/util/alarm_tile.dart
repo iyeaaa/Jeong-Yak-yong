@@ -23,7 +23,7 @@ class AlarmTile extends StatelessWidget {
       onTap: ontap,
       child: Container(
         width: 200 * fem,
-        height: 300 * fem,
+        height: 320 * fem,
         padding: EdgeInsets.all(10 * fem),
         decoration: BoxDecoration(
           color: const Color(0xffffffff),
@@ -59,7 +59,7 @@ class AlarmTile extends StatelessWidget {
                     'Poppins',
                     fontSize: 26 * fem,
                     fontWeight: FontWeight.w500,
-                    color: Colors.black,
+                    color: const Color(0xff8357fc),
                   ),
                 ),
                 SizedBox(
@@ -67,14 +67,15 @@ class AlarmTile extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 20 * fem),
+            SizedBox(height: 3 * fem),
             AutoSizeText(
               content,
               style: SafeGoogleFont(
-                'Poppins',
+                'Chivo Mono',
                 // fontSize: 17 * fem,
-                fontWeight: FontWeight.w500,
-                color: Colors.black,
+                height: 1.7*fem,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xff5c24ff),
               ),
             ),
           ],

@@ -377,8 +377,8 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(width: 20 * fem),
                                   Text(
                                     alarms.isNotEmpty
-                                        ? '아직 안 드신 약이 있어요!'
-                                        : '먹을 약이 없어요!',
+                                        ? '오늘 먹을 약이 남아있어요!'
+                                        : '오늘 먹을 모든 약을 먹었어요!',
                                     style: SafeGoogleFont(
                                       'Poppins',
                                       fontSize: 16 * fem,
@@ -489,7 +489,7 @@ class _HomePageState extends State<HomePage> {
                             }
                             return AnimationLimiter(
                               child: SizedBox(
-                                height: 300,
+                                height: 320,
                                 width: 500,
                                 child: ListView.builder(
                                   scrollDirection: Axis.horizontal,
@@ -509,12 +509,16 @@ class _HomePageState extends State<HomePage> {
                                           child: AlarmTile(
                                             key: Key(alarms[idx].id.toString()),
                                             onDismissed: () async {
-                                              rmvCalenderInfo(
+                                              showLoadingBar(context);
+                                              await rmvCalenderInfo(
                                                 alarms[idx].notificationBody!,
                                                  alarms[idx].dateTime,
                                               );
-                                              Alarm.stop(alarms[idx].id)
+                                              await Alarm.stop(alarms[idx].id)
                                                   .then((_) => loadAlarms());
+                                              if (context.mounted) {
+                                                Navigator.pop(context);
+                                              }
                                             },
                                             ontap: () => navigateToAlarmScreen(
                                                 alarms[idx]),

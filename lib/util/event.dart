@@ -24,6 +24,8 @@ class Event {
   int glucose;
   String note;
 
+  bool fromDatabase;
+
   Event({
     required this.medicine,
     required this.dateTime,
@@ -38,6 +40,8 @@ class Event {
     this.hypertension = 100,
     this.glucose = 100,
     this.note = "",
+
+    this.fromDatabase = false,
   });
 
   @override

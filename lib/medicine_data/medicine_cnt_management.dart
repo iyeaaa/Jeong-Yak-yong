@@ -106,6 +106,7 @@ Future<void> updateEvents(List<Medicine> mediList) async {
           dateTime: key,
           memo: false,
           take: value['take'],
+          fromDatabase: true,
         ),
       );
     } else {
@@ -123,6 +124,7 @@ Future<void> updateEvents(List<Medicine> mediList) async {
           glucose: value['glu'],
           noteState: value['noteState'],
           note: value['note'],
+          fromDatabase: true,
         ),
       );
     }

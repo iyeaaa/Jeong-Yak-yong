@@ -62,17 +62,18 @@ class CalenderPageState extends State<CalenderPage> {
   }
 
   void _onDaySelected(DateTime selectedDay, DateTime focusedDay) {
-    if (!isSameDay(_selectedDay, selectedDay)) {
-      setState(() {
-        _selectedDay = selectedDay;
-        _focusedDay = focusedDay;
-        // _rangeStart = null; // Important to clean those
-        // _rangeEnd = null;
-        // _rangeSelectionMode = RangeSelectionMode.toggledOff;
-      });
+    setState(() {
+      _selectedDay = selectedDay;
+      _focusedDay = focusedDay;
+      // _rangeStart = null; // Important to clean those
+      // _rangeEnd = null;
+      // _rangeSelectionMode = RangeSelectionMode.toggledOff;
+    });
 
-      _selectedEvents.value = _getEventsForDay(selectedDay);
-    }
+    // _selectedEvents.value = _getEventsForDay(selectedDay);
+    // if (!isSameDay(_selectedDay, selectedDay)) {
+    //
+    // }
   }
 
   void _onRangeSelected(DateTime? start, DateTime? end, DateTime focusedDay) {
@@ -97,9 +98,9 @@ class CalenderPageState extends State<CalenderPage> {
   Future<void> refreshSchedule() async {
     showLoadingBar(context);
     rmvEventsWithoutMemo();
-    await updateEvents(await Collections().getMediList());
+    var medilist = await Collections().getMediList();
+    await updateEvents(medilist);
     if (context.mounted) Navigator.pop(context);
-    setState(() {});
   }
 
   @override
@@ -228,38 +229,8 @@ class CalenderPageState extends State<CalenderPage> {
                     DateTime dateTime2 = (i + 1 < value.length
                         ? value[i + 1].dateTime
                         : DateTime(9999));
-                    return Dismissible(
-                      key: ValueKey(value[i].medicine.itemName +
-                          value[i].dateTime.toString()),
-                      background: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(20 * fem),
-                          color: const Color(0xffa07eff),
-                        ),
-                        alignment: Alignment.centerRight,
-                        padding: const EdgeInsets.only(right: 30),
-                        child: const Icon(
-                          Icons.delete,
-                          size: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                      onDismissed: (_) async {
-                        if (value[i].memo) {
-                          await Collections().memoRmv(value[i]);
-                        } else {
-                          await Collections().scheduleRmv(
-                            value[i].medicine.itemName,
-                            value[i].dateTime,
-                            value[i].take,
-                          );
-                        }
-                        if (context.mounted) {
-                          showScaffold('일정을 삭제했어요', context, fem);
-                        }
-                        setState(() => refreshSchedule());
-                      },
-                      child: InkWell(
+                    Widget scheduleWidget() {
+                      return InkWell(
                         onTap: () {
                           Navigator.push(
                             context,
@@ -287,10 +258,9 @@ class CalenderPageState extends State<CalenderPage> {
                                       creating: false,
                                     ),
                             ),
-                          ).then((value) {
-                            setState(() {
-                              refreshSchedule();
-                            });
+                          ).then((value) async {
+                            await refreshSchedule();
+                            setState(() {});
                           });
                         },
                         child: Column(
@@ -469,8 +439,48 @@ class CalenderPageState extends State<CalenderPage> {
                                   color: Color(0xFF662fff), thickness: 1),
                           ],
                         ),
-                      ),
-                    );
+                      );
+                    }
+                    return value[i].fromDatabase
+                        ? Dismissible(
+                            key: UniqueKey(),
+                            background: Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(20 * fem),
+                                color: const Color(0xffa07eff),
+                              ),
+                              alignment: Alignment.centerRight,
+                              padding: const EdgeInsets.only(right: 30),
+                              child: const Icon(
+                                Icons.delete,
+                                size: 30,
+                                color: Colors.white,
+                              ),
+                            ),
+                            onDismissed: (_) async {
+                              showLoadingBar(context);
+                              if (value[i].memo) {
+                                await Collections().memoRmv(value[i]);
+                              } else {
+                                await Collections().scheduleRmv(
+                                  value[i].medicine.itemName,
+                                  value[i].dateTime,
+                                  value[i].take,
+                                );
+                              }
+                              if (context.mounted) {
+                                showScaffold('일정을 삭제했어요', context, fem);
+                              }
+                              kEvents[value[i].dateTime]?.remove(value[i]);
+                              _onDaySelected(_selectedDay!, _focusedDay);
+                              if (context.mounted) {
+                                Navigator.pop(context);
+                              }
+                              debugPrint(kEvents.toString());
+                            },
+                            child: scheduleWidget(),
+                          )
+                        : scheduleWidget();
                   },
                 );
               },
