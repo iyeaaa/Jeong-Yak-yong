@@ -443,7 +443,7 @@ class CalenderPageState extends State<CalenderPage> {
                     }
                     return value[i].fromDatabase
                         ? Dismissible(
-                            key: UniqueKey(),
+                            key: ValueKey(value[i]),
                             background: Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(20 * fem),
