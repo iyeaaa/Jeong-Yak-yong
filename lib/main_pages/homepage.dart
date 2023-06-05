@@ -511,7 +511,7 @@ class _HomePageState extends State<HomePage> {
                                             onDismissed: () async {
                                               rmvCalenderInfo(
                                                 alarms[idx].notificationBody!,
-                                                alarms[idx].dateTime,
+                                                 alarms[idx].dateTime,
                                               );
                                               Alarm.stop(alarms[idx].id)
                                                   .then((_) => loadAlarms());
