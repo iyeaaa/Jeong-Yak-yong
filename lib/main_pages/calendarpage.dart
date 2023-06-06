@@ -70,7 +70,7 @@ class CalenderPageState extends State<CalenderPage> {
       // _rangeSelectionMode = RangeSelectionMode.toggledOff;
     });
 
-    // _selectedEvents.value = _getEventsForDay(selectedDay);
+    _selectedEvents.value = _getEventsForDay(selectedDay);
     // if (!isSameDay(_selectedDay, selectedDay)) {
     //
     // }
