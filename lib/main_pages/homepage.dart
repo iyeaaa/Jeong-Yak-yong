@@ -505,7 +505,6 @@ class _HomePageState extends State<HomePage> {
                                         child: Container(
                                           padding: EdgeInsets.fromLTRB(
                                               0, 10 * fem, 10 * fem, 0),
-                                          height: 97 * fem,
                                           child: AlarmTile(
                                             key: Key(alarms[idx].id.toString()),
                                             onDismissed: () async {

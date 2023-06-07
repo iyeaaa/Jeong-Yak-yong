@@ -23,7 +23,6 @@ class AlarmTile extends StatelessWidget {
       onTap: ontap,
       child: Container(
         width: 200 * fem,
-        height: 320 * fem,
         padding: EdgeInsets.all(10 * fem),
         decoration: BoxDecoration(
           color: const Color(0xffffffff),
@@ -74,8 +73,8 @@ class AlarmTile extends StatelessWidget {
                 'Chivo Mono',
                 // fontSize: 17 * fem,
                 height: 1.7*fem,
-                fontWeight: FontWeight.w600,
-                color: const Color(0xff5c24ff),
+                fontWeight: FontWeight.bold,
+                color: const Color(0xff7748ff),
               ),
             ),
           ],
