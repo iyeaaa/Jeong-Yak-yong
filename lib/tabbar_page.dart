@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:alarm/alarm.dart';
-import 'package:bottom_bar_with_sheet/bottom_bar_with_sheet.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:medicine_app/login/login_page.dart';
@@ -26,18 +25,12 @@ class TabBarPage extends StatefulWidget {
 class _TabBarPageState extends State<TabBarPage>
     with SingleTickerProviderStateMixin {
   static StreamSubscription? subscription;
-  late BottomBarWithSheetController _bottomBarController;
   late int _selectedIndex = 0;
   late Future<String> futureUserName = getUserName();
 
   @override
   void initState() {
     _selectedIndex = widget.selectedIndex;
-    _bottomBarController =
-        BottomBarWithSheetController(initialIndex: widget.selectedIndex);
-    _bottomBarController.stream.listen((opened) {
-      debugPrint('Bottom bar ${opened ? 'opened' : 'closed'}');
-    });
     subscription ??= Alarm.ringStream.stream.listen(
       (alarmSettings) => navigateToRingScreen(alarmSettings),
     );

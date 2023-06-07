@@ -73,14 +73,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
-  bottom_bar_with_sheet:
-    dependency: "direct main"
-    description:
-      name: bottom_bar_with_sheet
-      sha256: c9a43e90cb6886d1e012be661693a8b847d1b1879c81176b74d72a29eb4bf644
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.4.0"
   characters:
     dependency: transitive
     description:
@@ -153,14 +145,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.17.3"
-  cupertino_icons:
-    dependency: "direct main"
-    description:
-      name: cupertino_icons
-      sha256: e35129dc44c9118cee2a5603506d823bab99c68393879edb440e0090d07586be
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.0.5"
   dbus:
     dependency: transitive
     description:
@@ -241,14 +225,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.5.0"
-  flare_flutter:
-    dependency: "direct main"
-    description:
-      name: flare_flutter
-      sha256: "99d63c60f00fac81249ce6410ee015d7b125c63d8278a30da81edf3317a1f6a0"
-      url: "https://pub.dev"
-    source: hosted
-    version: "3.0.2"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -298,10 +274,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_native_splash
-      sha256: "02df24aec455c26428dadc637f20d4c548bda23ee2179479a8e8c39f1ecb75b3"
+      sha256: ba45d8cfbd778478a74696b012f33ffb6b1760c9bc531b21e2964444a4870dae
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "2.3.1"
   flutter_staggered_animations:
     dependency: "direct main"
     description:
@@ -408,14 +384,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.8"
-  lint:
-    dependency: transitive
-    description:
-      name: lint
-      sha256: "4a539aa34ec5721a2c7574ae2ca0336738ea4adc2a34887d54b7596310b33c85"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.10.0"
   lints:
     dependency: transitive
     description:
@@ -569,7 +537,7 @@ packages:
     source: hosted
     version: "0.27.7"
   shared_preferences:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: shared_preferences
       sha256: "16d3fb6b3692ad244a695c0183fca18cf81fd4b821664394a781de42386bf022"
@@ -669,30 +637,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
-  styled_widget:
-    dependency: "direct main"
-    description:
-      name: styled_widget
-      sha256: "4d439802919b6ccf10d1488798656da8804633b03012682dd1c8ca70a084aa84"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.4.1"
   syncfusion_flutter_charts:
     dependency: "direct main"
     description:
       name: syncfusion_flutter_charts
-      sha256: "85bac56da967d6943d742b3c75a4a1bd4d4d017f03b4016042898d9de6c36284"
+      sha256: "9391ce007e011dae05c0a44fb5c96752d3986acad853a73b35cb2e40d1ab492a"
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.8"
+    version: "21.2.9"
   syncfusion_flutter_core:
     dependency: transitive
     description:
       name: syncfusion_flutter_core
-      sha256: c71208a5bbcdcad64f08264d6cd6d6ed9c0ee95ae3f4dea9d33a0f84134ccf99
+      sha256: "4aa69e3541d38810533b1455aa38997a89755f9928e16ef813b62b2e8bcc398c"
       url: "https://pub.dev"
     source: hosted
-    version: "21.2.8"
+    version: "21.2.9"
   table_calendar:
     dependency: "direct main"
     description:
@@ -733,14 +693,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.9.2"
-  tuple:
-    dependency: "direct main"
-    description:
-      name: tuple
-      sha256: "0ea99cd2f9352b2586583ab2ce6489d1f95a5f6de6fb9492faaf97ae2060f0aa"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.0.1"
   typed_data:
     dependency: transitive
     description:

@@ -107,7 +107,7 @@ class _ChartPageState extends State<ChartPage> {
                             const DataLabelSettings(isVisible: true),
                       ),
                       LineSeries<_SalesData, String>(
-                        width: 3,
+                        width: 1,
                         color: const Color(0xffff5788),
                         dataSource: tookChartData,
                         xValueMapper: (_SalesData sales, _) => sales.key,
