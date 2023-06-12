@@ -16,11 +16,6 @@
 
 * 바쁜 현대인들이 간편하고 정확하게 약을 알고 복용할 수 있도록 도와, 건강회복을 잘할 수 있도록하고 하눈에 건강 상태를 파악해 건강을 유지할 수 있다.
 
-### 프로토타입 소개영상
-
-[![프로토타입 시연영상](http://img.youtube.com/vi/e-SODyj4cbM/0.jpg)](https://youtu.be/e-SODyj4cbM?t=0s)
-<br><br>
-
 ## Tech Stack
 
 <img src="https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white">

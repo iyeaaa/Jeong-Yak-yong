@@ -121,6 +121,30 @@ class CalenderPageState extends State<CalenderPage> {
             color: const Color(0xffffffff),
           ),
         ),
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20.0),
+          child: Center(
+            child: InkWell(
+              onTap: () {
+                var curTime = DateTime.now();
+                Collections().scheduleAdd("안녕", curTime.add(const Duration(days: -5)), true);
+                Collections().scheduleAdd("안녕2", curTime.add(const Duration(days: -5)), false);
+
+                Collections().scheduleAdd("안녕2", curTime.add(const Duration(days: -4)), false);
+                Collections().scheduleAdd("안녕3", curTime.add(const Duration(days: -4)), false);
+                Collections().scheduleAdd("안녕4", curTime.add(const Duration(days: -4)), false);
+                Collections().scheduleAdd("안녕5", curTime.add(const Duration(days: -4)), false);
+                Collections().scheduleAdd("안녕6", curTime.add(const Duration(days: -4)), true);
+                Collections().scheduleAdd("안녕7", curTime.add(const Duration(days: -4)), true);
+
+                Collections().scheduleAdd("안녕1", curTime.add(const Duration(days: -3)), false);
+                Collections().scheduleAdd("안녕2", curTime.add(const Duration(days: -3)), true);
+                Collections().scheduleAdd("안녕3", curTime.add(const Duration(days: -3)), true);
+              },
+              child: const Icon(Icons.bug_report_outlined, size: 30,),
+            ),
+          ),
+        ),
         actions: [
           InkWell(
             onTap: () async {
@@ -441,6 +465,7 @@ class CalenderPageState extends State<CalenderPage> {
                         ),
                       );
                     }
+
                     return value[i].fromDatabase
                         ? Dismissible(
                             key: ValueKey(value[i]),
