@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "951033930421",
+    "project_id": "chat-app-760c0",
+    "storage_bucket": "chat-app-760c0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:951033930421:android:d30b44316ff666106514fc",
+        "android_client_info": {
+          "package_name": "com.example.medicine_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "951033930421-kqc46sh4uci2vhufqptca0nlhn8rl5c4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAbwN9bnCYsCXJYHRpQA8zzwdKektuRH18"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "951033930421-kqc46sh4uci2vhufqptca0nlhn8rl5c4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "951033930421-267nsv5j78qreort5pad5n8n777ic33f.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.medicineApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
